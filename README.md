@@ -4,11 +4,11 @@ A Claude Code plugin marketplace for [Exasol database](https://exasol.com).
 
 ## Get started
 
-Add the marketplace and the plugin
+Add the marketplace and install the plugin:
 
 ```bash
-claude plugin add marketplace https://github.com/exasol-labs/exasol-agent-skills
-claude plugin add exasol
+claude plugin marketplace add exasol-labs/exasol-agent-skills
+claude plugin install exasol@exasol-skills
 ```
 
 That's it. The skill and `/exasol` slash command are now available in your Claude Code sessions.

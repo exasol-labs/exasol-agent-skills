@@ -43,12 +43,16 @@ exasol-skills/
 
 ## Local Development
 
-To register this marketplace locally for testing, add to your Claude Code settings:
+To test this marketplace locally:
 
-```json
-{
-  "plugins": {
-    "marketplaces": ["/path/to/exasol-skills"]
-  }
-}
+```bash
+claude plugin marketplace add ./path/to/exasol-agent-skills
+claude plugin install exasol@exasol-skills
+```
+
+Validate manifests with:
+
+```bash
+claude plugin validate .
+claude plugin validate ./plugins/exasol
 ```
