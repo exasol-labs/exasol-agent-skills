@@ -17,7 +17,7 @@ exasol-skills/
 │       │       ├── SKILL.md      # Skill definition (triggers, content)
 │       │       └── references/   # Detailed reference docs (progressive disclosure)
 │       │           ├── exapump-reference.md
-│       │           └── exasol-sql-quirks.md
+│       │           └── exasol-sql.md
 │       ├── commands/
 │       │   └── exasol.md         # /exasol slash command
 │       └── README.md

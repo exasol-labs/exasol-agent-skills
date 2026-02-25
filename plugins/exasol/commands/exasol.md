@@ -23,7 +23,7 @@ When invoked:
 2. **If the argument is a SQL query** (starts with SELECT, CREATE, DROP, INSERT, UPDATE, DELETE, MERGE, IMPORT, EXPORT, ALTER, GRANT, etc.):
    - Execute it via `exapump sql "<query>"`
    - Display results
-   - If the query fails, diagnose using Exasol SQL quirks knowledge (check reserved keywords, identifier casing, missing NOT NULL on UNIQUE, etc.)
+   - If the query fails, diagnose using Exasol SQL knowledge (check reserved keywords, identifier casing, missing NOT NULL on UNIQUE, etc.)
 
 3. **If the argument is a task description**:
    - Determine the right approach (exapump command vs SQL IMPORT/EXPORT)
@@ -31,7 +31,7 @@ When invoked:
    - For uploads: use `exapump upload` with `--dry-run` first to preview schema
    - For exports: use `exapump export` with appropriate format
 
-4. **On errors**: Apply knowledge of Exasol SQL differences to diagnose and fix issues. Common causes:
+4. **On errors**: Apply Exasol SQL knowledge to diagnose and fix issues. Common causes:
    - Reserved keyword used as identifier — verify by running `exapump sql "SELECT * FROM EXA_SQL_KEYWORDS WHERE KEYWORD = '<word>'"`, then double-quote the identifier
    - Uppercase identifier mismatch
    - Missing NOT NULL on UNIQUE constraint columns

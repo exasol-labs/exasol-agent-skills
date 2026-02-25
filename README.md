@@ -20,7 +20,7 @@ That's it. The skill and `/exasol` slash command are now available in your Claud
 Automatically activates when you mention Exasol, exapump, or related topics. Provides:
 
 - **exapump CLI guidance** — upload, query, export, interactive sessions
-- **Exasol SQL expertise** — data type quirks, reserved keywords, constraint limitations
+- **Exasol SQL expertise** — data types, reserved keywords, constraint limitations
 - **Error diagnosis** — identifies Exasol-specific issues (identifier casing, reserved words, etc.)
 - **Cloud data loading** — S3, Azure Blob, GCS via SQL IMPORT
 

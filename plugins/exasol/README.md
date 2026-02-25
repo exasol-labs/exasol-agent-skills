@@ -7,7 +7,7 @@ A Claude Code plugin that helps you interact with Exasol databases using the `ex
 - **Upload** CSV and Parquet files to Exasol tables
 - **Query** Exasol with SQL and get results in CSV or JSON
 - **Export** tables or query results to CSV or Parquet files
-- **Exasol SQL knowledge** — understands Exasol-specific quirks, reserved keywords, and data type differences
+- **Exasol SQL knowledge** — understands Exasol-specific behavior, reserved keywords, and data type differences
 - **Error diagnosis** — automatically identifies common Exasol SQL errors (reserved keywords, identifier casing, constraint limitations)
 
 ## Skill
