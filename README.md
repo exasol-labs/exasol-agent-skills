@@ -7,7 +7,7 @@ A Claude Code plugin marketplace for [Exasol database](https://exasol.com).
 Add the marketplace and the plugin
 
 ```bash
-claude plugin add marketplace https://github.com/exasol-labs/exasol-skills
+claude plugin add marketplace https://github.com/exasol-labs/exasol-agent-skills
 claude plugin add exasol
 ```
 
