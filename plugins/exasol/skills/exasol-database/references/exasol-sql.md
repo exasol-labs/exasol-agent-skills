@@ -1,34 +1,27 @@
-# Exasol SQL Quirks & Differences
+# Exasol SQL Reference
 
-A comprehensive reference for SQL behavior that differs from standard SQL, PostgreSQL, MySQL, or Oracle. Knowing these prevents hard-to-debug errors.
+A comprehensive reference for Exasol's SQL dialect — covering behavior that differs from standard SQL, PostgreSQL, MySQL, or Oracle.
 
 ## Data Types
 
-### No TIME Type
-Exasol has **no standalone TIME data type**. Workarounds:
-- Use `TIMESTAMP` and ignore the date portion
-- Store as `VARCHAR(8)` in `HH:MM:SS` format
-- Store as `INTERVAL DAY TO SECOND`
+| Type | Parameters | Limits | Notes |
+|------|-----------|--------|-------|
+| `BOOLEAN` | — | `TRUE`, `FALSE`, `NULL` | Accepts `1`/`0`, `'true'`/`'false'` |
+| `DECIMAL(p,s)` | p: 1–36 (default 18), s: 0–p (default 0) | Up to 36 digits precision | Default `DECIMAL` = `DECIMAL(18,0)` |
+| `DOUBLE PRECISION` | — | ~15 significant digits | NaN → NULL, Infinity unsupported |
+| `DATE` | — | 0001-01-01 to 9999-12-31 | |
+| `TIMESTAMP(p)` | p: 0–9 (default 3) | 0001-01-01 to 9999-12-31 23:59:59.999999999 | No timezone; return limited to microsecond precision (p>6 truncated) |
+| `TIMESTAMP(p) WITH LOCAL TIME ZONE` | p: 0–9 (default 3) | Same range as TIMESTAMP | Internally stored as UTC |
+| `INTERVAL YEAR(p) TO MONTH` | p: 1–9 (default 2) | ±999999999-11 | |
+| `INTERVAL DAY(p) TO SECOND(fsp)` | p: 1–9 (default 2), fsp: 0–9 (default 3) | ±999999999 23:59:59.999 | Accuracy limited to milliseconds |
+| `CHAR(n)` | n: 1–2,000 (default 1) | | Padded with spaces; ASCII or UTF-8 |
+| `VARCHAR(n)` | n: 1–2,000,000 | | Empty string = NULL; UTF-8 default |
+| `HASHTYPE(n BYTE)` | n: 1–1,024 (default 16) | Bit variant: 8–8,192, multiple of 8 | Accepts hex, UUID (16 byte only), base64 |
+| `GEOMETRY(srid)` | srid: optional (default 0) | | WKT/WKB; POINT, LINESTRING, POLYGON, MULTI*, GEOMETRYCOLLECTION |
 
-### Native BOOLEAN
-Exasol supports `BOOLEAN` as a first-class type (unlike Oracle).
-```sql
-CREATE TABLE t (is_active BOOLEAN DEFAULT TRUE);
-INSERT INTO t VALUES (TRUE), (FALSE), (NULL);
-SELECT * FROM t WHERE is_active;  -- works directly
-```
+**No TIME type:** Exasol has no standalone `TIME` data type. Use `TIMESTAMP` (ignore date), `VARCHAR(8)` (`HH:MM:SS`), or `INTERVAL DAY TO SECOND`.
 
-### VARCHAR2 / NVARCHAR2
-Exasol supports `VARCHAR2` and `NVARCHAR2` as aliases for `VARCHAR` (Oracle compatibility). Max length is 2,000,000 characters.
-
-### DECIMAL Precision
-`DECIMAL(p,s)` supports precision up to 36 digits. Default `DECIMAL` without parameters is `DECIMAL(18,0)`.
-
-### HASHTYPE
-Exasol has a native `HASHTYPE` type for storing hash values (MD5, SHA, etc.). Stored as fixed-length binary.
-
-### GEOMETRY
-Native spatial data type for geospatial data (WKT/WKB format).
+`VARCHAR2` and `NVARCHAR2` are accepted as aliases for `VARCHAR` (Oracle compatibility).
 
 ---
 
