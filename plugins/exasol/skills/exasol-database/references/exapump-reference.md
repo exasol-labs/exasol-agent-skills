@@ -27,9 +27,9 @@ exasol://user:password@host:port[?param=value&...]
 
 | Parameter | Values | Default | Description |
 |-----------|--------|---------|-------------|
-| `tls` (or `use_tls`, `ssl`) | `true`/`false` | `false` | Enable TLS encryption |
-| `validate_certificate` (or `verify_certificate`, `validateservercertificate`) | `true`/`false` | `true` | Validate server TLS certificate |
-| `timeout` (or `connection_timeout`) | seconds | `30` | Connection timeout |
+| `tls` | `true`/`false` | `false` | Enable TLS encryption |
+| `validate_certificate` | `true`/`false` | `true` | Validate server TLS certificate |
+| `timeout` | seconds | `30` | Connection timeout |
 | `query_timeout` | seconds | `300` | Query execution timeout |
 | `idle_timeout` | seconds | `600` | Idle connection timeout |
 | `client_name` | string | `exarrow-rs` | Client name for session identification |
@@ -91,11 +91,11 @@ exapump upload data.csv --table my_schema.my_table --dry-run
 # Multiple files
 exapump upload part1.csv part2.csv part3.csv --table my_schema.combined
 
-# Tab-separated file
-exapump upload data.tsv --table my_schema.my_table --delimiter $'\t'
+# Tab-separated (file must have .csv extension)
+exapump upload data.csv --table my_schema.my_table --delimiter $'\t'
 
-# Pipe-separated, no header
-exapump upload data.txt --table my_schema.my_table --delimiter '|' --no-header
+# Pipe-separated, no header (file must have .csv extension)
+exapump upload data.csv --table my_schema.my_table --delimiter '|' --no-header
 
 # Custom NULL representation
 exapump upload data.csv --table my_schema.my_table --null-value "N/A"
@@ -143,7 +143,7 @@ exapump sql "CREATE SCHEMA IF NOT EXISTS analytics"
 exapump sql "INSERT INTO t VALUES (1, 'hello')"
 
 # From stdin
-echo "SELECT CURRENT_TIMESTAMP" | exapump sql
+echo "SELECT CURRENT_DATE" | exapump sql
 
 # From file
 exapump sql < migration.sql
@@ -196,7 +196,7 @@ exapump export [OPTIONS] --output <OUTPUT> --format <FORMAT> --dsn <DSN>
 | `--max-rows-per-file <N>` | Maximum rows per output file |
 | `--max-file-size <SIZE>` | Maximum file size per output file (e.g., `500KB`, `1MB`, `2GB`) |
 
-When splitting is enabled, output files are numbered automatically (e.g., `data_001.csv`, `data_002.csv`).
+When splitting is enabled, output files are numbered automatically (e.g., `data_000.csv`, `data_001.csv`).
 
 ### Examples
 
@@ -205,8 +205,8 @@ When splitting is enabled, output files are numbered automatically (e.g., `data_
 exapump export --table my_schema.my_table --output data.csv --format csv
 
 # Export query result to Parquet with compression
-exapump export --query "SELECT * FROM t WHERE status = 'active'" \
-  --output active.parquet --format parquet --compression zstd
+exapump export --query "SELECT col_a, col_b FROM t" \
+  --output result.parquet --format parquet --compression zstd
 
 # Export without header
 exapump export --table t --output data.csv --format csv --no-header
@@ -218,7 +218,7 @@ exapump export --table t --output chunks.csv --format csv --max-rows-per-file 10
 exapump export --table t --output chunks.parquet --format parquet --max-file-size 500MB
 
 # Custom delimiter and NULL representation
-exapump export --table t --output data.tsv --format csv --delimiter $'\t' --null-value "NULL"
+exapump export --table t --output data.csv --format csv --delimiter $'\t' --null-value "NULL"
 ```
 
 ---
