@@ -1,0 +1,13 @@
+{
+  "name": "Exasol Skills Marketplace",
+  "description": "A collection of Claude Code skills for working with Exasol databases",
+  "owner": "exasol-labs",
+  "version": "1.0.0",
+  "plugins": [
+    {
+      "name": "exasol",
+      "path": "plugins/exasol",
+      "description": "Exasol database interaction via exapump CLI"
+    }
+  ]
+}

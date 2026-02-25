@@ -1,0 +1,21 @@
+{
+  "name": "exasol",
+  "displayName": "Exasol Database",
+  "description": "Interact with Exasol databases using the exapump CLI tool. Upload CSV/Parquet files, run SQL queries, export data, and leverage Exasol-specific SQL features.",
+  "version": "1.0.0",
+  "author": "exasol-labs",
+  "skills": [
+    {
+      "name": "exasol-database",
+      "path": "skills/exasol-database",
+      "description": "Complete guide to working with Exasol databases via exapump"
+    }
+  ],
+  "commands": [
+    {
+      "name": "exasol",
+      "path": "commands/exasol.md",
+      "description": "Run SQL queries or tasks against an Exasol database"
+    }
+  ]
+}
