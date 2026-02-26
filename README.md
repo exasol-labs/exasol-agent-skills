@@ -16,10 +16,23 @@ Claude Code plugin marketplace for [Exasol](https://exasol.com) — gives Claude
 
 ## Get Started
 
+**One-line install:**
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/exasol-labs/exasol-agent-skills/main/install.sh | sh
+```
+
+Running this again updates to the latest version.
+
+<details>
+<summary>Manual install</summary>
+
 ```bash
 claude plugin marketplace add exasol-labs/exasol-agent-skills
 claude plugin install exasol@exasol-skills
 ```
+
+</details>
 
 That's it. The skill and `/exasol` slash command are now available in your Claude Code sessions.
 

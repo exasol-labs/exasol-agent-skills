@@ -1,0 +1,39 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate-plugin:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate marketplace manifest
+        run: |
+          jq empty .claude-plugin/marketplace.json
+          jq -e '.name and .owner.name and .metadata.version and .plugins' .claude-plugin/marketplace.json
+      - name: Validate plugin manifest
+        run: |
+          jq empty plugins/exasol/.claude-plugin/plugin.json
+          jq -e '.name and .version and .author.name' plugins/exasol/.claude-plugin/plugin.json
+      - name: Check version consistency
+        run: |
+          mp=$(jq -r '.metadata.version' .claude-plugin/marketplace.json)
+          pl=$(jq -r '.version' plugins/exasol/.claude-plugin/plugin.json)
+          echo "Marketplace: $mp | Plugin: $pl"
+          [ "$mp" = "$pl" ] || { echo "::error::Version mismatch: marketplace=$mp plugin=$pl"; exit 1; }
+
+  test-installer:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build test image
+        run: docker build -f Dockerfile.test -t installer-test .
+      - name: "Test: fresh install"
+        run: docker run --rm -e SCENARIO=fresh installer-test sh test/test-installer.sh
+      - name: "Test: idempotent re-run"
+        run: docker run --rm -e SCENARIO=idempotent installer-test sh test/test-installer.sh
+      - name: "Test: update from older version"
+        run: docker run --rm -e SCENARIO=update installer-test sh test/test-installer.sh

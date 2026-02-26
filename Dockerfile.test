@@ -1,0 +1,6 @@
+FROM alpine:3.20
+RUN apk add --no-cache bash grep sed coreutils
+WORKDIR /workspace
+COPY install.sh .
+COPY test/ test/
+RUN chmod +x install.sh test/*.sh

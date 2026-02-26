@@ -20,6 +20,12 @@ exasol-skills/
 │       │           └── exasol-sql.md
 │       └── commands/
 │           └── exasol.md         # /exasol slash command
+├── install.sh                    # Curl-pipeable installer (idempotent)
+├── Dockerfile.test               # Docker image for installer CI tests
+├── test/
+│   ├── mock-claude.sh            # Mock claude CLI for testing
+│   └── test-installer.sh         # Test runner (fresh/idempotent/update)
+├── .github/workflows/ci.yml     # CI: validate manifests + test installer
 ├── CLAUDE.md                     # This file
 ├── README.md
 └── LICENSE
@@ -39,6 +45,16 @@ exasol-skills/
 2. Add skills in `plugins/<name>/skills/<skill-name>/SKILL.md`
 3. Add commands in `plugins/<name>/commands/<command>.md`
 4. Register the plugin in `.claude-plugin/marketplace.json`
+
+## Installation
+
+End users install via the one-liner:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/exasol-labs/exasol-agent-skills/main/install.sh | sh
+```
+
+`install.sh` is idempotent: it adds the marketplace and installs the plugin on first run, and updates both on subsequent runs. It requires only the `claude` CLI and POSIX tools (no `jq`).
 
 ## Local Development
 
