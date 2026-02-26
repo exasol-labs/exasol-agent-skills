@@ -5,7 +5,7 @@
   },
   "metadata": {
     "description": "A collection of Claude Code skills for working with Exasol databases",
-    "version": "0.5.0"
+    "version": "0.6.0"
   },
   "plugins": [
     {
