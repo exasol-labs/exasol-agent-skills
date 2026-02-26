@@ -1,6 +1,6 @@
 # exapump CLI Reference
 
-> The simplest path from file to Exasol table — a single-binary CLI for CSV and Parquet ingest.
+> Single-binary CLI for CSV/Parquet ingest and SQL execution against Exasol.
 
 ## Installation
 
@@ -14,41 +14,19 @@ curl -fsSL https://raw.githubusercontent.com/exasol-labs/exapump/main/install.sh
 |--------|-------------|
 | `-h, --help` | Print help |
 | `-V, --version` | Print version |
+| `--profile <NAME>` | Use a saved connection profile instead of the default |
 
-## Connection String (DSN)
+## Connection Profiles
 
-All commands require a DSN. Format:
+exapump uses saved connection profiles. The default profile is used automatically; use `--profile <name>` to select a different one.
 
+```bash
+# Add a new profile (interactive — prompts for host, port, user, password, TLS)
+exapump profile add default
+
+# List saved profiles
+exapump profile list
 ```
-exasol://user:password@host:port[?param=value&...]
-```
-
-### DSN Query Parameters
-
-| Parameter | Values | Default | Description |
-|-----------|--------|---------|-------------|
-| `tls` | `true`/`false` | `false` | Enable TLS encryption |
-| `validate_certificate` | `true`/`false` | `true` | Validate server TLS certificate |
-| `timeout` | seconds | `30` | Connection timeout |
-| `query_timeout` | seconds | `300` | Query execution timeout |
-| `idle_timeout` | seconds | `600` | Idle connection timeout |
-| `client_name` | string | `exarrow-rs` | Client name for session identification |
-
-### Docker / Self-Signed Certificate Setup
-
-Exasol Docker containers use self-signed certificates. You must enable TLS and disable certificate validation:
-
-```
-exasol://sys:exasol@localhost:8563?tls=true&validate_certificate=false
-```
-
-Without `tls=true`, you get: `Only TLS connections are allowed`.
-Without `validate_certificate=false`, you get: `invalid peer certificate`.
-
-The DSN can be provided via:
-- `--dsn` flag on every command
-- `EXAPUMP_DSN` environment variable
-- `.env` file in the current directory
 
 ---
 
@@ -57,7 +35,7 @@ The DSN can be provided via:
 Upload local CSV or Parquet files to an Exasol table. Auto-creates the table if it doesn't exist.
 
 ```
-exapump upload [OPTIONS] --table <TABLE> --dsn <DSN> <FILES>...
+exapump upload [OPTIONS] --table <TABLE> <FILES>...
 ```
 
 ### Arguments
@@ -71,7 +49,6 @@ exapump upload [OPTIONS] --table <TABLE> --dsn <DSN> <FILES>...
 | Option | Default | Description |
 |--------|---------|-------------|
 | `-t, --table <TABLE>` | (required) | Target table name (e.g., `schema.table`) |
-| `-d, --dsn <DSN>` | `$EXAPUMP_DSN` | Connection string |
 | `--dry-run` | off | Preview inferred schema without loading data |
 | `--delimiter <CHAR>` | `,` | CSV field delimiter |
 | `--no-header` | off | Treat the first row as data, not a header |
@@ -79,29 +56,10 @@ exapump upload [OPTIONS] --table <TABLE> --dsn <DSN> <FILES>...
 | `--escape <CHAR>` | (none) | CSV escape character |
 | `--null-value <STR>` | `""` (empty string) | String to interpret as NULL |
 
-### Examples
+### Example
 
 ```bash
-# Basic CSV upload
-exapump upload data.csv --table my_schema.my_table
-
-# Dry run to preview schema
 exapump upload data.csv --table my_schema.my_table --dry-run
-
-# Multiple files
-exapump upload part1.csv part2.csv part3.csv --table my_schema.combined
-
-# Tab-separated (file must have .csv extension)
-exapump upload data.csv --table my_schema.my_table --delimiter $'\t'
-
-# Pipe-separated, no header (file must have .csv extension)
-exapump upload data.csv --table my_schema.my_table --delimiter '|' --no-header
-
-# Custom NULL representation
-exapump upload data.csv --table my_schema.my_table --null-value "N/A"
-
-# Parquet file
-exapump upload data.parquet --table my_schema.my_table
 ```
 
 ---
@@ -111,7 +69,7 @@ exapump upload data.parquet --table my_schema.my_table
 Execute SQL statements against Exasol. Returns results in CSV or JSON format for SELECT queries.
 
 ```
-exapump sql [OPTIONS] --dsn <DSN> [SQL]
+exapump sql [OPTIONS] [SQL]
 ```
 
 ### Arguments
@@ -124,29 +82,12 @@ exapump sql [OPTIONS] --dsn <DSN> [SQL]
 
 | Option | Default | Description |
 |--------|---------|-------------|
-| `-d, --dsn <DSN>` | `$EXAPUMP_DSN` | Connection string |
 | `-f, --format <FORMAT>` | `csv` | Output format for SELECT results. Values: `csv`, `json` |
 
-### Examples
+### Example
 
 ```bash
-# Simple query
 exapump sql "SELECT * FROM my_table LIMIT 10"
-
-# JSON output
-exapump sql "SELECT * FROM my_table" --format json
-
-# DDL statement
-exapump sql "CREATE SCHEMA IF NOT EXISTS analytics"
-
-# DML statement
-exapump sql "INSERT INTO t VALUES (1, 'hello')"
-
-# From stdin
-echo "SELECT CURRENT_DATE" | exapump sql
-
-# From file
-exapump sql < migration.sql
 ```
 
 ---
@@ -156,7 +97,7 @@ exapump sql < migration.sql
 Export an Exasol table or query result to a local file. Supports CSV and Parquet output with optional file splitting.
 
 ```
-exapump export [OPTIONS] --output <OUTPUT> --format <FORMAT> --dsn <DSN>
+exapump export [OPTIONS] --output <OUTPUT> --format <FORMAT>
 ```
 
 ### Source (one required)
@@ -172,7 +113,6 @@ exapump export [OPTIONS] --output <OUTPUT> --format <FORMAT> --dsn <DSN>
 |--------|---------|-------------|
 | `-o, --output <OUTPUT>` | (required) | Output file path |
 | `-f, --format <FORMAT>` | (required) | Export format: `csv`, `parquet` |
-| `-d, --dsn <DSN>` | `$EXAPUMP_DSN` | Connection string |
 
 ### CSV Options
 
@@ -198,27 +138,10 @@ exapump export [OPTIONS] --output <OUTPUT> --format <FORMAT> --dsn <DSN>
 
 When splitting is enabled, output files are numbered automatically (e.g., `data_000.csv`, `data_001.csv`).
 
-### Examples
+### Example
 
 ```bash
-# Export table to CSV
-exapump export --table my_schema.my_table --output data.csv --format csv
-
-# Export query result to Parquet with compression
-exapump export --query "SELECT col_a, col_b FROM t" \
-  --output result.parquet --format parquet --compression zstd
-
-# Export without header
-exapump export --table t --output data.csv --format csv --no-header
-
-# Split large export by row count
-exapump export --table t --output chunks.csv --format csv --max-rows-per-file 1000000
-
-# Split by file size
-exapump export --table t --output chunks.parquet --format parquet --max-file-size 500MB
-
-# Custom delimiter and NULL representation
-exapump export --table t --output data.csv --format csv --delimiter $'\t' --null-value "NULL"
+exapump export --table my_schema.my_table --output data.parquet --format parquet --compression zstd
 ```
 
 ---
@@ -228,17 +151,11 @@ exapump export --table t --output data.csv --format csv --delimiter $'\t' --null
 Start an interactive SQL REPL session connected to Exasol.
 
 ```
-exapump interactive --dsn <DSN>
+exapump interactive
 ```
-
-### Options
-
-| Option | Default | Description |
-|--------|---------|-------------|
-| `-d, --dsn <DSN>` | `$EXAPUMP_DSN` | Connection string |
 
 ### Example
 
 ```bash
-exapump interactive --dsn "exasol://sys:exasol@localhost:8563"
+exapump interactive --profile production
 ```

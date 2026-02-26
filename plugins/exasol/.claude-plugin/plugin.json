@@ -1,7 +1,7 @@
 {
   "name": "exasol",
   "description": "Interact with Exasol databases using the exapump CLI tool. Upload CSV/Parquet files, run SQL queries, export data, and leverage Exasol-specific SQL features.",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "author": {
     "name": "exasol-labs"
   }

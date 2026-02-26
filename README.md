@@ -1,6 +1,6 @@
 <div align="center">
 
-![Exasol Agent Skills logo](assets/logo.svg)
+<img src="assets/logo.svg" alt="Exasol Agent Skills logo" width="70%">
 
 # Exasol Agent Skills
 

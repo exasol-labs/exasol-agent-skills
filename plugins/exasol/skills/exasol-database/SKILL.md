@@ -9,13 +9,15 @@ Trigger when the user mentions **Exasol**, **exapump**, **database import/export
 
 ## Step 0: Establish Connection
 
-Ensure a working DSN before proceeding:
+Ensure a working exapump profile before proceeding:
 
-1. **Check for a DSN in the user's message** — if they pasted `exasol://...`, use it directly.
-2. **Otherwise check `EXAPUMP_DSN`** — if empty, ask the user for their DSN (`exasol://user:password@host:port`).
-3. **Test with** `exapump sql "SELECT 1"`.
-4. **On TLS error** ("Only TLS connections are allowed" / SQL code 08004): ask the user if they'd like to retry with `?tls=true&validate_certificate=false` appended (standard for Docker/self-hosted Exasol with self-signed certs).
-5. **Reuse the working DSN** for all subsequent commands via `EXAPUMP_DSN="<dsn>"` prefix.
+1. **If the user mentions a specific profile name** → test it: `exapump --profile <name> sql "SELECT 1"`. On success, use `--profile <name>` on all subsequent commands.
+2. **Otherwise** → test the default profile: `exapump sql "SELECT 1"`.
+3. **On success** → proceed. No further connection setup needed.
+4. **On failure** → run `exapump profile list` to check available profiles.
+   - If profiles exist → present the list and ask the user which to use, then retry with `exapump --profile <name> sql "SELECT 1"`.
+   - If no profiles → tell the user to run `exapump profile add default` to create one, then retry.
+5. **Never** read or reference the exapump configuration file — it contains credentials.
 
 ## Routing Algorithm
 

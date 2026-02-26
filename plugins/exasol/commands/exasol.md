@@ -18,7 +18,7 @@ The argument can be either:
 
 When invoked:
 
-1. **Check connection**: Verify `EXAPUMP_DSN` is set or a `--dsn` is available. If not, help the user set it up with the format `exasol://user:password@host:port`.
+1. **Check connection**: Test connectivity with `exapump sql "SELECT 1"`. If it fails, run `exapump profile list` to check available profiles. If profiles exist, ask the user which to use and retry with `--profile <name>`. If no profiles exist, tell the user to run `exapump profile add default`.
 
 2. **If the argument is a SQL query** (starts with SELECT, CREATE, DROP, INSERT, UPDATE, DELETE, MERGE, IMPORT, EXPORT, ALTER, GRANT, etc.):
    - Execute it via `exapump sql "<query>"`
@@ -37,7 +37,6 @@ When invoked:
    - Missing NOT NULL on UNIQUE constraint columns
    - Using unsupported syntax from other databases
    - Using TIME data type
-   - Missing TLS parameters in DSN (Docker setups need `?tls=true&validate_certificate=false`)
 
 ## Examples
 
