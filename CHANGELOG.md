@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## v0.6.0
 
 - Replace merge-staging reference with comprehensive import-export reference covering decision framework, all IMPORT/EXPORT formats, cloud sources, error handling, and staging workflows
 - Add exasol-udfs skill for UDF development and Script Language Containers
