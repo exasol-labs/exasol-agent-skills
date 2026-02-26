@@ -11,8 +11,7 @@
     {
       "name": "exasol",
       "source": "./plugins/exasol",
-      "description": "Exasol database interaction via exapump CLI",
-      "version": "1.0.0"
+      "description": "Exasol database interaction via exapump CLI"
     }
   ]
 }
