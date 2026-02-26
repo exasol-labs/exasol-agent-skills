@@ -25,9 +25,10 @@ After the connection is established, determine the task type and load **only** t
 
 1. **Local files** (upload CSV/Parquet, export to local files):
    - Load: `references/exapump-reference.md`
+   - Load: `references/import-export.md` (decision tree, connection objects)
 
-2. **Remote files** (S3, Azure Blob, GCS):
-   - Load: `references/exasol-sql.md` (IMPORT/EXPORT + connection objects)
+2. **Remote files / bulk loading** (S3, Azure, GCS, FTP, HTTP — IMPORT/EXPORT):
+   - Load: `references/import-export.md`
 
 3. **SQL execution** (queries, DDL, DML, schema inspection):
    - Load: `references/exapump-reference.md` (CLI usage)
@@ -45,12 +46,9 @@ After the connection is established, determine the task type and load **only** t
 7. **Virtual Schemas** (external data sources, adapter scripts):
    - Load: `references/virtual-schemas.md`
 
-8. **ETL / staging pipelines** (MERGE staging, SCD Type 2, REJECT LIMIT):
-   - Load: `references/merge-staging.md`
+Multiple routes can apply — load all that match.
 
-Multiple routes can apply — load all that match. For example, designing a table for an ETL pipeline → load table-design.md + merge-staging.md.
-
-9. **Before writing any SQL** (applies to routes 2–8):
+8. **Before writing any SQL** (applies to routes 2–7):
    - Check all identifiers (column names, table names, aliases) against the **reserved keyword list in `references/exasol-sql.md`** (Common Traps section)
    - Double-quote any identifier that appears in that list
    - If a query fails with a syntax error that may be caused by a reserved keyword, fetch the live list: `exapump sql "SELECT KEYWORD FROM EXA_SQL_KEYWORDS WHERE RESERVED ORDER BY KEYWORD"`
