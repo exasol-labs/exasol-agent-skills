@@ -82,14 +82,14 @@ case "$SCENARIO" in
     ;;
   idempotent)
     echo "$output" | grep -q "Updating" || fail "Expected 'Updating' in output"
-    echo "$output" | grep -q "v0.5.0" || fail "Expected plugin version 0.5.0 in output"
+    echo "$output" | grep -q "v0.6.0" || fail "Expected marketplace version 0.6.0 in output"
     echo "$output" | grep -q "up to date" || fail "Expected exapump up-to-date message"
     pass "Idempotent re-run succeeded"
     ;;
   update)
     version="$(cat "$STATE_DIR/plugin_version")"
     [ "$version" = "0.5.0" ] || fail "Expected plugin version 0.5.0 after update, got $version"
-    echo "$output" | grep -q "v0.5.0" || fail "Expected plugin version 0.5.0 in output"
+    echo "$output" | grep -q "v0.6.0" || fail "Expected marketplace version 0.6.0 in output"
     echo "$output" | grep -q "Update exapump" || fail "Expected exapump update prompt"
     pass "Update from older version succeeded"
     ;;

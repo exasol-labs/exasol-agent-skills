@@ -4,6 +4,7 @@
 
 STATE_DIR="${STATE_DIR:-/tmp/mock-claude-state}"
 MOCK_EXAPUMP_LATEST="${MOCK_EXAPUMP_LATEST:-v0.6.0}"
+MOCK_MARKETPLACE_VERSION="${MOCK_MARKETPLACE_VERSION:-0.6.0}"
 
 # Extract the URL from args (last non-flag argument)
 url=""
@@ -25,6 +26,11 @@ EOF
     echo "#!/bin/sh"
     echo "echo 'Installing exapump ${MOCK_EXAPUMP_LATEST}...'"
     echo "echo '${MOCK_EXAPUMP_LATEST}' > '${STATE_DIR}/exapump_version'"
+    ;;
+  *raw.githubusercontent.com/exasol-labs/exasol-agent-skills/main/.claude-plugin/marketplace.json*)
+    cat <<EOF
+{"name": "exasol-skills", "metadata": {"version": "${MOCK_MARKETPLACE_VERSION}"}, "plugins": []}
+EOF
     ;;
   *)
     # Pass through — should not happen in tests
