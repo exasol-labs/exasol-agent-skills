@@ -241,13 +241,28 @@ SELECT "PROFILE", "RANDOM" FROM stats;
 
 ### Common Traps
 Some frequently-used words that are reserved in Exasol but not in other databases:
-- `PROFILE`, `SCRIPT`, `RANDOM`, `SESSION`, `STATEMENT` — Exasol-specific
-- `QUALIFY`, `PREFERRING`, `LISTAGG`, `GROUP_CONCAT` — analytics
-- `NVL`, `DECODE`, `ROWNUM`, `MINUS`, `VARCHAR2`, `NVARCHAR2` — Oracle-compatible
-- `CONNECT_BY_ROOT`, `PRIOR`, `NOCYCLE` — hierarchical queries
-- `EMITS`, `DISTRIBUTE`, `HASHTYPE`, `GEOMETRY` — Exasol extensions
 
-When in doubt, run the query above rather than guessing.
+**Exasol-specific:**
+`EMITS`, `GEOMETRY`, `HASHTYPE`, `PROFILE`, `RANDOM`, `SCRIPT`, `SESSION`, `STATEMENT`
+
+**Date/time (common aliases that are reserved):**
+`YEAR`, `MONTH`, `DAY`, `HOUR`, `MINUTE`, `SECOND`, `ZONE`, `TIMESTAMP`
+
+**Analytics / window functions:**
+`GROUP_CONCAT`, `LISTAGG`, `PREFERRING`, `QUALIFY`
+
+**Oracle-compatible:**
+`CONNECT_BY_ROOT`, `MINUS`, `NOCYCLE`, `NVARCHAR2`, `PRIOR`, `VARCHAR2`
+
+**Other commonly surprising reserved words:**
+`ABSOLUTE`, `ACTION`, `ADD`, `AFTER`, `BEFORE`, `CONDITION`, `CONNECTION`, `CONSTRAINT`,
+`CYCLE`, `DATA`, `DISABLED`, `ENABLE`, `ENABLED`, `END`, `EXCEPTION`, `EXPORT`, `FILE`,
+`FORMAT`, `FOUND`, `GENERAL`, `GRANTED`, `IMPORT`, `INDEX`, `INSTANCE`, `LEVEL`, `LIMIT`,
+`LOG`, `NAMES`, `NCLOB`, `NEW`, `NVARCHAR`, `OBJECT`, `OFF`, `OLD`, `OPEN`, `PATH`,
+`POSITION`, `READ`, `RENAME`, `REPLACE`, `RESTORE`, `RESULT`, `ROW`, `SCHEMA`, `SCOPE`,
+`SEQUENCE`, `SOURCE`, `START`, `STATE`, `STRUCTURE`, `SYSTEM`, `TEMPORARY`, `TEXT`, `VALUE`
+
+**Always check identifiers against this list before writing SQL.** If a query fails with an unexpected syntax error, verify against the live database: `exapump sql "SELECT KEYWORD FROM EXA_SQL_KEYWORDS WHERE RESERVED AND KEYWORD = '<word>'"`
 
 ---
 

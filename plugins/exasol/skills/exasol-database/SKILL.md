@@ -11,11 +11,11 @@ Trigger when the user mentions **Exasol**, **exapump**, **database import/export
 
 Ensure a working exapump profile before proceeding:
 
-1. **If the user mentions a specific profile name** → test it: `exapump --profile <name> sql "SELECT 1"`. On success, use `--profile <name>` on all subsequent commands.
+1. **If the user mentions a specific profile name** → test it: `exapump sql --profile <name> "SELECT 1"` (always place `--profile` after the subcommand). On success, use `--profile <name>` on all subsequent commands.
 2. **Otherwise** → test the default profile: `exapump sql "SELECT 1"`.
 3. **On success** → proceed. No further connection setup needed.
 4. **On failure** → run `exapump profile list` to check available profiles.
-   - If profiles exist → present the list and ask the user which to use, then retry with `exapump --profile <name> sql "SELECT 1"`.
+   - If profiles exist → present the list and ask the user which to use, then retry with `exapump sql --profile <name> "SELECT 1"` (always place `--profile` after the subcommand).
    - If no profiles → tell the user to run `exapump profile add default` to create one, then retry.
 5. **Never** read or reference the exapump configuration file — it contains credentials.
 
@@ -34,3 +34,9 @@ After the connection is established, determine the task type and load the approp
 3. **If the task involves SQL execution** (queries, DDL, DML, schema inspection):
    - Invoke via **`exapump sql`** → load `references/exapump-reference.md` for CLI usage
    - Load `references/exasol-sql.md` for Exasol SQL behavior (data types, reserved keywords, constraints, identifiers)
+
+4. **Before writing any SQL** (applies to tasks 2 and 3 above):
+   - Check all identifiers (column names, table names, aliases) against the **reserved keyword list in `references/exasol-sql.md`** (Common Traps section)
+   - Double-quote any identifier that appears in that list
+   - If a query fails with a syntax error that may be caused by a reserved keyword, fetch the live list: `exapump sql "SELECT KEYWORD FROM EXA_SQL_KEYWORDS WHERE RESERVED ORDER BY KEYWORD"`
+   - This is critical — Exasol reserves many common words (e.g., `YEAR`, `PROFILE`, `FILE`, `POSITION`) that are unreserved in other databases

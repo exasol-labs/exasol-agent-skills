@@ -14,11 +14,10 @@ curl -fsSL https://raw.githubusercontent.com/exasol-labs/exapump/main/install.sh
 |--------|-------------|
 | `-h, --help` | Print help |
 | `-V, --version` | Print version |
-| `--profile <NAME>` | Use a saved connection profile instead of the default |
 
 ## Connection Profiles
 
-exapump uses saved connection profiles. The default profile is used automatically; use `--profile <name>` to select a different one.
+exapump uses saved connection profiles. The default profile is used automatically; pass `--profile <name>` **after the subcommand** to select a different one. Example: `exapump sql --profile staging "SELECT 1"`
 
 ```bash
 # Add a new profile (interactive — prompts for host, port, user, password, TLS)
@@ -55,6 +54,7 @@ exapump upload [OPTIONS] --table <TABLE> <FILES>...
 | `--quote <CHAR>` | `"` | CSV quoting character |
 | `--escape <CHAR>` | (none) | CSV escape character |
 | `--null-value <STR>` | `""` (empty string) | String to interpret as NULL |
+| `--profile <NAME>` | (none) | Use a saved connection profile instead of the default |
 
 ### Example
 
@@ -83,6 +83,7 @@ exapump sql [OPTIONS] [SQL]
 | Option | Default | Description |
 |--------|---------|-------------|
 | `-f, --format <FORMAT>` | `csv` | Output format for SELECT results. Values: `csv`, `json` |
+| `--profile <NAME>` | (none) | Use a saved connection profile instead of the default |
 
 ### Example
 
@@ -113,6 +114,7 @@ exapump export [OPTIONS] --output <OUTPUT> --format <FORMAT>
 |--------|---------|-------------|
 | `-o, --output <OUTPUT>` | (required) | Output file path |
 | `-f, --format <FORMAT>` | (required) | Export format: `csv`, `parquet` |
+| `--profile <NAME>` | (none) | Use a saved connection profile instead of the default |
 
 ### CSV Options
 
@@ -151,8 +153,14 @@ exapump export --table my_schema.my_table --output data.parquet --format parquet
 Start an interactive SQL REPL session connected to Exasol.
 
 ```
-exapump interactive
+exapump interactive [OPTIONS]
 ```
+
+### Options
+
+| Option | Default | Description |
+|--------|---------|-------------|
+| `--profile <NAME>` | (none) | Use a saved connection profile instead of the default |
 
 ### Example
 
