@@ -3,6 +3,7 @@ set -e
 
 MARKETPLACE_NAME="exasol-skills"
 MARKETPLACE_REPO="exasol-labs/exasol-agent-skills"
+MARKETPLACE_JSON_URL="https://raw.githubusercontent.com/${MARKETPLACE_REPO}/main/.claude-plugin/marketplace.json"
 PLUGIN_ID="exasol@${MARKETPLACE_NAME}"
 PLUGIN_NAME="exasol"
 EXAPUMP_REPO="exasol-labs/exapump"
@@ -94,11 +95,10 @@ fi
 
 # --- verify ---
 info "Verifying..."
-installed_version="$(claude plugin list --json 2>/dev/null | grep -A5 "\"${PLUGIN_ID}\"" | grep '"version"' | head -1 | sed 's/.*"version"[^"]*"\([^"]*\)".*/\1/')"
-
-if [ -n "$installed_version" ]; then
-  ok "Exasol plugin v${installed_version} installed. Start a new Claude Code session to use it."
+VERSION="$(curl -fsSL "$MARKETPLACE_JSON_URL" 2>/dev/null | sed -n 's/.*"version"[^"]*"\([^"]*\)".*/\1/p' | head -1)"
+if claude plugin list --json 2>/dev/null | grep -q "\"${PLUGIN_ID}\""; then
+  ok "Exasol plugin v${VERSION:-unknown} installed. Start a new Claude Code session to use it."
 else
-  warn "Could not verify version, but installation may have succeeded."
+  warn "Could not verify installation."
   ok "Run 'claude plugin list' to check. Start a new Claude Code session to use it."
 fi
