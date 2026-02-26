@@ -18,9 +18,8 @@ exasol-skills/
 │       │       └── references/   # Detailed reference docs (progressive disclosure)
 │       │           ├── exapump-reference.md
 │       │           └── exasol-sql.md
-│       ├── commands/
-│       │   └── exasol.md         # /exasol slash command
-│       └── README.md
+│       └── commands/
+│           └── exasol.md         # /exasol slash command
 ├── CLAUDE.md                     # This file
 ├── README.md
 └── LICENSE

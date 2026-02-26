@@ -1,10 +1,20 @@
-# Exasol Skills Marketplace
+<div align="center">
 
-A Claude Code plugin marketplace for [Exasol database](https://exasol.com).
+![Exasol Agent Skills logo](assets/logo.svg)
 
-## Get started
+# Exasol Agent Skills
 
-Add the marketplace and install the plugin:
+[![Claude Code](https://img.shields.io/badge/Claude_Code-plugin-blueviolet.svg)](https://code.claude.com/docs/en/plugins)
+[![Exasol](https://img.shields.io/badge/Exasol-database-green.svg)](https://exasol.com)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
+
+Claude Code plugin marketplace for [Exasol](https://exasol.com) — gives Claude expertise in exapump, Exasol SQL, and cloud data loading.
+
+</div>
+
+---
+
+## Get Started
 
 ```bash
 claude plugin marketplace add exasol-labs/exasol-agent-skills
@@ -12,6 +22,8 @@ claude plugin install exasol@exasol-skills
 ```
 
 That's it. The skill and `/exasol` slash command are now available in your Claude Code sessions.
+
+---
 
 ## What You Get
 
@@ -34,11 +46,23 @@ Run SQL or describe tasks directly:
 /exasol export users to parquet
 ```
 
+---
+
 ## Prerequisites
 
 - [exapump](https://github.com/exasol-labs/exapump) CLI installed
 - Access to an Exasol database instance
 
+---
+
 ## License
 
-[MIT](LICENSE)
+Community-supported. Licensed under [MIT](LICENSE).
+
+---
+
+<div align="center">
+
+Made with ❤️ as part of [Exasol Labs 🧪](https://github.com/exasol-labs/).
+
+</div>
