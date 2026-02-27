@@ -30,7 +30,12 @@ cat > "$MOCK_BIN/exapump" <<WRAPPER
 exec sh "$SCRIPT_DIR/mock-exapump.sh" "\$@"
 WRAPPER
 
-chmod +x "$MOCK_BIN/claude" "$MOCK_BIN/curl" "$MOCK_BIN/exapump"
+cat > "$MOCK_BIN/npx" <<WRAPPER
+#!/bin/sh
+exec sh "$SCRIPT_DIR/mock-npx.sh" "\$@"
+WRAPPER
+
+chmod +x "$MOCK_BIN/claude" "$MOCK_BIN/curl" "$MOCK_BIN/exapump" "$MOCK_BIN/npx"
 
 export STATE_DIR
 export MOCK_EXAPUMP_LATEST="${MOCK_EXAPUMP_LATEST:-v0.6.0}"
@@ -60,6 +65,18 @@ case "$SCENARIO" in
     echo "0.3.0" > "$STATE_DIR/plugin_version"
     echo "v0.4.0" > "$STATE_DIR/exapump_version"
     ;;
+  fresh-claude)
+    echo "=== Scenario: fresh install (Claude Code only) ==="
+    rm -f "$MOCK_BIN/exapump"
+    rm -f "$MOCK_BIN/npx"
+    export AGENT=claude
+    ;;
+  fresh-codex)
+    echo "=== Scenario: fresh install (Codex only) ==="
+    rm -f "$MOCK_BIN/exapump"
+    rm -f "$MOCK_BIN/claude"
+    export AGENT=codex
+    ;;
   *)
     fail "Unknown scenario: $SCENARIO"
     ;;
@@ -74,10 +91,12 @@ case "$SCENARIO" in
   fresh)
     [ -f "$STATE_DIR/marketplace" ] || fail "Marketplace was not added"
     [ -f "$STATE_DIR/plugin" ] || fail "Plugin was not installed"
+    [ -f "$STATE_DIR/codex_skills" ] || fail "Codex skills were not installed"
     echo "$output" | grep -q "Adding marketplace" || fail "Expected 'Adding marketplace' in output"
     echo "$output" | grep -q "Installing plugin" || fail "Expected 'Installing plugin' in output"
     echo "$output" | grep -q "exapump not found" || fail "Expected exapump not-found warning"
     echo "$output" | grep -q "Install exapump" || fail "Expected exapump install prompt"
+    echo "$output" | grep -q "Installing Exasol skills for OpenAI Codex" || fail "Expected Codex install message"
     pass "Fresh install succeeded"
     ;;
   idempotent)
@@ -92,5 +111,20 @@ case "$SCENARIO" in
     echo "$output" | grep -q "v0.6.0" || fail "Expected marketplace version 0.6.0 in output"
     echo "$output" | grep -q "Update exapump" || fail "Expected exapump update prompt"
     pass "Update from older version succeeded"
+    ;;
+  fresh-claude)
+    [ -f "$STATE_DIR/marketplace" ] || fail "Marketplace was not added"
+    [ -f "$STATE_DIR/plugin" ] || fail "Plugin was not installed"
+    [ ! -f "$STATE_DIR/codex_skills" ] || fail "Codex skills should not be installed"
+    echo "$output" | grep -q "Adding marketplace" || fail "Expected 'Adding marketplace' in output"
+    echo "$output" | grep -q "Installing plugin" || fail "Expected 'Installing plugin' in output"
+    pass "Fresh install (Claude Code only) succeeded"
+    ;;
+  fresh-codex)
+    [ ! -f "$STATE_DIR/marketplace" ] || fail "Claude marketplace should not be added"
+    [ ! -f "$STATE_DIR/plugin" ] || fail "Claude plugin should not be installed"
+    [ -f "$STATE_DIR/codex_skills" ] || fail "Codex skills were not installed"
+    echo "$output" | grep -q "Installing Exasol skills for OpenAI Codex" || fail "Expected Codex install message"
+    pass "Fresh install (Codex only) succeeded"
     ;;
 esac

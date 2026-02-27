@@ -30,6 +30,27 @@ ask() {
   fi
 }
 
+choose_agents() {
+  if [ -n "$AGENT" ]; then
+    case "$AGENT" in
+      claude) INSTALL_CLAUDE=1; INSTALL_CODEX=0 ;;
+      codex)  INSTALL_CLAUDE=0; INSTALL_CODEX=1 ;;
+      both)   INSTALL_CLAUDE=1; INSTALL_CODEX=1 ;;
+      *)      fail "Unknown AGENT value '$AGENT'. Use 'claude', 'codex', or 'both'." ;;
+    esac
+  elif [ -t 0 ]; then
+    INSTALL_CLAUDE=0
+    INSTALL_CODEX=0
+    if ask "Install for Claude Code?"; then INSTALL_CLAUDE=1; fi
+    if ask "Install for OpenAI Codex?"; then INSTALL_CODEX=1; fi
+    [ "$INSTALL_CLAUDE" -eq 1 ] || [ "$INSTALL_CODEX" -eq 1 ] || fail "No agent selected."
+  else
+    info "Non-interactive mode: installing for both agents. Set AGENT=claude or AGENT=codex to select one."
+    INSTALL_CLAUDE=1
+    INSTALL_CODEX=1
+  fi
+}
+
 # --- exapump ---
 info "Checking exapump..."
 latest_version=""
@@ -70,35 +91,60 @@ else
   fi
 fi
 
-# --- claude CLI ---
-command -v claude >/dev/null 2>&1 || fail "claude CLI not found. Install: https://docs.anthropic.com/en/docs/claude-code/overview"
+# --- agent selection ---
+choose_agents
 
-# --- marketplace ---
-info "Checking marketplace..."
-if claude plugin marketplace list --json 2>/dev/null | grep -q "\"${MARKETPLACE_NAME}\""; then
-  info "Marketplace '${MARKETPLACE_NAME}' found. Updating..."
-  claude plugin marketplace update "${MARKETPLACE_NAME}" 2>/dev/null || true
-else
-  info "Adding marketplace '${MARKETPLACE_NAME}'..."
-  claude plugin marketplace add "${MARKETPLACE_REPO}"
+# --- prerequisite checks ---
+if [ "$INSTALL_CLAUDE" -eq 1 ]; then
+  command -v claude >/dev/null 2>&1 || fail "claude CLI not found. Install: https://docs.anthropic.com/en/docs/claude-code/overview"
+fi
+if [ "$INSTALL_CODEX" -eq 1 ]; then
+  command -v npx >/dev/null 2>&1 || fail "npx not found. Install Node.js: https://nodejs.org"
 fi
 
-# --- plugin ---
-info "Checking plugin..."
-if claude plugin list --json 2>/dev/null | grep -q "\"${PLUGIN_ID}\""; then
-  info "Plugin '${PLUGIN_ID}' found. Updating..."
-  claude plugin update "${PLUGIN_NAME}" --scope user 2>/dev/null || true
-else
-  info "Installing plugin '${PLUGIN_ID}'..."
-  claude plugin install "${PLUGIN_ID}" --scope user
+# --- Claude Code ---
+if [ "$INSTALL_CLAUDE" -eq 1 ]; then
+  # --- marketplace ---
+  info "Checking marketplace..."
+  if claude plugin marketplace list --json 2>/dev/null | grep -q "\"${MARKETPLACE_NAME}\""; then
+    info "Marketplace '${MARKETPLACE_NAME}' found. Updating..."
+    claude plugin marketplace update "${MARKETPLACE_NAME}" 2>/dev/null || true
+  else
+    info "Adding marketplace '${MARKETPLACE_NAME}'..."
+    claude plugin marketplace add "${MARKETPLACE_REPO}"
+  fi
+
+  # --- plugin ---
+  info "Checking plugin..."
+  if claude plugin list --json 2>/dev/null | grep -q "\"${PLUGIN_ID}\""; then
+    info "Plugin '${PLUGIN_ID}' found. Updating..."
+    claude plugin update "${PLUGIN_NAME}" --scope user 2>/dev/null || true
+  else
+    info "Installing plugin '${PLUGIN_ID}'..."
+    claude plugin install "${PLUGIN_ID}" --scope user
+  fi
+fi
+
+# --- OpenAI Codex ---
+if [ "$INSTALL_CODEX" -eq 1 ]; then
+  info "Installing Exasol skills for OpenAI Codex..."
+  npx skills add "exasol-labs/exasol-agent-skills" --agent codex
+  ok "Exasol skills installed for OpenAI Codex."
 fi
 
 # --- verify ---
 info "Verifying..."
 VERSION="$(curl -fsSL "$MARKETPLACE_JSON_URL" 2>/dev/null | sed -n 's/.*"version"[^"]*"\([^"]*\)".*/\1/p' | head -1)"
-if claude plugin list --json 2>/dev/null | grep -q "\"${PLUGIN_ID}\""; then
-  ok "Exasol plugin v${VERSION:-unknown} installed. Start a new Claude Code session to use it."
-else
-  warn "Could not verify installation."
-  ok "Run 'claude plugin list' to check. Start a new Claude Code session to use it."
+
+if [ "$INSTALL_CLAUDE" -eq 1 ]; then
+  if claude plugin list --json 2>/dev/null | grep -q "\"${PLUGIN_ID}\""; then
+    ok "Exasol plugin v${VERSION:-unknown} installed for Claude Code. Start a new session to use it."
+  else
+    warn "Could not verify Claude Code installation."
+    ok "Run 'claude plugin list' to check. Start a new Claude Code session to use it."
+  fi
+fi
+
+if [ "$INSTALL_CODEX" -eq 1 ]; then
+  ok "Exasol skills v${VERSION:-unknown} installed for OpenAI Codex."
 fi
