@@ -4,8 +4,8 @@
     "name": "exasol-labs"
   },
   "metadata": {
-    "description": "A collection of Claude Code skills for working with Exasol databases",
-    "version": "0.6.0"
+    "description": "A collection of agent skills for working with Exasol databases (Claude Code, OpenAI Codex)",
+    "version": "0.7.0"
   },
   "plugins": [
     {

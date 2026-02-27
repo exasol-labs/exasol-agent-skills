@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.7.0
+
+- Add OpenAI Codex support via `npx skills add` in the installer
+- Installer prompts for agent selection (Claude Code, Codex, or both)
+- Support `AGENT` env var (`claude`, `codex`, `both`) for scripted installs
+- Update marketplace description for multi-agent support
+- Rewrite README with multi-agent docs, skill links, and Codex badge
+- Add installer test scenarios for single-agent installs
+
 ## v0.6.0
 
 - Replace merge-staging reference with comprehensive import-export reference covering decision framework, all IMPORT/EXPORT formats, cloud sources, error handling, and staging workflows
