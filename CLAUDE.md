@@ -1,147 +1,101 @@
-# Exasol Skills Marketplace
+# CLAUDE.md
 
-This repo is a Claude Code plugin marketplace containing skills for working with Exasol databases.
+## What This Repo Is
 
-## Repository Structure
+A skills marketplace for AI coding agents (Claude Code and OpenAI Codex) that gives them expertise in Exasol databases — exapump CLI, Exasol SQL, UDFs, and cloud data loading.
 
-```
-exasol-skills/
-├── .claude-plugin/
-│   └── marketplace.json          # Marketplace manifest (discovery entry point)
-├── plugins/
-│   └── exasol/                   # Exasol database plugin
-│       ├── .claude-plugin/
-│       │   └── plugin.json       # Plugin metadata
-│       ├── skills/
-│       │   ├── exasol-database/  # Database interaction skill
-│       │   │   ├── SKILL.md      # Skill definition (triggers, routing)
-│       │   │   └── references/   # Detailed reference docs (progressive disclosure)
-│       │   │       ├── analytics-qualify.md
-│       │   │       ├── exapump-reference.md
-│       │   │       ├── exasol-sql.md
-│       │   │       ├── import-export.md
-│       │   │       ├── query-profiling.md
-│       │   │       ├── table-design.md
-│       │   │       └── virtual-schemas.md
-│       │   └── exasol-udfs/      # UDF development skill
-│       │       ├── SKILL.md
-│       │       └── references/
-│       │           ├── slc-reference.md
-│       │           ├── udf-java-lua.md
-│       │           └── udf-python.md
-│       └── commands/
-│           └── exasol.md         # /exasol slash command
-├── install.sh                    # Curl-pipeable installer (idempotent)
-├── Dockerfile.test               # Docker image for installer CI tests
-├── test/
-│   ├── mock-claude.sh            # Mock claude CLI for testing
-│   ├── mock-curl.sh              # Mock curl for testing
-│   ├── mock-exapump.sh           # Mock exapump for testing
-│   └── test-installer.sh         # Test runner (fresh/idempotent/update)
-├── .github/workflows/ci.yml     # CI: validate manifests + test installer + release
-├── CHANGELOG.md
-├── CLAUDE.md                     # This file
-├── README.md
-└── LICENSE
-```
+## Architecture
 
-## How Plugins Work
+**Plugin hierarchy:** marketplace → plugin → skills + commands → references
 
-- **Marketplace manifest** (`.claude-plugin/marketplace.json`): Lists all available plugins with version
-- **Plugin metadata** (`plugins/<name>/.claude-plugin/plugin.json`): Describes a plugin's skills and commands
-- **Skills** (`SKILL.md`): Auto-triggered context injected based on keyword matching in user messages
-- **Commands** (`commands/<name>.md`): Slash commands users invoke explicitly with `/name`
-- **References**: Supplementary docs loaded on demand by the skill's routing algorithm
+- `.claude-plugin/marketplace.json` — discovery entry point; lists plugins with version
+- `plugins/exasol/.claude-plugin/plugin.json` — plugin metadata; version must match marketplace
+- `plugins/exasol/skills/*/SKILL.md` — auto-triggered by keyword matching in user messages; contains a routing algorithm that loads only the reference files relevant to the task (progressive disclosure)
+- `plugins/exasol/commands/exasol.md` — `/exasol` slash command (Claude Code only)
+- `plugins/exasol/skills/*/references/*.md` — detailed docs loaded on-demand by SKILL.md routing
 
-## How the Agent Uses Skills
-
-When a user mentions Exasol-related topics, Claude Code:
-
-1. **Triggers** the skill — `SKILL.md` front-matter keywords match the user's message
-2. **Establishes connection** — tests `exapump sql "SELECT 1"` to verify database access
-3. **Routes to references** — the routing algorithm in `SKILL.md` loads only the reference files relevant to the task (e.g., `import-export.md` for data loading, `exasol-sql.md` for SQL queries)
-4. **Executes** — uses exapump CLI commands and Exasol SQL guided by the loaded references
-
-The routing is progressive: a simple SQL query loads only `exapump-reference.md` + `exasol-sql.md`, while an ETL pipeline task loads `import-export.md` as well. This keeps context lean.
-
-## Adding a New Plugin
-
-1. Create `plugins/<name>/.claude-plugin/plugin.json` with metadata
-2. Add skills in `plugins/<name>/skills/<skill-name>/SKILL.md`
-3. Add commands in `plugins/<name>/commands/<command>.md`
-4. Register the plugin in `.claude-plugin/marketplace.json`
-
-## Installation
-
-End users install via the one-liner:
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/exasol-labs/exasol-agent-skills/main/install.sh | sh
-```
-
-`install.sh` is idempotent: it adds the marketplace and installs the plugin on first run, and updates both on subsequent runs. It reads the version from `marketplace.json` at runtime (no hardcoded version). It requires only the `claude` CLI and POSIX tools (no `jq`).
-
-## Local Development
-
-To test this marketplace locally:
-
-```bash
-claude plugin marketplace add ./path/to/exasol-agent-skills
-claude plugin install exasol@exasol-skills
-```
-
-After making changes to skill or reference files, update the plugin to pick them up:
-
-```bash
-claude plugin update exasol --scope user
-```
-
-Then start a new Claude Code session to load the updated skill.
+**Installer (`install.sh`)** — curl-pipeable, idempotent, POSIX shell (no bash, no jq). Supports both agents:
+- Agent selection via `AGENT` env var (`claude`, `codex`, `both`) or interactive prompts; non-interactive defaults to both
+- Claude Code path: `claude plugin marketplace add/update` + `claude plugin install/update`
+- Codex path: `npx skills add exasol-labs/exasol-agent-skills --agent codex`
+- Shared: exapump version check and install/update via GitHub API
 
 ## Testing
 
-### Validate Manifests
+All installer tests run in Docker with mocked CLIs. **Do not run tests outside Docker** — the mocks replace `claude`, `curl`, `npx`, and `exapump` via PATH injection.
+
+```bash
+# Build once
+docker build -f Dockerfile.test -t installer-test .
+
+# Run all 5 scenarios
+docker run --rm -e SCENARIO=fresh        installer-test sh test/test-installer.sh
+docker run --rm -e SCENARIO=idempotent   installer-test sh test/test-installer.sh
+docker run --rm -e SCENARIO=update       installer-test sh test/test-installer.sh
+docker run --rm -e SCENARIO=fresh-claude installer-test sh test/test-installer.sh
+docker run --rm -e SCENARIO=fresh-codex  installer-test sh test/test-installer.sh
+```
+
+| Scenario | What it tests |
+|----------|---------------|
+| `fresh` | First-time install: no exapump, both agents |
+| `idempotent` | Re-run when everything is already up to date |
+| `update` | Upgrade from an older plugin + exapump version |
+| `fresh-claude` | Claude Code only (`AGENT=claude`), npx absent |
+| `fresh-codex` | Codex only (`AGENT=codex`), claude CLI absent |
+
+Mock files in `test/`: `mock-claude.sh`, `mock-curl.sh`, `mock-exapump.sh`, `mock-npx.sh`. They use `$STATE_DIR` (`/tmp/mock-claude-state`) to track state via files (e.g., `marketplace`, `plugin`, `codex_skills`, `plugin_version`).
+
+Validate manifests (outside Docker):
 
 ```bash
 claude plugin validate .
 claude plugin validate ./plugins/exasol
 ```
 
-### Installer Tests (Docker)
+## CI
 
-The installer is tested with mocked CLIs (`claude`, `curl`, `exapump`) in a Docker container. Three scenarios cover the main install paths:
+`.github/workflows/ci.yml` runs on push to `main` and PRs:
+1. **validate-plugin** — JSON validity + version consistency between both manifests
+2. **test-installer** — all 5 Docker scenarios
+3. **release** — on `v*` tags, creates GitHub release with auto-generated notes
 
-```bash
-# Build the test image
-docker build -f Dockerfile.test -t installer-test .
+## Versioning and Releasing
 
-# Run all three scenarios
-docker run --rm -e SCENARIO=fresh      installer-test sh test/test-installer.sh
-docker run --rm -e SCENARIO=idempotent installer-test sh test/test-installer.sh
-docker run --rm -e SCENARIO=update     installer-test sh test/test-installer.sh
-```
+Version lives in two places that **must always match**:
+- `.claude-plugin/marketplace.json` → `metadata.version`
+- `plugins/exasol/.claude-plugin/plugin.json` → `version`
 
-| Scenario | What it tests |
-|----------|---------------|
-| `fresh` | First-time install: no exapump, no plugin, no marketplace |
-| `idempotent` | Re-run when everything is already installed and up to date |
-| `update` | Upgrade from an older plugin + exapump version |
-
-### CI Pipeline
-
-CI (`.github/workflows/ci.yml`) runs on every push to `main` and on PRs:
-- **validate-plugin**: Checks JSON validity and version consistency between `marketplace.json` and `plugin.json`
-- **test-installer**: Runs all three Docker installer scenarios
-- **release** (tags only): On `v*` tags, creates a GitHub release with auto-generated notes
-
-## Releasing
-
-1. Update the version in both manifests (must match):
-   - `.claude-plugin/marketplace.json` → `metadata.version`
-   - `plugins/exasol/.claude-plugin/plugin.json` → `version`
-2. Update `CHANGELOG.md` — rename `Unreleased` to the new version
+Release steps:
+1. Bump version in both manifests
+2. Add version section to `CHANGELOG.md`
 3. Commit: `chore: release vX.Y.Z`
 4. Tag: `git tag vX.Y.Z`
 5. Push: `git push --follow-tags`
 
-The CI release job creates a GitHub release automatically when the tag is pushed.
+## Commit Conventions
+
+Conventional Commits format: `<type>: <description>`
+
+Types: `feat`, `fix`, `docs`, `chore`, `test`, `refactor`
+
+Stage related changes together in logical commits. The release commit (`chore: release vX.Y.Z`) includes only version bumps and CHANGELOG.
+
+## Shell Conventions
+
+`install.sh` and test scripts follow POSIX shell (`#!/bin/sh`, not bash). No `jq` — use `sed`/`grep` for JSON parsing. All variables double-quoted. The `ask()` function defaults to "Y" when piped non-interactively.
+
+## Local Development
+
+```bash
+claude plugin marketplace add ./path/to/exasol-agent-skills
+claude plugin install exasol@exasol-skills
+```
+
+After changing skill/reference files:
+
+```bash
+claude plugin update exasol --scope user
+```
+
+Then start a new Claude Code session.
