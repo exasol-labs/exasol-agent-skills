@@ -49,10 +49,10 @@ After the connection is established, determine the task type and load **only** t
 Multiple routes can apply — load all that match.
 
 8. **Before writing any SQL** (applies to routes 2–7):
-   - Check all identifiers (column names, table names, aliases) against the **reserved keyword list in `references/exasol-sql.md`** (Common Traps section)
-   - Double-quote any identifier that appears in that list
-   - If a query fails with a syntax error that may be caused by a reserved keyword, fetch the live list: `exapump sql "SELECT KEYWORD FROM EXA_SQL_KEYWORDS WHERE RESERVED ORDER BY KEYWORD"`
-   - This is critical — Exasol reserves many common words (e.g., `YEAR`, `PROFILE`, `FILE`, `POSITION`) that are unreserved in other databases
+   - **Always double-quote every identifier** (column names, table names, schema names) in SELECT, FROM, WHERE, GROUP BY, ORDER BY, and JOIN clauses — without exception
+   - This preserves mixed-case names and prevents reserved-keyword errors in a single rule
+   - Do NOT quote SQL keywords, functions, or aliases — only object identifiers
+   - If a query fails with a syntax error, fetch the live reserved keyword list: `exapump sql "SELECT KEYWORD FROM EXA_SQL_KEYWORDS WHERE RESERVED ORDER BY KEYWORD"`
 
 ## Related Skills
 
