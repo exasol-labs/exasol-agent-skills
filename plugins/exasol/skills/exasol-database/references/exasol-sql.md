@@ -44,7 +44,7 @@ SELECT "myColumn" FROM "myTable";  -- works
 SELECT mycolumn FROM myTable;      -- ERROR: "MYTABLE" not found
 ```
 
-**Rule of thumb:** Don't use quoted identifiers unless you have a specific reason. Let everything be uppercase.
+**Rule of thumb:** Never use quoted identifiers in DDL statements. Always double-quote **every** identifier in SELECT (and all DML) statements — columns, tables, schemas — unconditionally, not just reserved words.
 
 ---
 

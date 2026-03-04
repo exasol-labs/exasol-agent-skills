@@ -5,7 +5,7 @@ description: "Exasol User Defined Functions (UDFs) and Script Language Container
 
 # Exasol UDFs & Script Language Containers
 
-Trigger when the user mentions **UDF**, **user defined function**, **CREATE SCRIPT**, **ExaIterator**, **SCALAR**, **SET EMITS**, **BucketFS**, **script language container**, **SLC**, **exaslct**, **custom packages**, **GPU UDF**, **ctx.emit**, **ctx.next**, or any UDF/SLC-related topic.
+Trigger when the user mentions **UDF**, **user defined function**, **CREATE SCRIPT**, **ExaIterator**, **SCALAR**, **SET EMITS**, **BucketFS**, **script language container**, **SLC**, **exaslct**, **custom packages**, **GPU UDF**, **ctx.emit**, **ctx.next**, **variadic script**, **dynamic parameters**, **EMITS(...)**, **default_output_columns**, or any UDF/SLC-related topic.
 
 ## When to Use UDFs
 
@@ -134,6 +134,57 @@ run <- function(ctx) {
 }
 /
 ```
+
+## Variadic Scripts (Dynamic Parameters)
+
+Use `...` to accept any number of input columns, output columns, or both.
+
+### Dynamic Input
+
+```sql
+CREATE OR REPLACE PYTHON3 SCALAR SCRIPT schema.to_json(...) RETURNS VARCHAR(2000000) AS
+import simplejson
+def run(ctx):
+    obj = {}
+    for i in range(0, exa.meta.input_column_count, 2):
+        obj[ctx[i]] = ctx[i+1]   # caller passes: name, value, name, value, ...
+    return simplejson.dumps(obj)
+/
+
+SELECT to_json('fruit', fruit, 'price', price) FROM products;
+```
+
+- Access by index: `ctx[i]` — **0-based in Python/Java, 1-based in Lua/R**
+- Parameter names inside a variadic script are always `0`, `1`, `2`, ... — never the original column names
+- `exa.meta.input_column_count` — total number of input columns
+- `exa.meta.input_columns[i].name / .sql_type` — per-column metadata
+
+### Dynamic Output (`EMITS(...)`)
+
+Declare `EMITS(...)` in `CREATE SCRIPT`. At call time, columns must be provided one of two ways:
+
+| Method | Where specified | Use when |
+|--------|----------------|----------|
+| **EMITS in SELECT** | Caller's SQL query | Output structure depends on data values |
+| **`default_output_columns()`** | Script body | Output structure derivable from input column count/types alone |
+
+```sql
+-- EMITS in SELECT (required when output depends on data content)
+SELECT split_csv(line) EMITS (a VARCHAR(100), b VARCHAR(100), c VARCHAR(100)) FROM t;
+```
+
+```python
+# default_output_columns() — called before run(), no ctx/data access available
+def default_output_columns():
+    parts = []
+    for i in range(exa.meta.input_column_count):
+        parts.append("c" + exa.meta.input_columns[i].name + " " + exa.meta.input_columns[i].sql_type)
+    return ",".join(parts)
+```
+
+If neither is provided, the query fails with:
+> *The script has dynamic return arguments. Either specify the return arguments in the query via EMITS or implement the method default_output_columns in the UDF.*
+
 
 ## ExaIterator API Quick Reference
 
