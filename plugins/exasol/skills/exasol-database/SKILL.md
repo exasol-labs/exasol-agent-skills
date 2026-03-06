@@ -46,9 +46,15 @@ After the connection is established, determine the task type and load **only** t
 7. **Virtual Schemas** (external data sources, adapter scripts):
    - Load: `references/virtual-schemas.md`
 
+8. **BucketFS file management** (upload/download/list/delete files in BucketFS, bfsdefault, bucket paths):
+   - Activate the **exasol-bucketfs** skill for guidance
+
+9. **UDF development** (CREATE SCRIPT, ExaIterator, SCALAR/SET, Script Language Containers, SLC, exaslct):
+   - Activate the **exasol-udfs** skill for guidance
+
 Multiple routes can apply — load all that match.
 
-8. **Before writing any SQL** (applies to routes 2–7):
+10. **Before writing any SQL** (applies to routes 2–7):
    - **Always double-quote every identifier** (column names, table names, schema names) in SELECT, FROM, WHERE, GROUP BY, ORDER BY, and JOIN clauses — without exception
    - This preserves mixed-case names and prevents reserved-keyword errors in a single rule
    - Do NOT quote SQL keywords, functions, or aliases — only object identifiers
@@ -57,5 +63,5 @@ Multiple routes can apply — load all that match.
 ## Related Skills
 
 This skill handles core database interaction: connecting, uploading/exporting files, SQL execution, and table design.
-For UDF development and Script Language Containers, the **exasol-udfs** skill provides specialized guidance
-and will activate automatically when relevant.
+For BucketFS file management (upload, download, list, delete), the **exasol-bucketfs** skill provides specialized guidance and will activate automatically when relevant.
+For UDF development and Script Language Containers, the **exasol-udfs** skill provides specialized guidance and will activate automatically when relevant.
