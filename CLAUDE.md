@@ -72,6 +72,7 @@ Release steps:
 3. Commit: `chore: release vX.Y.Z`
 4. Tag: `git tag vX.Y.Z`
 5. Push: `git push --follow-tags`
+6. Create the GitHub release: `gh release create vX.Y.Z --generate-notes`
 
 ## Commit Conventions
 
