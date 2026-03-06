@@ -61,24 +61,21 @@ npx skills add exasol-labs/exasol-agent-skills --agent codex
 
 ### Exasol Database Skill
 
-Automatically activates when you mention Exasol, exapump, or related topics. Provides:
+Work with Exasol databases — run queries, load and export data, handle cloud sources, and get help with Exasol-specific SQL quirks.
 
-- **exapump CLI guidance** — upload, query, export, interactive sessions
-- **Exasol SQL expertise** — data types, reserved keywords, constraint limitations
-- **Error diagnosis** — identifies Exasol-specific issues (identifier casing, reserved words, etc.)
-- **Cloud data loading** — S3, Azure Blob, GCS via SQL IMPORT
-
-See [`plugins/exasol/skills/exasol-database/SKILL.md`](plugins/exasol/skills/exasol-database/SKILL.md) for the full skill definition and routing logic.
+See [`plugins/exasol/skills/exasol-database/SKILL.md`](plugins/exasol/skills/exasol-database/SKILL.md) for details.
 
 ### Exasol UDF Skill
 
-Activates for UDF and Script Language Container topics. Provides:
+Build User Defined Functions in Python, Java, Lua, or R, and package them into deployable Script Language Containers.
 
-- **UDF development** — CREATE SCRIPT, SCALAR/SET functions, ExaIterator API
-- **Multi-language support** — Python, Java, Lua, R
-- **Script Language Containers** — building and deploying custom SLCs with exaslct
+See [`plugins/exasol/skills/exasol-udfs/SKILL.md`](plugins/exasol/skills/exasol-udfs/SKILL.md) for details.
 
-See [`plugins/exasol/skills/exasol-udfs/SKILL.md`](plugins/exasol/skills/exasol-udfs/SKILL.md) for the full skill definition.
+### BucketFS Skill
+
+Manage files in Exasol's distributed file system — list, upload, download, and delete files that your UDFs and scripts can access.
+
+See [`plugins/exasol/skills/exasol-bucketfs/SKILL.md`](plugins/exasol/skills/exasol-bucketfs/SKILL.md) for details.
 
 ### `/exasol` Slash Command <sup>Claude Code only</sup>
 
