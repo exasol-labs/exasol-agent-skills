@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.8.0
+
+- Add BucketFS skill for managing files in Exasol's BucketFS
+- Add identifier quoting support and variadic UDF documentation
+
 ## v0.7.0
 
 - Add OpenAI Codex support via `npx skills add` in the installer
