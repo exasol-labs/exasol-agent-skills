@@ -77,6 +77,14 @@ Manage files in Exasol's distributed file system — list, upload, download, and
 
 See [`plugins/exasol/skills/exasol-bucketfs/SKILL.md`](plugins/exasol/skills/exasol-bucketfs/SKILL.md) for details.
 
+### Exasol Personal Setup Skill
+
+Step-by-step guided setup of your own Exasol database on AWS — from account creation and IAM configuration to deployment, data loading, and exploration. No prior AWS or Exasol experience required.
+
+Triggers on: "set up Exasol", "Exasol Personal", "deploy Exasol", "install Exasol on AWS"
+
+See [`plugins/exasol/skills/setup-personal/SKILL.md`](plugins/exasol/skills/setup-personal/SKILL.md) for details.
+
 ### `/exasol` Slash Command <sup>Claude Code only</sup>
 
 Run SQL or describe tasks directly:
