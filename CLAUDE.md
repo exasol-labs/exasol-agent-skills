@@ -2,7 +2,7 @@
 
 ## What This Repo Is
 
-A skills marketplace for AI coding agents (Claude Code and OpenAI Codex) that gives them expertise in Exasol databases — exapump CLI, Exasol SQL, UDFs, and cloud data loading.
+A skills marketplace for AI coding agents (Claude Code and OpenAI Codex) that gives them expertise in Exasol databases — guided Exasol Personal setup on AWS, exapump CLI, Exasol SQL, UDFs, BucketFS, and cloud data loading.
 
 ## Architecture
 
@@ -10,7 +10,7 @@ A skills marketplace for AI coding agents (Claude Code and OpenAI Codex) that gi
 
 - `.claude-plugin/marketplace.json` — discovery entry point; lists plugins with version
 - `plugins/exasol/.claude-plugin/plugin.json` — plugin metadata; version must match marketplace
-- `plugins/exasol/skills/*/SKILL.md` — auto-triggered by keyword matching in user messages; contains a routing algorithm that loads only the reference files relevant to the task (progressive disclosure)
+- `plugins/exasol/skills/*/SKILL.md` — auto-triggered by keyword matching in user messages; contains a routing algorithm that loads only the reference files relevant to the task (progressive disclosure). Skills: `setup-personal` (guided AWS deployment), `exasol-database` (SQL/exapump), `exasol-udfs` (UDFs/SLCs), `exasol-bucketfs` (BucketFS)
 - `plugins/exasol/commands/exasol.md` — `/exasol` slash command (Claude Code only)
 - `plugins/exasol/skills/*/references/*.md` — detailed docs loaded on-demand by SKILL.md routing
 
@@ -93,10 +93,11 @@ claude plugin marketplace add ./path/to/exasol-agent-skills
 claude plugin install exasol@exasol-skills
 ```
 
-After changing skill/reference files:
+After changing skill/reference files, reinstall the plugin (update does not re-copy files if the version is unchanged):
 
 ```bash
-claude plugin update exasol --scope user
+claude plugin uninstall exasol@exasol-skills --scope user
+claude plugin install exasol@exasol-skills
 ```
 
 Then start a new Claude Code session.
