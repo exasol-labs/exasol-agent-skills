@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.9.0
+
+- Add Exasol Personal setup skill for guided AWS deployment
+- Add automated releases on PR merge with version validation in CI
+- Move project instructions to AGENTS.md for multi-agent compatibility
+
 ## v0.8.0
 
 - Add BucketFS skill for managing files in Exasol's BucketFS
