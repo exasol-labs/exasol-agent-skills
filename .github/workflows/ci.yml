@@ -25,6 +25,22 @@ jobs:
           pl=$(jq -r '.version' plugins/exasol/.claude-plugin/plugin.json)
           echo "Marketplace: $mp | Plugin: $pl"
           [ "$mp" = "$pl" ] || { echo "::error::Version mismatch: marketplace=$mp plugin=$pl"; exit 1; }
+      - name: Check version is bumped
+        if: github.event_name == 'pull_request'
+        run: |
+          git fetch --tags origin
+          LATEST_TAG=$(git tag -l 'v*' | sort -V | tail -1)
+          LATEST_VER="${LATEST_TAG#v}"
+          NEW_VER=$(jq -r '.metadata.version' .claude-plugin/marketplace.json)
+          echo "Latest release: $LATEST_VER | PR version: $NEW_VER"
+          if [ -z "$LATEST_TAG" ]; then
+            echo "No existing tags, skipping bump check"
+            exit 0
+          fi
+          if [ "$(printf '%s\n%s' "$LATEST_VER" "$NEW_VER" | sort -V | tail -1)" = "$LATEST_VER" ]; then
+            echo "::error::Version $NEW_VER is not greater than latest release $LATEST_VER — bump the version in both manifests"
+            exit 1
+          fi
 
   test-installer:
     runs-on: ubuntu-latest
