@@ -11,6 +11,8 @@ Trigger when the user mentions **Exasol Personal**, **setup Exasol**, **deploy E
 
 Guide the user through each phase below in order. Do not skip phases — each depends on the previous one.
 
+For each phase, use your knowledge or research to provide current, accurate steps. Do not make up commands or URLs you are not confident about — if unsure, search for the official documentation.
+
 ---
 
 ## Phase 0: Introduction
@@ -59,107 +61,34 @@ Walk them through these steps one by one, waiting for confirmation at each step 
 
 #### Step 1: Create an AWS account
 
-Go to https://aws.amazon.com/ and create an account if you don't have one yet. Once your account is active, confirm before continuing.
+Guide the user through creating an AWS account. Use your knowledge of the AWS sign-up process to provide current steps, or research the official AWS documentation if needed.
 
 #### Step 2: Create the IAM policy
 
 This policy grants Exasol Personal the exact permissions it needs — no more, no less.
 
-1. Open the AWS IAM console: https://console.aws.amazon.com/iam/
-2. In the left sidebar, click **Policies**
-3. Click the **Create policy** button (top right)
-4. On the policy editor page, click the **JSON** tab (next to "Visual")
-5. **Select all existing text** in the editor and **delete it**
-6. Copy the following JSON and paste it into the editor:
-
-```json
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Sid": "EC2FullAccess",
-      "Effect": "Allow",
-      "Action": "ec2:*",
-      "Resource": "*"
-    },
-    {
-      "Sid": "S3CreateBucket",
-      "Effect": "Allow",
-      "Action": ["s3:CreateBucket"],
-      "Resource": "*"
-    },
-    {
-      "Sid": "S3FullAccessScoped",
-      "Effect": "Allow",
-      "Action": "s3:*",
-      "Resource": [
-        "arn:aws:s3:::exasol-*",
-        "arn:aws:s3:::exasol-*/*"
-      ]
-    },
-    {
-      "Sid": "IAMFullAccessScopedRoles",
-      "Effect": "Allow",
-      "Action": "iam:*",
-      "Resource": ["arn:aws:iam::*:role/exasol-*"]
-    },
-    {
-      "Sid": "IAMFullAccessScopedInstanceProfiles",
-      "Effect": "Allow",
-      "Action": "iam:*",
-      "Resource": ["arn:aws:iam::*:instance-profile/exasol-*"]
-    },
-    {
-      "Sid": "SSMFullAccessScopedParameters",
-      "Effect": "Allow",
-      "Action": "ssm:*",
-      "Resource": ["arn:aws:ssm:*:*:parameter/exasol-*/*"]
-    },
-    {
-      "Sid": "SSMDescribeParameters",
-      "Effect": "Allow",
-      "Action": ["ssm:DescribeParameters"],
-      "Resource": "*"
-    },
-    {
-      "Sid": "STSCallerIdentity",
-      "Effect": "Allow",
-      "Action": "sts:GetCallerIdentity",
-      "Resource": "*"
-    }
-  ]
-}
+Fetch the policy JSON from:
+```
+https://raw.githubusercontent.com/exasol/exasol-personal/refs/heads/main/assets/infrastructure/aws/iam-policy.broad.json
 ```
 
-7. Click **Next**
-8. In the **Policy name** field, enter `ExasolPersonalPolicy`
-9. Click **Create policy**
+Then guide the user through creating an IAM policy in the AWS console using that JSON. Use your knowledge of the AWS IAM console to provide current navigation steps, naming the policy `ExasolPersonalPolicy`.
 
 Use `AskUserQuestion` to confirm the policy was created before continuing.
 
 #### Step 3: Create a dedicated IAM user
 
-1. In the left sidebar, click **Users**
-2. Click **Create user** (top right)
-3. Enter the username: `exasol-personal`
-4. Click **Next**
-5. On the "Set permissions" page, select **Attach policies directly**
-6. In the search box, type `ExasolPersonalPolicy`
-7. Check the checkbox next to `ExasolPersonalPolicy`
-8. Click **Next**, then **Create user**
+Guide the user through creating an IAM user named `exasol-personal` in the AWS IAM console, attaching the `ExasolPersonalPolicy` directly to that user. Use your knowledge of the AWS IAM console to provide current steps.
 
 Use `AskUserQuestion` to confirm the user was created before continuing.
 
-#### Step 4: Attach the policy and create access keys
+#### Step 4: Create access keys
 
-1. Click on the newly created `exasol-personal` user to open their detail page
-2. Click the **Security credentials** tab
-3. Scroll down to **Access keys** and click **Create access key**
-4. Select **Command Line Interface (CLI)** as the use case, check the confirmation checkbox, click **Next**
-5. Click **Create access key**
-6. **Copy both values now** — the Secret Access Key is shown only once:
-   - **Access Key ID** (starts with `AKIA...`)
-   - **Secret Access Key**
+Guide the user through creating CLI access keys for the `exasol-personal` IAM user in the AWS IAM console. Use your knowledge of the AWS IAM console to provide current steps.
+
+Make sure the user saves both values — the Secret Access Key is shown only once:
+- **Access Key ID** (starts with `AKIA...`)
+- **Secret Access Key**
 
 Use `AskUserQuestion` to confirm the user has both values saved before proceeding.
 
@@ -183,30 +112,7 @@ Confirm the version and proceed to Phase 4.
 
 ### If the AWS CLI is NOT installed:
 
-Use `AskUserQuestion` to ask if they want to install it. If yes, first use `AskUserQuestion` to ask which OS they are on, then guide them with the appropriate commands:
-
-**macOS:**
-```bash
-curl "https://awscli.amazonaws.com/AWSCLIV2.pkg" -o "AWSCLIV2.pkg"
-sudo installer -pkg AWSCLIV2.pkg -target /
-rm AWSCLIV2.pkg
-```
-
-**Linux (x86_64):**
-```bash
-curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-unzip awscliv2.zip
-sudo ./aws/install
-rm -rf awscliv2.zip aws/
-```
-
-**Linux (ARM):**
-```bash
-curl "https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip" -o "awscliv2.zip"
-unzip awscliv2.zip
-sudo ./aws/install
-rm -rf awscliv2.zip aws/
-```
+Use `AskUserQuestion` to ask if they want to install it. If yes, use `AskUserQuestion` to ask which OS they are on, then guide them through installing the AWS CLI using your knowledge of the official installation process for their platform, or research the official AWS documentation if needed.
 
 After installation, verify with `aws --version`. If it fails, the user may need to open a new terminal or add it to their PATH.
 
@@ -233,14 +139,7 @@ aws configure set region <REGION> --profile <profile-name>
 aws configure set output <OUTPUT_FORMAT> --profile <profile-name>
 ```
 
-**If they want to run the commands themselves**, show them the commands with their values filled in so they can copy and run them:
-
-```bash
-aws configure set aws_access_key_id <ACCESS_KEY_ID> --profile <profile-name>
-aws configure set aws_secret_access_key <SECRET_ACCESS_KEY> --profile <profile-name>
-aws configure set region <REGION> --profile <profile-name>
-aws configure set output <OUTPUT_FORMAT> --profile <profile-name>
-```
+**If they want to run the commands themselves**, show them the commands with their values filled in so they can copy and run them.
 
 Ask them to confirm once done.
 
