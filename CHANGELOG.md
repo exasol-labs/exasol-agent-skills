@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.10.2
+
+- Add exasol-ai-lab skill for notebook-connector JupyterLab and bundled notebooks
+
 ## v0.9.0
 
 - Add Exasol Personal setup skill for guided AWS deployment
