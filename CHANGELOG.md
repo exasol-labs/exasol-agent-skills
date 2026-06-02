@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.10.6
+
+- Add exasol-text-ai skill for notebook-connector Text AI Extension workflows
+
 ## v0.9.0
 
 - Add Exasol Personal setup skill for guided AWS deployment
