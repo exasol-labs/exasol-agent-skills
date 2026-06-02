@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.10.3
+
+- Add exasol-itde skill for notebook-connector local Docker database workflows
+
 ## v0.9.0
 
 - Add Exasol Personal setup skill for guided AWS deployment

@@ -77,6 +77,12 @@ Manage files in Exasol's distributed file system — list, upload, download, and
 
 See [`plugins/exasol/skills/exasol-bucketfs/SKILL.md`](plugins/exasol/skills/exasol-bucketfs/SKILL.md) for details.
 
+### Exasol ITDE Skill
+
+Run and manage notebook-connector's local Docker-based Exasol development environment.
+
+See [`plugins/exasol/skills/exasol-itde/SKILL.md`](plugins/exasol/skills/exasol-itde/SKILL.md) for details.
+
 ### Exasol Personal Setup Skill
 
 Step-by-step guided setup of your own Exasol database on AWS — from account creation and IAM configuration to deployment, data loading, and exploration. No prior AWS or Exasol experience required.
