@@ -1,3 +1,5 @@
+"""Run a minimal database and BucketFS smoke test from notebook-connector config."""
+
 from pathlib import Path
 
 from exasol.nb_connector.connections import (
@@ -8,6 +10,7 @@ from exasol.nb_connector.secret_store import Secrets
 
 
 def main() -> None:
+    """Validate that the stored configuration opens both DB and BucketFS access."""
     # Open the existing secure config store that should already contain DB and BucketFS values.
     conf = Secrets(
         db_file=Path("ai_config.db"),

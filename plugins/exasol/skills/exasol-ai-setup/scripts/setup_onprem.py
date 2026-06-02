@@ -1,3 +1,5 @@
+"""Create an on-prem notebook-connector configuration in a Secrets store."""
+
 from pathlib import Path
 
 from exasol.nb_connector.ai_lab_config import AILabConfig as CKey
@@ -5,6 +7,7 @@ from exasol.nb_connector.secret_store import Secrets
 
 
 def main() -> None:
+    """Persist database and BucketFS values for an on-prem Exasol setup."""
     # Open the secure config store that will hold the notebook-connector setup.
     conf = Secrets(
         db_file=Path("ai_config.db"),
