@@ -13,6 +13,8 @@ The SCS must be configured. If not yet done, activate the **exasol-ai-setup** sk
 
 Install dependencies:
 
+Use this install command when the user has not yet added the notebook-connector and Transformers Extension packages to the current Python environment.
+
 ```bash
 pip install exasol-notebook-connector exasol-transformers-extension
 ```
