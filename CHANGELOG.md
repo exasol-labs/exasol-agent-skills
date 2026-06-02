@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.10.5
+
+- Add exasol-transformers skill for notebook-connector Transformers Extension workflows
+
 ## v0.9.0
 
 - Add Exasol Personal setup skill for guided AWS deployment
