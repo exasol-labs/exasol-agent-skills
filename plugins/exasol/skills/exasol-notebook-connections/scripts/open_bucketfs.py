@@ -1,3 +1,5 @@
+"""Open BucketFS connection objects and locations from notebook-connector config."""
+
 from pathlib import Path
 
 from exasol.nb_connector.connections import (
@@ -9,6 +11,7 @@ from exasol.nb_connector.secret_store import Secrets
 
 
 def main() -> None:
+    """Resolve the BucketFS connection, bucket, and one sample location."""
     # Open the secure config store that contains the BucketFS connection values.
     conf = Secrets(
         db_file=Path("ai_config.db"),
