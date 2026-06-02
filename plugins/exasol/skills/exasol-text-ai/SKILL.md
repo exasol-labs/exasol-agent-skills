@@ -37,6 +37,8 @@ These constants are defined in `exasol.nb_connector.text_ai_extension_wrapper`:
 
 The Text AI Extension requires a license before any DB objects can be created.
 
+Use this example for the default first-run case where the built-in community license is sufficient.
+
 ```python
 from pathlib import Path
 from exasol.nb_connector.secret_store import Secrets
@@ -49,11 +51,17 @@ deploy_license(conf)
 ```
 
 **Custom license file:**
+
+Use this variant when the user already has a license file on disk and wants to deploy that exact license.
+
 ```python
 deploy_license(conf, license_file=Path("/path/to/my_license.txt"))
 ```
 
 **Inline license string:**
+
+Use this variant when the license content is already available in memory and should not be written to a separate file first.
+
 ```python
 deploy_license(conf, license_content="<license-content-string>")
 ```
@@ -63,6 +71,8 @@ Internally, `deploy_license` opens a pyexasol connection and calls `txai_license
 ---
 
 ## Step 2: Initialize the Extension
+
+Use this first-run example when the user wants notebook-connector to install the TXAIE language container, default models, and SQL scripts in one pass.
 
 ```python
 from exasol.nb_connector.text_ai_extension_wrapper import initialize_text_ai_extension
@@ -91,6 +101,8 @@ initialize_text_ai_extension(conf)
 
 ### Selective Initialization (skip already-done steps)
 
+Use this variant when the agent already knows which parts are installed and wants to skip slow or redundant steps.
+
 ```python
 initialize_text_ai_extension(
     conf,
@@ -104,6 +116,9 @@ initialize_text_ai_extension(
 ```
 
 **Common patterns:**
+
+Use these short variants when the user only needs one specific adjustment, such as skipping the SLC upload or installing from a pinned version.
+
 ```python
 # Skip SLC if already uploaded
 initialize_text_ai_extension(conf, install_slc=False)
@@ -126,12 +141,16 @@ The `Extraction` class is the main interface for running Text AI tasks. It wraps
 
 ### Import
 
+Use these imports when the user wants to build a higher-level extraction pipeline instead of calling lower-level SQL UDFs directly.
+
 ```python
 from exasol.nb_connector.text_ai_extension_wrapper import Extraction
 from exasol.ai.text.extraction.abstract_extraction import Output, Defaults
 ```
 
 ### Feature Extraction (Embeddings)
+
+This example shows how to generate embeddings or similar feature vectors from an input text column and write the results into a target table.
 
 ```python
 from exasol.ai.text.extractors.feature_extractor import FeatureExtractor
@@ -151,6 +170,8 @@ extraction.run(conf)
 
 ### Named Entity Recognition (NER)
 
+This example shows how to extract named entities and labels from a text column and persist them into an output table.
+
 ```python
 from exasol.ai.text.extractors.ner_extractor import NERExtractor
 
@@ -168,6 +189,8 @@ extraction.run(conf)
 ```
 
 ### Zero-Shot Classification
+
+This example shows how to classify free-form text against runtime-supplied labels without training a task-specific model inside the user workflow.
 
 ```python
 from exasol.ai.text.extractors.zero_shot_extractor import ZeroShotExtractor
@@ -188,6 +211,8 @@ extraction.run(conf)
 
 ### Customizing Defaults (parallelism, batch size, model repository)
 
+Use this block when the user needs to tune execution behavior rather than relying on the default extraction settings.
+
 ```python
 extraction = Extraction(
     extractor=FeatureExtractor(...),
@@ -203,6 +228,8 @@ extraction = Extraction(
 If `defaults.model_repository` is `None` (the default), `Extraction.run()` calls `defaults_with_model_repository(conf)` which automatically creates a model repository from the SCS using `create_model_repository(conf)`. You do not need to set this manually in normal use.
 
 ### How `Extraction.run()` works internally
+
+This block is explanatory rather than a user script. It teaches the agent what notebook-connector resolves under the hood before the extraction runs.
 
 ```python
 # Internally does:
@@ -221,6 +248,8 @@ with open_pyexasol_connection(conf, compression=True) as connection:
 
 ## Step 4: Read Auto-Set SCS Keys After Initialization
 
+Use this readback step when later debugging or follow-up code needs the resolved BucketFS connection name or model directory from the secure config store.
+
 ```python
 from exasol.nb_connector.ai_lab_config import AILabConfig as CKey
 
@@ -232,6 +261,8 @@ cache_dir  = conf.get(CKey.txaie_models_cache_dir)     # "models_cache"
 ---
 
 ## Complete Example
+
+Use this full example when the user wants one Python flow that covers license deployment, TXAIE initialization, and an end-to-end extraction run.
 
 ```python
 from pathlib import Path
