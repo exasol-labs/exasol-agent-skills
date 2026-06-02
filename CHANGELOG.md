@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.10.1
+
+- Add exasol-ai-setup skill for notebook-connector CLI and Python API configuration
+
 ## v0.9.0
 
 - Add Exasol Personal setup skill for guided AWS deployment
