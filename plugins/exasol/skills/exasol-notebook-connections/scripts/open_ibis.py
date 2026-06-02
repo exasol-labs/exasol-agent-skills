@@ -5,14 +5,19 @@ from exasol.nb_connector.secret_store import Secrets
 
 
 def main() -> None:
+    # Open the secure config store that contains the database connection values.
     conf = Secrets(
         db_file=Path("ai_config.db"),
         master_password="my-master-password",
     )
 
+    # Open an Ibis connection using notebook-connector's configured backend details.
     ibis_conn = open_ibis_connection(conf)
+
+    # Run a lightweight metadata call to prove the connection works.
     print(ibis_conn.list_tables())
 
+    # Close the encrypted store after the Ibis check completes.
     conf.close()
 
 
