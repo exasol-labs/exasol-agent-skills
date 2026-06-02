@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.11.0
+
+- Refactor notebook-connector guidance into focused skills with progressive-disclosure references
+- Add `exasol-ai-lab` for bundled notebook and JupyterLab workflows
+- Add `exasol-itde` for local Docker Exasol lifecycle workflows
+- Add `exasol-notebook-connections` for notebook-connector Python connection helpers
+- Refactor `exasol-ai-setup` into a routed setup skill with CLI, Python, and validation references
+- Update the `/exasol-ai` command and top-level docs to route across the expanded notebook-connector skill set
+
 ## v0.9.0
 
 - Add Exasol Personal setup skill for guided AWS deployment

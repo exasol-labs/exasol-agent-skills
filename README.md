@@ -9,7 +9,7 @@
 [![Exasol](https://img.shields.io/badge/Exasol-database-green.svg)](https://exasol.com)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 
-Agent skills for [Exasol](https://exasol.com) — gives Claude Code and OpenAI Codex expertise in exapump, Exasol SQL, UDFs, and cloud data loading.
+Agent skills for [Exasol](https://exasol.com) — gives Claude Code and OpenAI Codex expertise in exapump, Exasol SQL, UDFs, cloud data loading, and notebook-connector based AI workflows.
 
 </div>
 
@@ -76,6 +76,19 @@ See [`plugins/exasol/skills/exasol-udfs/SKILL.md`](plugins/exasol/skills/exasol-
 Manage files in Exasol's distributed file system — list, upload, download, and delete files that your UDFs and scripts can access.
 
 See [`plugins/exasol/skills/exasol-bucketfs/SKILL.md`](plugins/exasol/skills/exasol-bucketfs/SKILL.md) for details.
+
+### Exasol AI Skills
+
+Set up notebook-connector via `scs`, `ai-lab`, or the `Secrets` Python API, then deploy and use the Transformers Extension and Text AI Extension from agents.
+
+See:
+
+- [`plugins/exasol/skills/exasol-ai-setup/SKILL.md`](plugins/exasol/skills/exasol-ai-setup/SKILL.md)
+- [`plugins/exasol/skills/exasol-ai-lab/SKILL.md`](plugins/exasol/skills/exasol-ai-lab/SKILL.md)
+- [`plugins/exasol/skills/exasol-itde/SKILL.md`](plugins/exasol/skills/exasol-itde/SKILL.md)
+- [`plugins/exasol/skills/exasol-notebook-connections/SKILL.md`](plugins/exasol/skills/exasol-notebook-connections/SKILL.md)
+- [`plugins/exasol/skills/exasol-transformers/SKILL.md`](plugins/exasol/skills/exasol-transformers/SKILL.md)
+- [`plugins/exasol/skills/exasol-text-ai/SKILL.md`](plugins/exasol/skills/exasol-text-ai/SKILL.md)
 
 ### Exasol Personal Setup Skill
 
