@@ -1,3 +1,5 @@
+"""Check whether the managed ITDE container is ready and reachable."""
+
 from pathlib import Path
 
 from exasol.nb_connector.itde_manager import (
@@ -8,6 +10,7 @@ from exasol.nb_connector.secret_store import Secrets
 
 
 def main() -> None:
+    """Read the current ITDE container status from notebook-connector."""
     # Open the secure config store that identifies the managed ITDE instance.
     conf = Secrets(
         db_file=Path("ai_config.db"),
