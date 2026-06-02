@@ -5,17 +5,20 @@ from exasol.nb_connector.secret_store import Secrets
 
 
 def main() -> None:
+    # Open the secure config store that will hold the notebook-connector setup.
     conf = Secrets(
         db_file=Path("ai_config.db"),
         master_password="my-master-password",
     )
 
+    # Save the database connection details for the target Exasol system.
     conf.save(CKey.db_host_name, "my-db-host")
     conf.save(CKey.db_port, "8563")
     conf.save(CKey.db_user, "sys")
     conf.save(CKey.db_password, "secret")
     conf.save(CKey.db_schema, "AI_SCHEMA")
 
+    # Save the BucketFS details used for SLCs, models, and related assets.
     conf.save(CKey.bfs_host_name, "my-bfs-host")
     conf.save(CKey.bfs_port, "2580")
     conf.save(CKey.bfs_user, "w")
@@ -23,6 +26,7 @@ def main() -> None:
     conf.save(CKey.bfs_bucket, "default")
     conf.save(CKey.bfs_service, "bfsdefault")
 
+    # Close the encrypted store so all values are flushed and the file is unlocked.
     conf.close()
 
 

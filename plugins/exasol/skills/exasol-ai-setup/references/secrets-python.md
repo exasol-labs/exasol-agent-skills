@@ -6,8 +6,8 @@ Use the Python API when the user wants notebook cells or automation.
 
 Use these scripts as the primary editable examples:
 
-- `scripts/setup_onprem.py`
-- `scripts/setup_saas.py`
+- `scripts/setup_onprem.py` writes all required on-prem database and BucketFS keys into a `Secrets` store.
+- `scripts/setup_saas.py` writes the SaaS account, database, and PAT values into a `Secrets` store.
 
 They show:
 
@@ -24,6 +24,8 @@ Typical `Secrets` operations the agent may still mention inline:
 - `conf.items()`
 - `conf.remove(...)`
 - `conf.close()`
+
+Use these operations when the user wants to inspect, update, or remove individual values after the initial setup script has been created.
 
 ## Use This Path When
 
