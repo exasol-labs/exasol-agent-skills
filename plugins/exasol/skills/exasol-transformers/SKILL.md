@@ -36,6 +36,8 @@ These constants are defined in `exasol.nb_connector.transformers_extension_wrapp
 
 ## Step 1: Initialize the Extension
 
+Use this first-run example when the user wants notebook-connector to deploy the TE language container, create the required connection objects, and install the TE scripts in one pass.
+
 ```python
 from pathlib import Path
 from exasol.nb_connector.secret_store import Secrets
@@ -58,6 +60,8 @@ initialize_te_extension(conf)
 
 ### Selective Initialization (skip already-done steps)
 
+Use this variant when the agent already knows some setup steps are complete and wants to avoid repeating slow or destructive work.
+
 ```python
 initialize_te_extension(
     conf,
@@ -79,6 +83,8 @@ initialize_te_extension(
 
 To re-deploy only the UDF scripts without touching the SLC or connection objects:
 
+Use this when the language container is already present and the user only needs the TE SQL/UDF layer refreshed.
+
 ```python
 from exasol.nb_connector.transformers_extension_wrapper import deploy_scripts
 
@@ -95,6 +101,8 @@ This:
 ## Step 3: Upload a Model
 
 Models must be uploaded to BucketFS before they can be used in UDFs.
+
+Use this example when the user needs to make a Hugging Face model available to the deployed Transformers Extension.
 
 ```python
 from exasol.nb_connector.transformers_extension_wrapper import upload_model
@@ -130,6 +138,8 @@ upload_model(
 
 After initialization, the connection object names are saved in the SCS:
 
+Use this readback step when later SQL or deployment steps need the exact persisted connection names or model paths.
+
 ```python
 from exasol.nb_connector.ai_lab_config import AILabConfig as CKey
 
@@ -149,6 +159,8 @@ After deployment, call TE UDF scripts directly in SQL. All scripts are in `db_sc
 
 ### Text Classification
 
+This query pattern classifies each input text with a named Hugging Face classification model through the deployed TE UDF.
+
 ```sql
 SELECT "<schema>".TE_TEXT_CLASSIFY(
     <text_column>,
@@ -160,6 +172,8 @@ FROM my_table;
 ```
 
 ### Token Classification (NER)
+
+This query pattern extracts named entities and labels from each input text.
 
 ```sql
 SELECT "<schema>".TE_TOKEN_CLASSIFY(
@@ -173,6 +187,8 @@ FROM my_table;
 
 ### Text Generation
 
+This query pattern uses a generative model to produce text continuations from prompt values stored in the table.
+
 ```sql
 SELECT "<schema>".TE_TEXT_GENERATE(
     <prompt_column>,
@@ -184,6 +200,8 @@ FROM my_table;
 ```
 
 ### Zero-Shot Classification
+
+This query pattern classifies each text against runtime-provided labels without a task-specific fine-tuned model in the database code itself.
 
 ```sql
 SELECT "<schema>".TE_ZERO_SHOT_CLASSIFY(
@@ -198,6 +216,8 @@ FROM my_table;
 
 ### Feature Extraction / Embeddings
 
+This query pattern produces vector-like feature outputs or embeddings for downstream search, clustering, or similarity use cases.
+
 ```sql
 SELECT "<schema>".TE_FEATURE_EXTRACT(
     <text_column>,
@@ -211,6 +231,8 @@ FROM my_table;
 ---
 
 ## Complete Example
+
+Use this full example when the user wants one Python flow that covers first-run TE setup, model upload, and post-setup inspection.
 
 ```python
 from pathlib import Path
