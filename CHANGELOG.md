@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.10.4
+
+- Add exasol-notebook-connections skill for notebook-connector connection helper APIs
+
 ## v0.9.0
 
 - Add Exasol Personal setup skill for guided AWS deployment
