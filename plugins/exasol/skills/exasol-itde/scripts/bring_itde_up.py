@@ -6,14 +6,20 @@ from exasol.nb_connector.secret_store import Secrets
 
 
 def main() -> None:
+    # Open the secure config store that will hold the local Docker DB settings.
     conf = Secrets(
         db_file=Path("ai_config.db"),
         master_password="my-master-password",
     )
 
+    # Save the requested resource sizing before starting the ITDE container.
     conf.save(CKey.mem_size, "4")
     conf.save(CKey.disk_size, "10")
+
+    # Start the managed local Exasol container and let notebook-connector populate the derived connection values.
     bring_itde_up(conf)
+
+    # Close the encrypted store when setup is complete.
     conf.close()
 
 
