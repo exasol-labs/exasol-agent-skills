@@ -78,6 +78,10 @@ print(get_activation_sql(my_secrets))
 
 Models must be available in BucketFS before the TE UDFs can use them.
 
+Notebook Connector exposes model-upload helper APIs in
+`exasol.nb_connector.transformers_extension_wrapper` for this part of the
+workflow, including `upload_model(...)`.
+
 Use the bundled Transformers notebooks as the source of truth for complete
 model-loading workflows. For programmatic setup, initialize the extension first
 and then ensure the desired model artifacts are present under the configured
