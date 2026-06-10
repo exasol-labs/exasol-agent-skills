@@ -3,23 +3,23 @@ name: exasol-notebook-connections
 description: "Use notebook-connector's Python connection helpers for Exasol, BucketFS, SQLAlchemy, and Ibis. Covers open_pyexasol_connection, open_sqlalchemy_connection, open_ibis_connection, open_bucketfs_bucket, open_bucketfs_location, get_backend, and related helper functions."
 ---
 
-# Exasol notebook-connector Connections Skill
+# Exasol Notebook Connector Connections Skill
 
 Trigger when the user mentions **open_pyexasol_connection**, **open_sqlalchemy_connection**, **open_ibis_connection**, **open_bucketfs_bucket**, **BucketFS location**, **get_backend**, **connection helper**, or **use notebook-connector from Python**.
 
 ## Routing Algorithm
 
-1. **Database connection helpers**
+1. **Database Connection Helpers**
    - Trigger phrases: `pyexasol`, `sqlalchemy`, `ibis`, `open connection`
    - Load: `references/connections-api.md`
    - Use scripts from: `scripts/`
 
-2. **BucketFS object helpers**
+2. **BucketFS Object Helpers**
    - Trigger phrases: `open_bucketfs_bucket`, `open_bucketfs_location`, `bucket path`
    - Load: `references/connections-api.md`
    - Use scripts from: `scripts/`
 
-3. **Config not set up yet**
+3. **Config Not Set Up Yet**
    - Activate **exasol-ai-setup**
 
 ## Validation

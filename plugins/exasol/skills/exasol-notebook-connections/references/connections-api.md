@@ -1,4 +1,4 @@
-# notebook-connector Connection Helpers
+# Notebook Connector Connection Helpers
 
 All helpers accept a `Secrets` object and derive their connection parameters
 from it automatically.
