@@ -140,6 +140,25 @@ SELECT label, score, rank, error_message
 FROM MODEL_OUTPUT;
 ```
 
+Use the text-pair UDF when the model compares two texts:
+
+```sql
+WITH MODEL_OUTPUT AS (
+    SELECT MY_SCHEMA.TE_SEQUENCE_CLASSIFICATION_TEXT_PAIR_UDF(
+        NULL,
+        'TE_BFS_SYS',
+        'models',
+        'arpanghoshal/EkmanClassifier',
+        'Oh my God!',
+        'I lost my purse.',
+        'ALL'
+    )
+)
+SELECT label, score, rank, error_message
+FROM MODEL_OUTPUT
+ORDER BY score DESC;
+```
+
 ### Zero-shot classification
 
 ```sql
