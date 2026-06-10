@@ -242,7 +242,35 @@ FROM MODEL_OUTPUT;
 
 ```sql
 SELECT MY_SCHEMA.TE_LIST_MODELS_UDF('TE_BFS_SYS', 'models');
-SELECT MY_SCHEMA.TE_DELETE_MODEL_UDF('TE_BFS_SYS', 'models', 'gpt2');
+SELECT MY_SCHEMA.TE_DELETE_MODEL_UDF(
+    'TE_BFS_SYS',
+    'models',
+    'arpanghoshal/EkmanClassifier',
+    'text-classification'
+);
+```
+
+### Using Text Columns From a Table
+
+Use a table column instead of a string literal when the texts already live in
+the database and the workflow should run in batch mode.
+
+```sql
+WITH MODEL_OUTPUT AS (
+    SELECT MY_SCHEMA.TE_ZERO_SHOT_TEXT_CLASSIFICATION_UDF(
+        NULL,
+        'TE_BFS_SYS',
+        'models',
+        'facebook/bart-large-mnli',
+        MY_TEXT_COLUMN,
+        'positive,negative,neutral',
+        'HIGHEST'
+    )
+    FROM MY_TEXT_TABLE
+)
+SELECT label, score, error_message
+FROM MODEL_OUTPUT
+ORDER BY score DESC;
 ```
 
 ## Validation
