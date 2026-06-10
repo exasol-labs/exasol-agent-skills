@@ -1,4 +1,4 @@
-# notebook-connector Validation
+# Notebook Connector Validation
 
 Use these checks before handing off to extension-deployment skills.
 

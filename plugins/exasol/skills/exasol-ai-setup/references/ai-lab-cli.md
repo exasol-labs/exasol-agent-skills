@@ -1,4 +1,4 @@
-# notebook-connector `ai-lab` CLI
+# Notebook Connector `ai-lab` CLI
 
 Use `ai-lab` when the user wants bundled notebooks or to launch JupyterLab.
 

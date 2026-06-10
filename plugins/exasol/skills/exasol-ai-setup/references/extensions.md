@@ -1,4 +1,4 @@
-# notebook-connector Extension Setup
+# Notebook Connector Extension Setup
 
 Use this reference for Notebook Connector workflows that prepare Exasol AI extensions after the SCS is configured.
 

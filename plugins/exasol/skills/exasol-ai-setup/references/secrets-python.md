@@ -1,4 +1,4 @@
-# notebook-connector Setup via `Secrets`
+# Notebook Connector Setup via `Secrets`
 
 Use the Python API when the user wants notebook cells, scripts, or automation.
 
@@ -32,7 +32,7 @@ conf = Secrets(
 
 If the file already exists, the same master password must be used again.
 
-## Common Save / Read Pattern
+## Common Save/Read Pattern
 
 ```python
 from exasol.nb_connector.ai_lab_config import AILabConfig as CKey

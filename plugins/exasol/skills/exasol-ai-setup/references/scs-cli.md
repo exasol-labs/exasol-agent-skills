@@ -1,4 +1,4 @@
-# notebook-connector Setup via `scs`
+# Notebook Connector Setup via `scs`
 
 Use the `scs` CLI when the user wants terminal-first setup of the encrypted Secure Configuration Storage (SCS).
 

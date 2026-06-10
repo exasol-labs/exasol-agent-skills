@@ -1,4 +1,4 @@
-# notebook-connector ITDE
+# Notebook Connector ITDE
 
 Use the ITDE helpers when the user wants a local Docker Exasol database managed through Notebook Connector.
 
