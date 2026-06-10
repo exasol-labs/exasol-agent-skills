@@ -38,7 +38,7 @@ ai-lab start --port 9999 --ip 0.0.0.0
 ai-lab start --notebook-dir ~/work/notebooks --no-browser
 ```
 
-Failure cases to keep in mind:
+Failure Cases to Keep in Mind:
 
 - if JupyterLab is not installed, the command exits with an install hint
 - if `--notebook-dir` points to a file, the command exits with an error
