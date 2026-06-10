@@ -16,7 +16,7 @@ def main() -> None:
 
     print(open_bucketfs_connection(conf))
     print(open_bucketfs_bucket(conf))
-    print(open_bucketfs_location(conf, "models/my_model"))
+    print(open_bucketfs_location(conf) / "models" / "my_model")
 
     conf.close()
 
