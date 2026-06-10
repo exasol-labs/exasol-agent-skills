@@ -21,6 +21,20 @@ Trigger when the user mentions **ai-lab**, **start JupyterLab**, **deploy notebo
    - Trigger phrases: `first-time setup`, `need credentials`, `need scs`
    - Activate **exasol-ai-setup**
 
+## Validation
+
+Validate the CLI surface before asking the user to run notebook workflows:
+
+- run `ai-lab --help`
+- run `ai-lab start --help`
+- run `ai-lab deploy-notebooks --help`
+
+After a real run:
+
+- `deploy-notebooks` should leave copied notebooks in the target directory
+- `start` should launch JupyterLab on the selected port and expose the notebook root the user requested
+- if validation fails because config is missing, switch back to **exasol-ai-setup**
+
 ## Notes
 
 - The default JupyterLab port is `49494`.

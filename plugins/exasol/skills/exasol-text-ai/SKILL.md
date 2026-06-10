@@ -167,6 +167,24 @@ extraction.run(my_secrets)
 - some workflows create support or lookup tables in addition to the main output table
 - default-model installation is useful for offline UDF execution after setup
 
+## Validation
+
+Validate TXAIE in layers:
+
+- `deploy_license(my_secrets)` should complete without raising a license-deployment error
+- `initialize_text_ai_extension(my_secrets)` should complete without language-container or script-install errors
+- after setup, run one small `Extraction(...)` workflow against known source tables rather than a large batch job first
+
+Success signals:
+
+- license deployment completes
+- initialization completes and the language/container setup is persisted
+- a small extraction run writes output rows without missing-license or missing-language errors
+
+Expected failure mode:
+
+- if the source tables, DB config, BucketFS config, or extension assets are missing, extraction should fail until **exasol-ai-setup** and the required DB objects are in place
+
 ## Guidance
 
 - Use **exasol-ai-setup** when SCS, DB, or BucketFS values are still missing.

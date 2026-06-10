@@ -22,6 +22,19 @@ Trigger when the user mentions **ITDE**, **docker-db**, **local Exasol Docker da
 3. **Config not present yet**
    - Activate **exasol-ai-setup**
 
+## Validation
+
+Use the lifecycle scripts to validate the stored ITDE setup:
+
+- run `scripts/check_itde_status.py` after setup changes
+- after `bring_itde_up`, expect `ItdeContainerStatus.READY`
+- after teardown, expect `ABSENT` or a clean no-container state
+
+Expected failure mode:
+
+- `scripts/restart_itde.py` should raise a runtime error if the Docker-DB container does not exist yet
+- if status checks fail because the store is missing, switch back to **exasol-ai-setup**
+
 ## Notes
 
 - ITDE is the easiest local development database path for notebook-connector.
