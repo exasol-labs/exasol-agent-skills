@@ -1,16 +1,21 @@
+"""Open a pyexasol connection from notebook-connector config and run a smoke test."""
+
 from pathlib import Path
 
+from exasol.nb_connector.ai_lab_config import AILabConfig as CKey
 from exasol.nb_connector.connections import open_pyexasol_connection
 from exasol.nb_connector.secret_store import Secrets
 
 
 def main() -> None:
+    """Create a pyexasol connection and execute a minimal validation query."""
     conf = Secrets(
         db_file=Path("ai_config.db"),
         master_password="my-master-password",
     )
 
-    with open_pyexasol_connection(conf) as connection:
+    # open_pyexasol_connection() does not apply db_schema automatically.
+    with open_pyexasol_connection(conf, schema=conf.get(CKey.db_schema)) as connection:
         print(connection.execute("SELECT 1").fetchone())
 
     conf.close()
