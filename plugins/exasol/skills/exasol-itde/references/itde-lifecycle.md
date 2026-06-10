@@ -42,6 +42,8 @@ my_secrets.save(CKey.disk_size, "10")
 bring_itde_up(my_secrets)
 ```
 
+`bring_itde_up(...)` waits until the database is ready to accept connections before returning.
+
 Status and lifecycle helpers:
 
 ```python
