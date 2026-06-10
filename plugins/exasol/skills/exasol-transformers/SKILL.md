@@ -19,7 +19,7 @@ pip install "notebook-connector[transformers]"
 
 ## Main Entry Points
 
-### Full setup
+### Full Setup
 
 Use this first when the user wants notebook-connector to deploy the TE language
 container, create the required connection objects, and install the TE scripts.
@@ -50,7 +50,7 @@ initialize_te_extension(
 )
 ```
 
-### Deploy scripts only
+### Deploy Scripts Only
 
 Use this when the SLC is already in BucketFS and the user only needs the SQL/UDF layer refreshed.
 
@@ -95,7 +95,7 @@ create the corresponding DB `CONNECTION` object.
 
 These examples reflect the current notebook-connector docs branch.
 
-### Text generation
+### Text Generation
 
 ```sql
 SELECT MY_SCHEMA.TE_TEXT_GENERATION_UDF(
@@ -109,7 +109,7 @@ SELECT MY_SCHEMA.TE_TEXT_GENERATION_UDF(
 );
 ```
 
-### Fill-mask prediction
+### Fill-Mask Prediction
 
 ```sql
 WITH MODEL_OUTPUT AS (
@@ -127,7 +127,7 @@ FROM MODEL_OUTPUT
 ORDER BY score DESC;
 ```
 
-### Sequence classification
+### Sequence Classification
 
 ```sql
 WITH MODEL_OUTPUT AS (
@@ -163,7 +163,7 @@ FROM MODEL_OUTPUT
 ORDER BY score DESC;
 ```
 
-### Zero-shot classification
+### Zero-Shot Classification
 
 ```sql
 WITH MODEL_OUTPUT AS (
@@ -182,7 +182,7 @@ FROM MODEL_OUTPUT
 ORDER BY score DESC;
 ```
 
-### Question answering
+### Question Answering
 
 ```sql
 WITH MODEL_OUTPUT AS (
@@ -201,7 +201,7 @@ FROM MODEL_OUTPUT
 ORDER BY score DESC;
 ```
 
-### Token classification
+### Token Classification
 
 ```sql
 WITH MODEL_OUTPUT AS (
@@ -238,7 +238,7 @@ SELECT translation_text, error_message
 FROM MODEL_OUTPUT;
 ```
 
-### Model management
+### Model Management
 
 ```sql
 SELECT MY_SCHEMA.TE_LIST_MODELS_UDF('TE_BFS_SYS', 'models');
