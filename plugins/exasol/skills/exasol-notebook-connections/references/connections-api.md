@@ -38,7 +38,8 @@ Use the scripts in `scripts/` as the primary runnable/editable examples:
 
 ### `open_bucketfs_connection(conf)`
 
-- resolves the low-level BucketFS client connection
+- deprecated helper
+- prefer `open_bucketfs_bucket(conf)` unless the user explicitly asks for the legacy name
 
 ### `open_bucketfs_bucket(conf)`
 
@@ -63,7 +64,6 @@ The agent should know these helpers exist and mention them when relevant:
 - `get_external_host(conf)`
 - `get_saas_database_id(conf)`
 - `get_udf_bucket_path(conf)`
-- `open_bucketfs_connection(conf)`
 - `open_bucketfs_bucket(conf)`
 - `open_bucketfs_location(conf)`
 - `open_pyexasol_connection(conf)`
