@@ -77,6 +77,8 @@ with open_pyexasol_connection(my_secrets, schema="MY_SCHEMA") as conn:
     setup_scripts(conn, schema_name="MY_SCHEMA", bucketfs_jar_path=udf_jar_path)
 ```
 
+If the user needs to inspect the exact release before downloading, Notebook Connector also exposes `get_latest_version_and_jar_url(...)` for the Cloud Storage Extension artifact lookup step.
+
 ## Guidance
 
 - These workflows require complete DB and BucketFS configuration in the SCS first.

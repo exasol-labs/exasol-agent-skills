@@ -2,6 +2,12 @@
 
 Use the `scs` CLI when the user wants terminal-first setup of the encrypted Secure Configuration Storage (SCS).
 
+The CLI exposes three commands:
+
+- `check`
+- `configure`
+- `show`
+
 ## Help
 
 Use these commands first when the user wants to inspect the available CLI surface before choosing a specific setup flow.
@@ -33,6 +39,8 @@ Related secret env vars:
 - `SCS_BUCKETFS_PASSWORD`
 - `SCS_EXASOL_SAAS_TOKEN`
 
+Secret values should be provided either interactively or via related environment variables. Avoid putting them directly into shell history.
+
 ## On-Prem Exasol
 
 This template writes a complete on-prem notebook-connector configuration, including both database and BucketFS credentials.
@@ -46,13 +54,22 @@ scs configure onprem ai_config.db \
   --db-schema <schema> \
   --db-use-encryption \
   --bucketfs-host <bfs-host> \
+  --bucketfs-host-internal localhost \
   --bucketfs-port 2580 \
+  --bucketfs-port-internal 2580 \
   --bucketfs-user <bfs-user> \
   --bucketfs-password <bfs-password> \
   --bucket default \
   --bucketfs-name bfsdefault \
-  --bucketfs-use-encryption
+  --bucketfs-use-encryption \
+  --ssl-use-cert-validation
 ```
+
+Useful configure flags that apply across backends:
+
+- `--overwrite-backend` / `--no-overwrite-backend`
+- `--db-schema <schema>`
+- `--ssl-cert-path <path>` when a trusted CA file or directory is required
 
 ## Exasol SaaS
 
@@ -129,4 +146,14 @@ scs configure saas ai_config.db \
 
 scs check --connect ai_config.db
 scs show ai_config.db
+```
+
+Local Docker database:
+
+```bash
+scs configure docker-db ai_config.db \
+  --db-schema MY_SCHEMA \
+  --db-mem-size 4 \
+  --db-disk-size 10 \
+  --accelerator none
 ```

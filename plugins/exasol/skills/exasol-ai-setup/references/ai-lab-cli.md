@@ -2,6 +2,11 @@
 
 Use `ai-lab` when the user wants bundled notebooks or to launch JupyterLab.
 
+The top-level `ai-lab` command exposes exactly two subcommands:
+
+- `start`
+- `deploy-notebooks`
+
 ## What `ai-lab` Does
 
 - `ai-lab deploy-notebooks` copies the packaged notebooks into a target directory.
@@ -39,6 +44,17 @@ ai-lab start \
   --ip 0.0.0.0 \
   --no-browser
 ```
+
+Failure cases:
+
+- if JupyterLab is not installed, the command exits with an install hint
+- if `--notebook-dir` points to a file instead of a directory, the command exits with an error
+
+`deploy-notebooks` options:
+
+- `--target-dir` is required
+- `--overwrite` / `--no-overwrite` controls whether existing files are replaced
+- when overwrite is disabled, existing files are preserved and counted as skipped
 
 ## Guidance
 

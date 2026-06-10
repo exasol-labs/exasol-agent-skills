@@ -22,6 +22,7 @@ They show:
 
 ```python
 from pathlib import Path
+from exasol.nb_connector.ai_lab_config import AILabConfig as CKey, StorageBackend
 from exasol.nb_connector.secret_store import Secrets
 
 conf = Secrets(
@@ -46,6 +47,8 @@ conf.save(CKey.db_schema, "MY_SCHEMA")
 host = conf.get(CKey.db_host_name)
 schema = conf.get(CKey.db_schema, "MY_SCHEMA")
 ```
+
+All values are stored as strings, so ports and booleans should also be saved as strings.
 
 ## Common Operations
 
@@ -78,6 +81,14 @@ conf.save(CKey.saas_url, "https://cloud.exasol.com")
 conf.save(CKey.saas_account_id, "<your-account-id>")
 conf.save(CKey.saas_token, "<your-pat>")
 conf.save(CKey.saas_database_name, "my-database")
+```
+
+To confirm which backend is active, call `get_backend(conf)`:
+
+```python
+from exasol.nb_connector.connections import get_backend
+
+print(get_backend(conf))
 ```
 
 ## Important Keys the Skill Should Know

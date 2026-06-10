@@ -10,7 +10,7 @@ pip install "notebook-connector[docker-db]"
 
 ## Core Lifecycle
 
-`bring_itde_up(my_secrets)` starts the Docker DB, pulls the image if needed, and writes the generated DB and BucketFS connection values back into the same `Secrets` store.
+`bring_itde_up(my_secrets)` starts the Docker DB, pulls the image if needed, waits until the database is ready to accept connections, and writes the generated DB and BucketFS connection values back into the same `Secrets` store.
 
 ```python
 from exasol.nb_connector.ai_lab_config import AILabConfig as CKey
@@ -21,7 +21,7 @@ my_secrets.save(CKey.disk_size, "10")
 bring_itde_up(my_secrets)
 ```
 
-After `bring_itde_up`, the store is populated with DB and BucketFS keys, including:
+After `bring_itde_up`, the store is populated with the DB and BucketFS keys needed by the other Notebook Connector APIs, including:
 
 - `db_host_name`, `db_port`, `db_user`, `db_password`
 - `bfs_host_name`, `bfs_port`, `bfs_user`, `bfs_password`
@@ -50,4 +50,5 @@ take_itde_down(my_secrets, stop_db=False)
 
 - Prefer ITDE when the user wants a disposable local environment without SaaS or on-prem infrastructure.
 - `scs configure docker-db` stores sizing preferences only; it does not start Docker by itself.
+- `restart_itde` is preferable to a full re-creation when the container already exists.
 - Use this setup skill for the config and lifecycle, then hand off to DB, BucketFS, or UDF skills for actual usage.
