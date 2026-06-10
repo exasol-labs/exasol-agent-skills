@@ -1,11 +1,11 @@
 ---
 name: exasol-bucketfs
-description: "Exasol BucketFS file system management via exapump CLI. Covers listing, uploading, downloading, and deleting files and directories in BucketFS, BucketFS configuration, bucket structure, and use with UDFs."
+description: "Exasol BucketFS file system management via exapump CLI and notebook-connector Python helpers. Covers listing, uploading, downloading, and deleting files, BucketFS configuration, UDF-visible paths, and BucketFS access from Python."
 ---
 
 # Exasol BucketFS Skill
 
-Trigger when the user mentions **BucketFS**, **exapump**, **bucket**, **bfsdefault**, **upload to BucketFS**, **download from BucketFS**, **delete from BucketFS**, **BucketFS path**, **BucketFS file**, or any BucketFS file management task.
+Trigger when the user mentions **BucketFS**, **exapump**, **bucket**, **bfsdefault**, **upload to BucketFS**, **download from BucketFS**, **delete from BucketFS**, **BucketFS path**, **BucketFS file**, **open_bucketfs_bucket**, **open_bucketfs_location**, **get_udf_bucket_path**, or any BucketFS file management task.
 
 ## BucketFS Concepts
 
@@ -18,10 +18,10 @@ Key concepts:
 - **Local path inside UDFs**: Files are accessible at `/buckets/<service>/<bucket>/<path>` (e.g., `/buckets/bfsdefault/default/models/my_model.pkl`).
 
 Important characteristics:
-- Writes are atomic — a file is either fully written or not at all.
+- Writes are atomic; a file is either fully written or not at all.
 - No transactions and no file locks; the latest write wins.
 - All nodes see identical content after synchronisation.
-- BucketFS is not included in database backups — manage backups separately.
+- BucketFS is not included in database backups; manage backups separately.
 - Not suited for very large datasets due to replication overhead.
 
 ## exapump CLI
@@ -79,21 +79,37 @@ Connection parameters can also be overridden per command via CLI flags (highest 
 
 ---
 
+## notebook-connector Python APIs
+
+When the user asks for BucketFS access via Notebook Connector instead of `exapump`, load:
+
+- `references/notebook-connector-bucketfs.md`
+
+This path covers:
+
+- `open_bucketfs_bucket(...)`
+- `open_bucketfs_location(...)`
+- `get_udf_bucket_path(...)`
+
+If the SCS is not configured yet, activate the **exasol-ai-setup** skill first.
+
+---
+
 ## Commands
 
 ### `ls` — List Contents
 
 ```bash
 exapump bucketfs ls [PATH] [OPTIONS]
-exapump bucketfs ls -r [PATH]            # Recursive listing
+exapump bucketfs ls -r [PATH]
 exapump bucketfs ls --recursive [PATH]
 ```
 
 **Examples:**
 ```bash
-exapump bucketfs ls                      # List bucket root
-exapump bucketfs ls models/             # List a directory
-exapump bucketfs ls -r models/          # Recursively list all files under models/
+exapump bucketfs ls
+exapump bucketfs ls models/
+exapump bucketfs ls -r models/
 ```
 
 ---
@@ -105,7 +121,7 @@ Direction is automatically determined by the source type (local file vs. BucketF
 Upload a local file to BucketFS:
 ```bash
 exapump bucketfs cp <local-file> <bucket-path>
-exapump bucketfs cp <local-file> <bucket-dir>/    # Preserve filename
+exapump bucketfs cp <local-file> <bucket-dir>/
 ```
 
 Download a file from BucketFS to local:
@@ -115,11 +131,11 @@ exapump bucketfs cp <bucket-path> <local-path>
 
 **Examples:**
 ```bash
-exapump bucketfs cp my_model.pkl models/my_model.pkl     # Upload with explicit name
-exapump bucketfs cp my_model.pkl models/                 # Upload, preserve filename
-exapump bucketfs cp library.jar jars/library.jar         # Upload JAR for UDF
-exapump bucketfs cp models/my_model.pkl .                # Download to current dir
-exapump bucketfs cp models/my_model.pkl ./local-copy.pkl # Download with rename
+exapump bucketfs cp my_model.pkl models/my_model.pkl
+exapump bucketfs cp my_model.pkl models/
+exapump bucketfs cp library.jar jars/library.jar
+exapump bucketfs cp models/my_model.pkl .
+exapump bucketfs cp models/my_model.pkl ./local-copy.pkl
 ```
 
 ---
@@ -132,7 +148,7 @@ exapump bucketfs rm <path-in-bucket>
 
 **Examples:**
 ```bash
-exapump bucketfs rm models/old_model.pkl     # Delete a single file
+exapump bucketfs rm models/old_model.pkl
 ```
 
 ---
@@ -163,7 +179,7 @@ exapump bucketfs cp model.pkl models/model.pkl
 Load in Python UDF:
 ```python
 import pickle
-with open('/buckets/bfsdefault/default/models/model.pkl', 'rb') as f:
+with open("/buckets/bfsdefault/default/models/model.pkl", "rb") as f:
     model = pickle.load(f)
 ```
 
@@ -181,8 +197,8 @@ ALTER SESSION SET SCRIPT_LANGUAGES='PYTHON3=localzmq+protobuf:///bfsdefault/defa
 ### Browse and Clean Up BucketFS
 
 ```bash
-exapump bucketfs ls -r                        # See all files
-exapump bucketfs rm old_model.pkl             # Remove an outdated file
+exapump bucketfs ls -r
+exapump bucketfs rm old_model.pkl
 ```
 
 ---

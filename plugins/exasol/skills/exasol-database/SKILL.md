@@ -5,7 +5,7 @@ description: Exasol database interaction via exapump CLI and Exasol SQL. Covers 
 
 # Exasol Database Skill
 
-Trigger when the user mentions **Exasol**, **exapump**, **database import/export**, **CSV/Parquet upload**, **Exasol SQL**, **IMPORT INTO**, **EXPORT INTO**, **EXA_**, or any Exasol database interaction.
+Trigger when the user mentions **Exasol**, **exapump**, **database import/export**, **CSV/Parquet upload**, **Exasol SQL**, **IMPORT INTO**, **EXPORT INTO**, **EXA_**, **open_pyexasol_connection**, **open_sqlalchemy_connection**, **open_ibis_connection**, or any Exasol database interaction.
 
 ## Step 0: Establish Connection
 
@@ -17,7 +17,7 @@ Ensure a working exapump profile before proceeding:
 4. **On failure** → run `exapump profile list` to check available profiles.
    - If profiles exist → present the list and ask the user which to use, then retry with `exapump sql --profile <name> "SELECT 1"` (always place `--profile` after the subcommand).
    - If no profiles → tell the user to run `exapump profile add default` to create one, then retry.
-5. **Never** read or reference the exapump configuration file — it contains credentials.
+5. **Never** read or reference the exapump configuration file; it contains credentials.
 
 ## Routing Algorithm
 
@@ -34,27 +34,30 @@ After the connection is established, determine the task type and load **only** t
    - Load: `references/exapump-reference.md` (CLI usage)
    - Load: `references/exasol-sql.md` (core SQL behavior)
 
-4. **Table design** (DISTRIBUTE BY, PARTITION BY, CREATE TABLE layout):
+4. **Notebook Connector DB helper APIs** (`open_pyexasol_connection`, `open_sqlalchemy_connection`, `open_ibis_connection`):
+   - Load: `references/notebook-connector-connections.md`
+
+5. **Table design** (DISTRIBUTE BY, PARTITION BY, CREATE TABLE layout):
    - Load: `references/table-design.md`
 
-5. **Query profiling / performance** (slow queries, data skew, REORGANIZE):
+6. **Query profiling / performance** (slow queries, data skew, REORGANIZE):
    - Load: `references/query-profiling.md`
 
-6. **Analytics / window functions** (ROW_NUMBER, RANK, LAG/LEAD, QUALIFY, GROUPING SETS):
+7. **Analytics / window functions** (ROW_NUMBER, RANK, LAG/LEAD, QUALIFY, GROUPING SETS):
    - Load: `references/analytics-qualify.md`
 
-7. **Virtual Schemas** (external data sources, adapter scripts):
+8. **Virtual Schemas** (external data sources, adapter scripts):
    - Load: `references/virtual-schemas.md`
 
-8. **BucketFS file management** (upload/download/list/delete files in BucketFS, bfsdefault, bucket paths):
+9. **BucketFS file management** (upload/download/list/delete files in BucketFS, bfsdefault, bucket paths):
    - Activate the **exasol-bucketfs** skill for guidance
 
-9. **UDF development** (CREATE SCRIPT, ExaIterator, SCALAR/SET, Script Language Containers, SLC, exaslct):
+10. **UDF development** (CREATE SCRIPT, ExaIterator, SCALAR/SET, Script Language Containers, SLC, exaslct):
    - Activate the **exasol-udfs** skill for guidance
 
-Multiple routes can apply — load all that match.
+Multiple routes can apply; load all that match.
 
-10. **Before writing any SQL** (applies to routes 2–7):
+11. **Before writing any SQL** (applies to routes 2–8):
    - **Always double-quote every identifier** (column names, table names, schema names) in SELECT, FROM, WHERE, GROUP BY, ORDER BY, and JOIN clauses — without exception
    - This preserves mixed-case names and prevents reserved-keyword errors in a single rule
    - Do NOT quote SQL keywords, functions, or aliases — only object identifiers
