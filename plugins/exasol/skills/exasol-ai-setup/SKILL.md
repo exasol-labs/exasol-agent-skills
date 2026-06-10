@@ -64,6 +64,24 @@ Multiple routes can apply. Load all matching references before responding.
   - `scs check --connect <scs-file>`, or
   - a short Python connection smoke test from `scripts/validate_config.py`
 
+## Validation
+
+After writing or updating config, verify it before handing off to downstream skills:
+
+- terminal-first path: run `scs check --connect ai_config.db`
+- Python path: run `scripts/validate_config.py`
+- quick backend-only check: run `scripts/check_backend.py` from **exasol-notebook-connections**
+
+Success signals:
+
+- the backend resolves to the expected value (`onprem` or `saas`)
+- the DB smoke test can run `SELECT 1`
+- BucketFS resolution succeeds from the same store
+
+Expected failure mode:
+
+- if the store still contains template values such as `my-db-host` or placeholder SaaS IDs/PATs, connection validation should fail until the user replaces them with real values
+
 ## Safety Rules
 
 - Do not guess SaaS account IDs, PATs, passwords, or BucketFS credentials.
