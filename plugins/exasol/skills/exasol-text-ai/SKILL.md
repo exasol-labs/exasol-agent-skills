@@ -76,7 +76,7 @@ initialize_text_ai_extension(
 The `Extraction` class opens a DB connection, activates the TXAIE language
 container for the session, and runs the configured extraction workflow.
 
-### Named entity extraction
+### Named Entity Extraction
 
 ```python
 from exasol.nb_connector.text_ai_extension_wrapper import Extraction
@@ -89,7 +89,7 @@ extraction = Extraction(
 extraction.run(my_secrets)
 ```
 
-### Pipeline extraction
+### Pipeline Extraction
 
 Use this when the user wants a reusable preprocessing workflow rather than a
 single extractor.
@@ -122,7 +122,7 @@ extraction = Extraction(
 extraction.run(my_secrets)
 ```
 
-### Branch extraction
+### Branch Extraction
 
 Use this when the workflow should fan out into multiple extractor branches from
 the same source data.
