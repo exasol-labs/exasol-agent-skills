@@ -1,6 +1,8 @@
 # notebook-connector Setup via `Secrets`
 
-Use the Python API when the user wants notebook cells or automation.
+Use the Python API when the user wants notebook cells, scripts, or automation.
+
+`Secrets` is the shared configuration object used by every Notebook Connector API.
 
 ## Executable Templates
 
@@ -11,21 +13,81 @@ Use these scripts as the primary editable examples:
 
 They show:
 
-- how to open a `Secrets` store
-- how to save notebook-connector configuration values
+- how to open or create a `Secrets` store
+- how to save notebook-connector configuration values via `conf.save(...)`
+- how to select the backend with `StorageBackend`
 - how to close the store cleanly
+
+## Open or Create a Store
+
+```python
+from pathlib import Path
+from exasol.nb_connector.secret_store import Secrets
+
+conf = Secrets(
+    db_file=Path("ai_config.db"),
+    master_password="my-strong-password",
+)
+```
+
+If the file already exists, the same master password must be used again.
+
+## Common Save / Read Pattern
+
+```python
+from exasol.nb_connector.ai_lab_config import AILabConfig as CKey
+
+conf.save(CKey.db_host_name, "192.168.1.10")
+conf.save(CKey.db_port, "8563")
+conf.save(CKey.db_user, "sys")
+conf.save(CKey.db_password, "exasol")
+conf.save(CKey.db_schema, "MY_SCHEMA")
+
+host = conf.get(CKey.db_host_name)
+schema = conf.get(CKey.db_schema, "MY_SCHEMA")
+```
 
 ## Common Operations
 
 Typical `Secrets` operations the agent may still mention inline:
 
 - `conf.get(...)`
+- `conf.save(...)`
 - `conf.keys()`
 - `conf.items()`
 - `conf.remove(...)`
 - `conf.close()`
 
 Use these operations when the user wants to inspect, update, or remove individual values after the initial setup script has been created.
+
+## Backend Selection
+
+Use `storage_backend` to tell Notebook Connector whether to resolve connections as on-prem or SaaS:
+
+```python
+from exasol.nb_connector.ai_lab_config import AILabConfig as CKey, StorageBackend
+
+conf.save(CKey.storage_backend, StorageBackend.onprem.name)
+conf.save(CKey.storage_backend, StorageBackend.saas.name)
+```
+
+Typical SaaS keys:
+
+```python
+conf.save(CKey.saas_url, "https://cloud.exasol.com")
+conf.save(CKey.saas_account_id, "<your-account-id>")
+conf.save(CKey.saas_token, "<your-pat>")
+conf.save(CKey.saas_database_name, "my-database")
+```
+
+## Important Keys the Skill Should Know
+
+- DB: `db_host_name`, `db_port`, `db_user`, `db_password`, `db_schema`
+- TLS: `db_encryption`, `bfs_encryption`, `cert_vld`, `trusted_ca`, `client_cert`, `client_key`
+- BucketFS: `bfs_host_name`, `bfs_port`, `bfs_service`, `bfs_bucket`, `bfs_user`, `bfs_password`
+- SaaS: `saas_url`, `saas_account_id`, `saas_database_id`, `saas_database_name`, `saas_token`, `storage_backend`
+- ITDE: `mem_size`, `disk_size`, `accelerator`
+- Extensions: `huggingface_token`, `bfs_connection_name`, `bfs_model_subdir`
 
 ## Use This Path When
 

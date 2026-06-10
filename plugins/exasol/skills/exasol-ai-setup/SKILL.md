@@ -1,6 +1,6 @@
 ---
 name: exasol-ai-setup
-description: "Set up notebook-connector configuration for Exasol AI workflows. Covers the scs CLI, the Secrets Python API, configuration validation, and choosing the right setup path before using AI-Lab, ITDE, Transformers Extension, or Text AI Extension."
+description: "Set up notebook-connector configuration for Exasol AI workflows. Covers the scs CLI, the Secrets Python API, configuration validation, ai-lab and ITDE workflows, and preparing Notebook Connector state before BucketFS, SLC, Transformers Extension, Text AI, or cloud-storage work."
 ---
 
 # Exasol AI Setup Skill
@@ -11,46 +11,48 @@ Trigger when the user mentions **notebook-connector**, **SCS**, **scs**, **secur
 
 This skill establishes the configuration that later notebook-connector skills depend on.
 
-It does **not** deploy AI extensions itself. After configuration is complete:
+It establishes the secure configuration and first-run workflow that later
+Notebook Connector tasks depend on.
 
-- activate **exasol-ai-lab** for bundled notebooks or JupyterLab
-- activate **exasol-itde** for the local Docker database workflow
-- activate **exasol-notebook-connections** for connection helper code
-- activate **exasol-transformers** for the Transformers Extension
-- activate **exasol-text-ai** for the Text AI Extension
+After configuration is complete:
+
+- use this skill for `ai-lab`, `scs`, `Secrets`, ITDE, Transformers Extension, Text AI Extension, and cloud-storage-extension setup questions
+- activate **exasol-database** for SQL work and Notebook Connector DB connection helpers
+- activate **exasol-bucketfs** for BucketFS file access patterns
+- activate **exasol-udfs** for Script Language Containers and UDF activation
 
 ## Routing Algorithm
 
 Choose the narrowest path that matches the user request:
 
 1. **CLI-based configuration**
-   - Trigger phrases: `scs`, `configure onprem`, `configure saas`, `configure docker-db`, `scs check`, `scs show`
+   - Trigger phrases: `scs`, `configure onprem`, `configure saas`, `configure docker-db`, `scs check`, `scs show`, `SCS_FILE`, `SCS_MASTER_PASSWORD`
    - Load: `references/scs-cli.md`
 
 2. **Python-based configuration**
-   - Trigger phrases: `Secrets`, `AILabConfig`, `save config in python`, `notebook cell`, `script`
+   - Trigger phrases: `Secrets`, `AILabConfig`, `StorageBackend`, `save config in python`, `notebook cell`, `script`
    - Load: `references/secrets-python.md`
    - Use scripts from: `scripts/`
 
 3. **Validation / smoke tests**
-   - Trigger phrases: `check config`, `verify connection`, `validate notebook-connector`, `smoke test`
+   - Trigger phrases: `check config`, `verify connection`, `validate notebook-connector`, `smoke test`, `open_pyexasol_connection`, `get_backend`
    - Load: `references/validation.md`
    - Use scripts from: `scripts/`
 
-4. **JupyterLab / bundled notebooks**
-   - Activate **exasol-ai-lab**
+4. **AI Lab CLI / bundled notebooks**
+   - Trigger phrases: `ai-lab`, `deploy notebooks`, `jupyterlab`, `start notebooks`
+   - Load: `references/ai-lab-cli.md`
 
 5. **Local Docker DB / ITDE**
-   - Activate **exasol-itde**
+   - Trigger phrases: `ITDE`, `docker-db`, `bring_itde_up`, `restart_itde`, `take_itde_down`
+   - Load: `references/itde.md`
 
-6. **Connection helper APIs**
-   - Activate **exasol-notebook-connections**
+6. **Transformers / Text AI / Cloud Storage setup**
+   - Trigger phrases: `initialize_te_extension`, `initialize_text_ai_extension`, `deploy_license`, `cloud-storage-extension`, `setup_scripts`
+   - Load: `references/extensions.md`
 
-7. **Transformers Extension**
-   - Activate **exasol-transformers**
-
-8. **Text AI Extension**
-   - Activate **exasol-text-ai**
+7. **Connection helper APIs, BucketFS, or SLCs**
+   - Activate **exasol-database**, **exasol-bucketfs**, or **exasol-udfs** as needed for the deeper API surface after SCS setup is done
 
 Multiple routes can apply. Load all matching references before responding.
 
@@ -58,7 +60,7 @@ Multiple routes can apply. Load all matching references before responding.
 
 - Prefer the **CLI path** when the user wants reproducible terminal steps.
 - Prefer the **Python path** when the user wants notebook cells, automation, or agent-generated code.
-- Before handing off to TE or TXAIE, run either:
+- Before handing off to DB helpers, BucketFS helpers, TE, TXAIE, or SLC work, run either:
   - `scs check --connect <scs-file>`, or
   - a short Python connection smoke test from `scripts/validate_config.py`
 

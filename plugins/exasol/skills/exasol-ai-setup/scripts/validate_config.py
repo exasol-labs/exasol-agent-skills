@@ -3,9 +3,11 @@
 from pathlib import Path
 
 from exasol.nb_connector.connections import (
+    get_backend,
     open_bucketfs_bucket,
     open_pyexasol_connection,
 )
+from exasol.nb_connector.ai_lab_config import AILabConfig as CKey
 from exasol.nb_connector.secret_store import Secrets
 
 
@@ -17,8 +19,11 @@ def main() -> None:
         master_password="my-master-password",
     )
 
-    # Verify that the stored DB credentials are sufficient to open a working pyexasol connection.
-    with open_pyexasol_connection(conf) as connection:
+    # Print the configured backend so the caller can confirm on-prem vs. SaaS resolution.
+    print(get_backend(conf))
+
+    # open_pyexasol_connection() does not apply db_schema automatically, so pass it explicitly.
+    with open_pyexasol_connection(conf, schema=conf.get(CKey.db_schema)) as connection:
         print(connection.execute("SELECT 1").fetchone())
 
     # Verify that the same config also resolves a BucketFS bucket object successfully.
