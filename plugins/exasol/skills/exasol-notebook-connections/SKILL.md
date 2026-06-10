@@ -22,6 +22,24 @@ Trigger when the user mentions **open_pyexasol_connection**, **open_sqlalchemy_c
 3. **Config not set up yet**
    - Activate **exasol-ai-setup**
 
+## Validation
+
+Validate the configured helper path in increasing order:
+
+- run `scripts/check_backend.py` first to confirm the store resolves the expected backend
+- then run `scripts/open_pyexasol.py`, `scripts/open_sqlalchemy.py`, `scripts/open_ibis.py`, or `scripts/open_bucketfs.py` for the helper family the user needs
+
+Success signals:
+
+- `open_pyexasol.py` can run `SELECT 1`
+- `open_sqlalchemy.py` can open an engine and execute a minimal statement
+- `open_ibis.py` can list tables
+- `open_bucketfs.py` can resolve the bucket object and UDF-visible path
+
+Expected failure mode:
+
+- if the config still contains placeholder hostnames, PATs, or database IDs, these checks should fail until the real values are present
+
 ## Notes
 
 - This skill assumes the secure config store is already populated.
