@@ -17,8 +17,8 @@ ai-lab deploy-notebooks --help
 
 `ai-lab start` launches `python -m jupyter lab`. Before JupyterLab starts,
 Notebook Connector copies the bundled notebooks into the notebook root
-directory, preserves existing files, and exports `NOTEBOOKS` for the launched
-session.
+directory if they are not present yet, preserves existing files, and exports
+`NOTEBOOKS` for the launched session.
 
 ```bash
 ai-lab start
@@ -56,5 +56,6 @@ ai-lab deploy-notebooks --target-dir ~/work/notebooks --overwrite
 Behavior:
 
 - `--target-dir` is required
+- `--overwrite` / `--no-overwrite` controls whether existing files are replaced
 - existing files are preserved unless `--overwrite` is used
 - the command reports how many files were copied or skipped
