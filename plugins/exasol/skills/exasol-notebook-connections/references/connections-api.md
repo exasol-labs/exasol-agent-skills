@@ -1,12 +1,59 @@
 # notebook-connector Connection Helpers
 
+All helpers accept a `Secrets` object and derive their connection parameters
+from it automatically.
+
+## Executable Templates
+
 Use the scripts in `scripts/` as the primary runnable/editable examples:
 
-- `check_backend.py` shows how to detect whether the stored config targets on-prem, SaaS, or another supported backend.
-- `open_pyexasol.py` shows the minimal DB connectivity check using notebook-connector's pyexasol helper.
-- `open_sqlalchemy.py` shows how to construct and use a SQLAlchemy engine from notebook-connector config.
-- `open_ibis.py` shows how to open an Ibis connection and run a simple metadata call.
-- `open_bucketfs.py` shows how to resolve the BucketFS connection, bucket object, and a concrete location inside the bucket.
+- `check_backend.py`
+- `open_pyexasol.py`
+- `open_sqlalchemy.py`
+- `open_ibis.py`
+- `open_bucketfs.py`
+
+## Database Helpers
+
+### `open_pyexasol_connection(conf, **kwargs)`
+
+- best for raw SQL execution and UDF-related work
+- supports context-manager usage
+- does **not** apply `db_schema` automatically
+- pass `schema=conf.get(CKey.db_schema)` when a default schema is needed
+
+### `open_sqlalchemy_connection(conf, **kwargs)`
+
+- returns a SQLAlchemy engine
+- applies `db_schema` automatically
+- use it for `pandas.read_sql`, ORM work, or tooling that expects SQLAlchemy
+
+### `open_ibis_connection(conf, **kwargs)`
+
+- returns an Ibis connection backed by the Exasol dialect
+- applies `db_schema` automatically
+- use it for dataframe-like query composition and metadata inspection
+
+## BucketFS Helpers
+
+### `open_bucketfs_connection(conf)`
+
+- resolves the low-level BucketFS client connection
+
+### `open_bucketfs_bucket(conf)`
+
+- resolves the configured BucketFS bucket object
+- use `bucket.upload(target_path, file_object)` to stream files into BucketFS
+
+### `open_bucketfs_location(conf, path=None)`
+
+- returns a path-like BucketFS location
+- use `/` to join paths, `.write(...)` to upload bytes, and `.read()` to fetch them
+
+### `get_udf_bucket_path(conf)`
+
+- returns the absolute path Exasol UDFs use to read from the configured bucket
+- append the uploaded relative path to build the final `/buckets/...` UDF-visible path
 
 ## Helper Values
 
@@ -22,5 +69,3 @@ The agent should know these helpers exist and mention them when relevant:
 - `open_pyexasol_connection(conf)`
 - `open_sqlalchemy_connection(conf)`
 - `open_ibis_connection(conf)`
-
-These names act as a capability index for the agent. Use the scripts when the user wants runnable code, and use this list when the user only needs to know which helper to call.
