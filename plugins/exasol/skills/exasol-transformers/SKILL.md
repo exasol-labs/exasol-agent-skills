@@ -222,6 +222,24 @@ SELECT MY_SCHEMA.TE_LIST_MODELS_UDF('TE_BFS_SYS', 'models');
 SELECT MY_SCHEMA.TE_DELETE_MODEL_UDF('TE_BFS_SYS', 'models', 'gpt2');
 ```
 
+## Validation
+
+Validate setup in layers:
+
+- after initialization, run `print(get_activation_sql(my_secrets))` and confirm the returned SQL contains the TE language definition
+- if the SLC is already present, re-run `deploy_scripts(...)` as a lightweight script-level validation
+- after model upload and activation, run one minimal TE SQL UDF call such as `TE_LIST_MODELS_UDF`
+
+Success signals:
+
+- activation SQL is present and non-empty
+- script deployment completes without language-activation errors
+- at least one TE UDF call returns rows instead of missing-language or missing-script errors
+
+Expected failure mode:
+
+- if DB, BucketFS, or Hugging Face settings are incomplete, initialization or UDF execution should fail until **exasol-ai-setup** has been completed with real values
+
 ## Guidance
 
 - Use **exasol-ai-setup** when SCS, DB, or BucketFS values are still missing.
