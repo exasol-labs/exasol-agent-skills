@@ -21,7 +21,7 @@ pip install exasol-notebook-connector exasol-text-ai-extension
 
 The Text AI extension requires a license before DB objects can be created.
 
-Use the built-in community license:
+Use the built-in community license for non-commercial and evaluation use:
 
 ```python
 from exasol.nb_connector.text_ai_extension_wrapper import deploy_license
