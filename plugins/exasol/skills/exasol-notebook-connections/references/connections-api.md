@@ -45,7 +45,7 @@ Use the scripts in `scripts/` as the primary runnable/editable examples:
 - resolves the configured BucketFS bucket object
 - use `bucket.upload(target_path, file_object)` to stream files into BucketFS
 
-### `open_bucketfs_location(conf, path=None)`
+### `open_bucketfs_location(conf)`
 
 - returns a path-like BucketFS location
 - use `/` to join paths, `.write(...)` to upload bytes, and `.read()` to fetch them
@@ -65,7 +65,7 @@ The agent should know these helpers exist and mention them when relevant:
 - `get_udf_bucket_path(conf)`
 - `open_bucketfs_connection(conf)`
 - `open_bucketfs_bucket(conf)`
-- `open_bucketfs_location(conf, "...")`
+- `open_bucketfs_location(conf)`
 - `open_pyexasol_connection(conf)`
 - `open_sqlalchemy_connection(conf)`
 - `open_ibis_connection(conf)`
