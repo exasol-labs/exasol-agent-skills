@@ -11,12 +11,6 @@ Trigger when the user mentions **Text AI Extension**, **TXAIE**, **deploy_licens
 
 The secure config store must already contain complete DB and BucketFS values. If not, activate **exasol-ai-setup** first.
 
-Install the Notebook Connector Text AI extra:
-
-```bash
-pip install exasol-notebook-connector exasol-text-ai-extension
-```
-
 ## Step 1: Deploy a License
 
 The Text AI extension requires a license before DB objects can be created.
