@@ -88,7 +88,7 @@ To confirm which backend is active, call `get_backend(conf)`:
 ```python
 from exasol.nb_connector.connections import get_backend
 
-print(get_backend(conf))
+print(get_backend(conf).name)
 ```
 
 ## Important Keys the Skill Should Know
@@ -97,11 +97,11 @@ print(get_backend(conf))
 - TLS: `db_encryption`, `bfs_encryption`, `cert_vld`, `trusted_ca`, `client_cert`, `client_key`
 - BucketFS: `bfs_host_name`, `bfs_port`, `bfs_service`, `bfs_bucket`, `bfs_user`, `bfs_password`
 - SaaS: `saas_url`, `saas_account_id`, `saas_database_id`, `saas_database_name`, `saas_token`, `storage_backend`
-- ITDE: `mem_size`, `disk_size`, `accelerator`
-- Extensions: `huggingface_token`, `bfs_connection_name`, `bfs_model_subdir`
+- Some downstream notebook-connector skills may use additional ITDE or extension-specific keys after setup is complete.
 
 ## Use This Path When
 
 - the user wants copy-pasteable notebook cells
 - the agent is generating a Python script
 - the workflow is part of a larger automated setup
+- downstream notebook-connector skills still need a populated `Secrets` store first

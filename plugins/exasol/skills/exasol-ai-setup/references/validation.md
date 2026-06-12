@@ -1,15 +1,6 @@
 # Notebook Connector Validation
 
-Use these checks before handing off to extension-deployment skills.
-
-## CLI Validation
-
-Use this pair when the user wants a terminal-first smoke test of the stored configuration.
-
-```bash
-scs check ai_config.db
-scs check --connect ai_config.db
-```
+Use these checks before handing off to downstream notebook-connector skills.
 
 ## Python Validation
 
@@ -19,34 +10,22 @@ Use the executable template:
 
 It demonstrates:
 
-- opening a pyexasol connection from notebook-connector config
-- explicitly passing `schema=` to `open_pyexasol_connection(...)`
-- opening a BucketFS object from the same config
 - reading which backend is active
-- doing a minimal smoke test before continuing
+- checking that the required values for that backend are present in the `Secrets` store
+- failing early when placeholder values are still present
 
-This is the preferred path when the user wants a notebook cell or Python script instead of a CLI check.
+This is the preferred validation path for this skill.
 
 Typical pattern:
 
 ```python
-from exasol.nb_connector.connections import (
-    get_backend,
-    open_bucketfs_bucket,
-    open_pyexasol_connection,
-)
+from exasol.nb_connector.connections import get_backend
 
-print(get_backend(conf))
-with open_pyexasol_connection(conf, schema="MY_SCHEMA") as connection:
-    print(connection.execute("SELECT 1").fetchone())
-
-bucket = open_bucketfs_bucket(conf)
-print(bucket)
+print(get_backend(conf).name)
 ```
 
 ## Guidance
 
-- Prefer `scs check --connect` for terminal-first workflows.
 - Prefer the Python smoke test for notebook or automation workflows.
-- Remember that `open_pyexasol_connection()` does not apply `db_schema` automatically; pass `schema="MY_SCHEMA"` explicitly.
-- If validation fails, fix config first instead of continuing to TE or TXAIE deployment.
+- If validation succeeds, hand off DB and BucketFS helper checks to **exasol-notebook-connections**.
+- If validation fails, fix config first instead of continuing to ITDE, TE, or TXAIE workflows.
