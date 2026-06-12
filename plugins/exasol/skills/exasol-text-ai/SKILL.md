@@ -7,6 +7,16 @@ description: "Deploy and use the Exasol Text AI Extension with notebook-connecto
 
 Trigger when the user mentions **Text AI Extension**, **TXAIE**, **deploy_license**, **initialize_text_ai_extension**, **Extraction**, **named entity extraction**, **zero-shot classification**, **feature extraction**, or **PYTHON3_TXAIE**.
 
+## Routing Algorithm
+
+1. **License and extension setup**
+   - Trigger phrases: `deploy_license`, `initialize_text_ai_extension`, `txaie`
+   - Load: `references/text-ai-extension.md`
+
+2. **Extraction workflows and validation**
+   - Trigger phrases: `Extraction`, `NamedEntityExtractor`, `PipelineExtractor`, `BranchExtractor`, `StandardExtractor`
+   - Load: `references/text-ai-extension.md`
+
 ## Prerequisites
 
 The secure config store must already contain complete DB and BucketFS values. If not, activate **exasol-ai-setup** first.
@@ -86,7 +96,9 @@ extraction.run(my_secrets)
 ### Pipeline Extraction
 
 Use this when the user wants a reusable preprocessing workflow rather than a
-single extractor.
+single extractor. In the current notebook-connector API and docs, the reusable
+default preprocessing extractor is `StandardExtractor`; there is no separate
+`DefaultExtractor` class.
 
 ```python
 from exasol.nb_connector.text_ai_extension_wrapper import Extraction
