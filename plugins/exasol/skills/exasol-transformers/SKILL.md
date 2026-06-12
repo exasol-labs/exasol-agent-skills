@@ -11,11 +11,11 @@ Trigger when the user mentions **Transformers Extension**, **TE extension**, **i
 
 The secure config store must already contain complete DB and BucketFS values. If not, activate **exasol-ai-setup** first.
 
-Install the Notebook Connector transformers extra:
+The documented extension prerequisites are:
 
-```bash
-pip install "notebook-connector[transformers]"
-```
+- DB values: `db_host_name`, `db_port`, `db_user`, `db_password`, `db_schema`
+- BucketFS values: `bfs_host_name`, `bfs_port`, `bfs_service`, `bfs_bucket`, `bfs_user`, `bfs_password`
+- optional: `huggingface_token` for gated or private models
 
 ## Main Entry Points
 
@@ -82,10 +82,9 @@ Notebook Connector exposes model-upload helper APIs in
 `exasol.nb_connector.transformers_extension_wrapper` for this part of the
 workflow, including `upload_model(...)`.
 
-Use the bundled Transformers notebooks as the source of truth for complete
-model-loading workflows. For programmatic setup, initialize the extension first
-and then ensure the desired model artifacts are present under the configured
-model subdirectory in BucketFS.
+For programmatic setup, initialize the extension first and then ensure the
+desired model artifacts are present under the configured model subdirectory in
+BucketFS.
 
 If the user needs private or gated Hugging Face models, store
 `huggingface_token` in the SCS before initialization so notebook-connector can
