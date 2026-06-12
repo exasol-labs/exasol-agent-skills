@@ -7,6 +7,16 @@ description: "Deploy and use the Exasol Transformers Extension for NLP inference
 
 Trigger when the user mentions **Transformers Extension**, **TE extension**, **initialize_te_extension**, **deploy_scripts**, **Hugging Face models in Exasol**, **TE UDF**, **PYTHON3_TE**, or NLP inference inside Exasol.
 
+## Routing Algorithm
+
+1. **Extension setup and model handling**
+   - Trigger phrases: `initialize_te_extension`, `deploy_scripts`, `upload_model`, `huggingface_token`
+   - Load: `references/transformers-extension.md`
+
+2. **SQL UDF usage and validation**
+   - Trigger phrases: `TE_TEXT_GENERATION_UDF`, `TE_DELETE_MODEL_UDF`, `get_activation_sql`, `transformers sql udf`
+   - Load: `references/transformers-extension.md`
+
 ## Prerequisites
 
 The secure config store must already contain complete DB and BucketFS values. If not, activate **exasol-ai-setup** first.
