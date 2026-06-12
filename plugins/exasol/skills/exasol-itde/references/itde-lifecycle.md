@@ -1,11 +1,5 @@
 # ITDE Lifecycle
 
-Install the Docker extra:
-
-```bash
-pip install "notebook-connector[docker-db]"
-```
-
 ## What ITDE Handles
 
 The Integration Test Docker Environment starts a local Exasol database in
