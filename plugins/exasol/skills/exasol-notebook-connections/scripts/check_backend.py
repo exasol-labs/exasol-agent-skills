@@ -14,8 +14,8 @@ def main() -> None:
         master_password="my-master-password",
     )
 
-    # Print the resolved backend, for example on-prem or SaaS.
-    print(get_backend(conf))
+    # Print the resolved backend, for example onprem or saas.
+    print(get_backend(conf).name)
 
     # Close the encrypted store after the lookup.
     conf.close()

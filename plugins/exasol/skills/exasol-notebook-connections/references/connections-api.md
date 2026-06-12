@@ -2,10 +2,14 @@
 
 All helpers accept a `Secrets` object and derive their connection parameters
 from it automatically.
-
 Connection helpers forward `**kwargs` to the underlying client library, so the
 agent can override individual parameters without rebuilding the whole
 connection config.
+
+Before opening a helper, make sure the `Secrets` store already contains the
+required DB or BucketFS settings. For BucketFS, `bfs_host_name` falls back to
+`db_host_name` when absent. When the store is configured for SaaS, the same
+helpers resolve the database and BucketFS access through the SaaS settings.
 
 ## Executable Templates
 
@@ -43,11 +47,6 @@ Use the scripts in `scripts/` as the primary runnable/editable examples:
 
 ## BucketFS Helpers
 
-### `open_bucketfs_connection(conf)`
-
-- deprecated helper
-- prefer `open_bucketfs_bucket(conf)` unless the user explicitly asks for the legacy name
-
 ### `open_bucketfs_bucket(conf)`
 
 - resolves the configured BucketFS bucket object
@@ -79,8 +78,6 @@ print(udf_path)
 The agent should know these helpers exist and mention them when relevant:
 
 - `get_backend(conf)`
-- `get_external_host(conf)`
-- `get_saas_database_id(conf)`
 - `get_udf_bucket_path(conf)`
 - `open_bucketfs_bucket(conf)`
 - `open_bucketfs_location(conf)`
