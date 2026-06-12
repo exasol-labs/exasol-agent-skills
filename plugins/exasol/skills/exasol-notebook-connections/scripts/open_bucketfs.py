@@ -1,5 +1,6 @@
 """Open BucketFS bucket helpers and locations from notebook-connector config."""
 
+import os
 from pathlib import Path
 
 from exasol.nb_connector.connections import (
@@ -14,7 +15,7 @@ def main() -> None:
     """Resolve the BucketFS bucket object, one sample location, and the UDF path."""
     conf = Secrets(
         db_file=Path("ai_config.db"),
-        master_password="my-master-password",
+        master_password=os.environ["SCS_MASTER_PASSWORD"],
     )
 
     print(open_bucketfs_bucket(conf))

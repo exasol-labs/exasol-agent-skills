@@ -1,5 +1,6 @@
 """Open an Ibis connection from notebook-connector config and inspect it."""
 
+import os
 from pathlib import Path
 
 from exasol.nb_connector.connections import open_ibis_connection
@@ -11,7 +12,7 @@ def main() -> None:
     # Open the secure config store that contains the database connection values.
     conf = Secrets(
         db_file=Path("ai_config.db"),
-        master_password="my-master-password",
+        master_password=os.environ["SCS_MASTER_PASSWORD"],
     )
 
     # Open an Ibis connection using notebook-connector's configured backend details.

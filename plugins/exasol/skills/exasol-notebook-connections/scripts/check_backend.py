@@ -1,5 +1,6 @@
 """Detect which backend type the stored notebook-connector config targets."""
 
+import os
 from pathlib import Path
 
 from exasol.nb_connector.connections import get_backend
@@ -11,7 +12,7 @@ def main() -> None:
     # Open the secure config store so notebook-connector can inspect the configured backend type.
     conf = Secrets(
         db_file=Path("ai_config.db"),
-        master_password="my-master-password",
+        master_password=os.environ["SCS_MASTER_PASSWORD"],
     )
 
     # Print the resolved backend, for example onprem or saas.
