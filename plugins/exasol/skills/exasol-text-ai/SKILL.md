@@ -96,9 +96,7 @@ extraction.run(my_secrets)
 ### Pipeline Extraction
 
 Use this when the user wants a reusable preprocessing workflow rather than a
-single extractor. In the current notebook-connector API and docs, the reusable
-default preprocessing extractor is `StandardExtractor`; there is no separate
-`DefaultExtractor` class.
+single extractor.
 
 ```python
 from exasol.nb_connector.text_ai_extension_wrapper import Extraction
