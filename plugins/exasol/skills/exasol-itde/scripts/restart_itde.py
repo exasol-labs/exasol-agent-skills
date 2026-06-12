@@ -1,5 +1,6 @@
 """Restart the managed ITDE-backed Exasol instance."""
 
+import os
 from pathlib import Path
 
 from exasol.nb_connector.itde_manager import restart_itde
@@ -11,7 +12,7 @@ def main() -> None:
     # Open the secure config store that identifies the managed ITDE instance.
     conf = Secrets(
         db_file=Path("ai_config.db"),
-        master_password="my-master-password",
+        master_password=os.environ["SCS_MASTER_PASSWORD"],
     )
 
     # Restart the managed local Exasol container using the stored notebook-connector configuration.

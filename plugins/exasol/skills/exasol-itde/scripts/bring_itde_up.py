@@ -1,5 +1,6 @@
 """Start a local ITDE-backed Exasol instance from notebook-connector config."""
 
+import os
 from pathlib import Path
 
 from exasol.nb_connector.ai_lab_config import AILabConfig as CKey
@@ -12,7 +13,7 @@ def main() -> None:
     # Open the secure config store that will hold the local Docker DB settings.
     conf = Secrets(
         db_file=Path("ai_config.db"),
-        master_password="my-master-password",
+        master_password=os.environ["SCS_MASTER_PASSWORD"],
     )
 
     # Save the requested resource sizing before starting the ITDE container.
