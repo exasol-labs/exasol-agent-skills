@@ -1,5 +1,6 @@
 """Validate that the Secrets store contains the core notebook-connector setup values."""
 
+import os
 from pathlib import Path
 
 from exasol.nb_connector.ai_lab_config import AILabConfig as CKey, StorageBackend
@@ -11,7 +12,7 @@ def main() -> None:
     """Validate that the stored configuration contains the required setup keys."""
     conf = Secrets(
         db_file=Path("ai_config.db"),
-        master_password="my-master-password",
+        master_password=os.environ["SCS_MASTER_PASSWORD"],
     )
 
     try:

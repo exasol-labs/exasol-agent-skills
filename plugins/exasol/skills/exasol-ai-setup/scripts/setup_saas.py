@@ -1,5 +1,6 @@
 """Create an Exasol SaaS notebook-connector configuration in a Secrets store."""
 
+import os
 from pathlib import Path
 
 from exasol.nb_connector.ai_lab_config import AILabConfig as CKey, StorageBackend
@@ -11,7 +12,7 @@ def main() -> None:
     # Open the secure config store that will hold the SaaS setup values.
     conf = Secrets(
         db_file=Path("ai_config.db"),
-        master_password="my-master-password",
+        master_password=os.environ["SCS_MASTER_PASSWORD"],
     )
 
     # Mark the store as SaaS so Notebook Connector resolves connections through the SaaS API.

@@ -21,17 +21,19 @@ They show:
 ## Open or Create a Store
 
 ```python
+import os
 from pathlib import Path
 from exasol.nb_connector.ai_lab_config import AILabConfig as CKey, StorageBackend
 from exasol.nb_connector.secret_store import Secrets
 
 conf = Secrets(
     db_file=Path("ai_config.db"),
-    master_password="my-strong-password",
+    master_password=os.environ["SCS_MASTER_PASSWORD"],
 )
 ```
 
 If the file already exists, the same master password must be used again.
+Using an environment variable keeps the password out of the script body.
 
 ## Common Save/Read Pattern
 
