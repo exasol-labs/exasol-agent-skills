@@ -22,7 +22,7 @@ def main() -> None:
     conf.save(CKey.saas_url, "https://cloud.exasol.com")
     conf.save(CKey.saas_account_id, "<account-id>")
     conf.save(CKey.saas_database_name, "<database-name>")
-    conf.save(CKey.saas_token, "<personal-access-token>")
+    conf.save(CKey.saas_token, os.environ["EXASOL_SAAS_TOKEN"])
     conf.save(CKey.db_schema, "AI_SCHEMA")
     conf.save(CKey.cert_vld, "True")
 

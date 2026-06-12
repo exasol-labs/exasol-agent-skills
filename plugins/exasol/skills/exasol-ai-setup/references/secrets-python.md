@@ -35,6 +35,15 @@ conf = Secrets(
 If the file already exists, the same master password must be used again.
 Using an environment variable keeps the password out of the script body.
 
+For the setup templates, keep non-sensitive values such as hostnames, ports, schema,
+bucket names, service names, and the SaaS URL as plain values. Read sensitive values
+from environment variables instead:
+
+- `SCS_MASTER_PASSWORD`
+- `EXASOL_DB_PASSWORD`
+- `EXASOL_BFS_PASSWORD`
+- `EXASOL_SAAS_TOKEN`
+
 ## Common Save/Read Pattern
 
 ```python
@@ -43,7 +52,7 @@ from exasol.nb_connector.ai_lab_config import AILabConfig as CKey
 conf.save(CKey.db_host_name, "192.168.1.10")
 conf.save(CKey.db_port, "8563")
 conf.save(CKey.db_user, "sys")
-conf.save(CKey.db_password, "exasol")
+conf.save(CKey.db_password, os.environ["EXASOL_DB_PASSWORD"])
 conf.save(CKey.db_schema, "MY_SCHEMA")
 
 host = conf.get(CKey.db_host_name)
@@ -51,6 +60,15 @@ schema = conf.get(CKey.db_schema, "MY_SCHEMA")
 ```
 
 All values are stored as strings, so ports and booleans should also be saved as strings.
+
+For example:
+
+```bash
+export SCS_MASTER_PASSWORD='replace-with-a-strong-password'
+export EXASOL_DB_PASSWORD='replace-with-db-password'
+export EXASOL_BFS_PASSWORD='replace-with-bucketfs-password'
+export EXASOL_SAAS_TOKEN='replace-with-personal-access-token'
+```
 
 ## Common Operations
 
@@ -81,7 +99,7 @@ Typical SaaS keys:
 ```python
 conf.save(CKey.saas_url, "https://cloud.exasol.com")
 conf.save(CKey.saas_account_id, "<your-account-id>")
-conf.save(CKey.saas_token, "<your-pat>")
+conf.save(CKey.saas_token, os.environ["EXASOL_SAAS_TOKEN"])
 conf.save(CKey.saas_database_name, "my-database")
 ```
 
