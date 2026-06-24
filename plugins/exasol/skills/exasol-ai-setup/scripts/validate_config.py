@@ -53,17 +53,35 @@ def main() -> None:
         if missing_keys:
             raise ValueError(f"Missing required config keys: {', '.join(missing_keys)}")
 
+        saas_database_selectors = [
+            CKey.saas_database_id,
+            CKey.saas_database_name,
+        ]
+        if backend == StorageBackend.saas and not any(
+            conf.get(key) for key in saas_database_selectors
+        ):
+            raise ValueError(
+                "Missing required SaaS database selector: set either "
+                "saas_database_id or saas_database_name"
+            )
+
         placeholder_values = {
             "my-db-host",
             "my-bfs-host",
             "<account-id>",
+            "<database-id>",
             "<database-name>",
             "<personal-access-token>",
             "<your-account-id>",
+            "<your-database-id>",
+            "<your-database-name>",
             "<your-pat>",
         }
         present_placeholders = []
-        for key in required_keys:
+        keys_to_check = list(required_keys)
+        if backend == StorageBackend.saas:
+            keys_to_check.extend(saas_database_selectors)
+        for key in keys_to_check:
             value = conf.get(key)
             if value in placeholder_values:
                 present_placeholders.append(f"{key.name}={value}")

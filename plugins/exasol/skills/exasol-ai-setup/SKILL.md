@@ -44,6 +44,7 @@ Multiple routes can apply. Load all matching references before responding.
 
 - Prefer the Python path when the user wants notebook cells, automation, or agent-generated code.
 - Before handing off to DB helpers, BucketFS helpers, TE, or TXAIE work, run `scripts/validate_config.py` to confirm the `Secrets` store is populated for the expected backend.
+- Use `AILabConfig` as the source of the common key names stored in `Secrets`.
 
 ## Validation
 
@@ -54,11 +55,11 @@ After writing or updating config, verify it before handing off to downstream ski
 Success signals:
 
 - the backend resolves to the expected value (`onprem` or `saas`)
-- the required config keys for that backend are present in the store
+- the required setup values for this skill are present in the store so downstream notebook-connector workflows can proceed
 
 Expected failure mode:
 
-- if required values are missing, or the store still contains template values such as `my-db-host` or placeholder SaaS IDs/PATs, setup validation should fail until the user replaces them with real values
+- if required setup values for this skill such as `storage_backend`, `db_schema`, backend-specific connection values, or real credentials are missing, or the store still contains template values such as `my-db-host` or placeholder SaaS IDs/PATs, setup validation should fail until the user replaces them with real values
 
 ## Safety Rules
 

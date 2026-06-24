@@ -21,6 +21,7 @@ def main() -> None:
     # Save the SaaS account, database, and PAT values required by notebook-connector.
     conf.save(CKey.saas_url, "https://cloud.exasol.com")
     conf.save(CKey.saas_account_id, "<account-id>")
+    # Set one SaaS database selector. Use saas_database_id instead if that is what you have.
     conf.save(CKey.saas_database_name, "<database-name>")
     conf.save(CKey.saas_token, os.environ["EXASOL_SAAS_TOKEN"])
     conf.save(CKey.db_schema, "AI_SCHEMA")

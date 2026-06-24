@@ -11,7 +11,8 @@ Use the executable template:
 It demonstrates:
 
 - reading which backend is active
-- checking that the required values for that backend are present in the `Secrets` store
+- checking that the required setup values for this skill are present in the `Secrets` store
+- requiring either `saas_database_id` or `saas_database_name` for SaaS setups
 - failing early when placeholder values are still present
 
 This is the preferred validation path for this skill.

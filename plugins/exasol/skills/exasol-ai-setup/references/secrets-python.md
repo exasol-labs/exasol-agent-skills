@@ -2,7 +2,14 @@
 
 Use the Python API when the user wants notebook cells, scripts, or automation.
 
-`Secrets` is the shared configuration object used by every Notebook Connector API.
+`Secrets` is the shared configuration object used by the main Notebook Connector
+configuration, connection, and extension setup workflows.
+
+For this skill:
+
+- `Secrets` stores the configuration values
+- `AILabConfig` provides the common keys used with `Secrets`
+- `StorageBackend` provides the backend choice values such as `onprem` and `saas`
 
 ## Executable Templates
 
@@ -77,15 +84,19 @@ Typical `Secrets` operations the agent may still mention inline:
 - `conf.get(...)`
 - `conf.save(...)`
 - `conf.keys()`
+- `conf.values()`
 - `conf.items()`
 - `conf.remove(...)`
 - `conf.close()`
+- `conf.close_all()`
 
 Use these operations when the user wants to inspect, update, or remove individual values after the initial setup script has been created.
 
 ## Backend Selection
 
-Use `storage_backend` to tell Notebook Connector whether to resolve connections as on-prem or SaaS:
+Use `storage_backend` to tell Notebook Connector whether to resolve connections
+as on-prem or SaaS. For this setup skill, treat it as a required
+value because downstream BucketFS and extension workflows depend on it:
 
 ```python
 from exasol.nb_connector.ai_lab_config import AILabConfig as CKey, StorageBackend
@@ -103,6 +114,14 @@ conf.save(CKey.saas_token, os.environ["EXASOL_SAAS_TOKEN"])
 conf.save(CKey.saas_database_name, "my-database")
 ```
 
+Notebook Connector also accepts `saas_database_id` as the database selector.
+Set at least one of `saas_database_id` or `saas_database_name` before using the
+connection helpers.
+
+For this setup skill, also set `db_schema` as part of the normal configuration.
+Some lower-level APIs can still work without it, but practical downstream flows
+such as TE, TXAIE, and related UDF setup usually expect it.
+
 To confirm which backend is active, call `get_backend(conf)`:
 
 ```python
@@ -111,13 +130,26 @@ from exasol.nb_connector.connections import get_backend
 print(get_backend(conf).name)
 ```
 
+If the user stores a SaaS database name and later needs the resolved database
+ID, Notebook Connector also provides:
+
+```python
+from exasol.nb_connector.connections import get_saas_database_id
+
+print(get_saas_database_id(conf))
+```
+
 ## Important Keys the Skill Should Know
 
 - DB: `db_host_name`, `db_port`, `db_user`, `db_password`, `db_schema`
 - TLS: `db_encryption`, `bfs_encryption`, `cert_vld`, `trusted_ca`, `client_cert`, `client_key`
-- BucketFS: `bfs_host_name`, `bfs_port`, `bfs_service`, `bfs_bucket`, `bfs_user`, `bfs_password`
+- BucketFS: `bfs_host_name`, `bfs_port`, `bfs_internal_host_name`, `bfs_internal_port`, `bfs_service`, `bfs_bucket`, `bfs_user`, `bfs_password`
 - SaaS: `saas_url`, `saas_account_id`, `saas_database_id`, `saas_database_name`, `saas_token`, `storage_backend`
 - Some downstream notebook-connector skills may use additional ITDE or extension-specific keys after setup is complete.
+
+For on-prem setups, `open_bucketfs_bucket(conf)` can fall back to
+`db_host_name` when `bfs_host_name` is not set. Keep `bfs_host_name` explicit
+in this setup skill unless the user intentionally wants that fallback.
 
 ## Use This Path When
 
