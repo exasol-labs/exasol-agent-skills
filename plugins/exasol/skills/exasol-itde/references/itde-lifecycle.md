@@ -6,6 +6,9 @@ The Integration Test Docker Environment starts a local Exasol database in
 Docker and writes the generated DB and BucketFS connection values back into the
 same secure config store.
 
+It also stores the ITDE container, volume, and network names so later lifecycle
+calls can find the same Docker resources again.
+
 After `bring_itde_up(...)`, the store contains the DB and BucketFS keys needed
 by the other notebook-connector APIs, including:
 
@@ -13,6 +16,7 @@ by the other notebook-connector APIs, including:
 - `bfs_host_name`, `bfs_port`, `bfs_user`, `bfs_password`
 - `bfs_service`, `bfs_bucket`
 - `db_encryption`, `bfs_encryption`, `cert_vld`
+- `itde_container`, `itde_volume`, `itde_network`
 
 ## Executable Templates
 
@@ -68,4 +72,4 @@ take_itde_down(my_secrets, stop_db=False)
 
 - `bring_itde_up` is the fastest way to get a local notebook-connector-ready Exasol instance.
 - `restart_itde` is preferable to a full re-creation when the container already exists.
-- `take_itde_down(stop_db=False)` removes the stored ITDE config while keeping the Docker DB intact.
+- `take_itde_down(stop_db=False)` removes the stored DB and BucketFS connection values while leaving the Docker DB and its tracked ITDE Docker resources intact.
