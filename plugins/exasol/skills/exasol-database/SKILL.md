@@ -59,6 +59,7 @@ Multiple routes can apply — load all that match.
    - This preserves mixed-case names and prevents reserved-keyword errors in a single rule
    - Do NOT quote SQL keywords, functions, or aliases — only object identifiers
    - If a query fails with a syntax error, fetch the live reserved keyword list: `exapump sql "SELECT KEYWORD FROM EXA_SQL_KEYWORDS WHERE RESERVED ORDER BY KEYWORD"`
+   - **Do not assume function names or signatures from other SQL dialects.** Exasol's SQL is not PostgreSQL, SQL Server, Snowflake, or BigQuery — and those dominate training data, so a confident-looking guess is often the wrong dialect (e.g. `DATE_TRUNC` argument order, `DATEADD`/`DATEDIFF` which do not exist in Exasol). `references/exasol-sql.md` lists the common traps. For any function not covered there that you are unsure of, verify before emitting it: run it on a trivial input (`exapump sql "SELECT <func>(...)"`) or check the official reference at <https://docs.exasol.com/db/latest/sql_references/functions/all_functions.htm>. If you still cannot confirm it, flag the uncertainty rather than guessing.
 
 ## Related Skills
 

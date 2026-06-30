@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.11.0
+
+- Add cross-dialect function traps to the Exasol SQL reference (DATE_TRUNC argument order, no DATEADD/DATEDIFF, SECONDS_BETWEEN return type) — confirmed against the official Exasol docs
+- Add a "verify, don't guess" guard to the database skill: when a function is undocumented and uncertain, run it against the live DB or check the official reference instead of borrowing another dialect's syntax
+- Link the official Exasol SQL reference from the skill
+
 ## v0.9.0
 
 - Add Exasol Personal setup skill for guided AWS deployment
