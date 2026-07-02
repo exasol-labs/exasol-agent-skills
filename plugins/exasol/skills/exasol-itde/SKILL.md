@@ -35,7 +35,7 @@ Use the lifecycle scripts to validate the stored ITDE setup:
 Expected failure mode:
 
 - `scripts/restart_itde.py` should raise a runtime error if the Docker-DB container does not exist yet
-- shared setup validation can fail with missing `STORAGE_BACKEND` or `DB_SCHEMA` even when ITDE itself is healthy, because those keys are not written by `bring_itde_up(...)`
+- shared setup validation can fail with missing `storage_backend` or `db_schema` even when ITDE itself is healthy, because those keys are not written by `bring_itde_up(...)`
 - if status checks fail because the store is missing, switch back to **exasol-ai-setup**
 
 ## Notes

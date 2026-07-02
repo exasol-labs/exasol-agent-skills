@@ -96,4 +96,4 @@ take_itde_down(my_secrets, stop_db=False)
 - `bring_itde_up` is the fastest way to get a local notebook-connector-ready Exasol instance.
 - `restart_itde` is preferable to a full re-creation when the container already exists.
 - shared setup validation may still fail until you save `storage_backend` and, for schema-dependent follow-up work, `db_schema` yourself.
-- `take_itde_down(stop_db=False)` removes the stored DB and BucketFS connection values while leaving the Docker DB and its tracked ITDE Docker resources intact.
+- `take_itde_down(my_secrets, stop_db=False)` removes the stored DB and BucketFS connection values while leaving the Docker DB and its tracked ITDE Docker resources intact.
