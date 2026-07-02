@@ -1,7 +1,8 @@
 # Changelog
 
-## v0.10.3
+## v0.10.1
 
+- Add exasol-ai-setup skill for notebook-connector CLI and Python API configuration
 - Add exasol-itde skill for notebook-connector local Docker database workflows
 
 ## v0.9.0
