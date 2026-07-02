@@ -83,6 +83,12 @@ Run and manage notebook-connector's local Docker-based Exasol development enviro
 
 See [`plugins/exasol/skills/exasol-itde/SKILL.md`](plugins/exasol/skills/exasol-itde/SKILL.md) for details.
 
+### Exasol AI Setup Skill
+
+Set up notebook-connector configuration via the `scs` CLI or the `Secrets` Python API before using AI-related workflows.
+
+See [`plugins/exasol/skills/exasol-ai-setup/SKILL.md`](plugins/exasol/skills/exasol-ai-setup/SKILL.md) for details.
+
 ### Exasol Personal Setup Skill
 
 Step-by-step guided setup of your own Exasol database on AWS — from account creation and IAM configuration to deployment, data loading, and exploration. No prior AWS or Exasol experience required.

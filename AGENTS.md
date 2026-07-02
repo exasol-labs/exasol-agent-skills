@@ -10,7 +10,7 @@ A skills marketplace for AI coding agents (Claude Code and OpenAI Codex) that gi
 
 - `.claude-plugin/marketplace.json` — discovery entry point; lists plugins with version
 - `plugins/exasol/.claude-plugin/plugin.json` — plugin metadata; version must match marketplace
-- `plugins/exasol/skills/*/SKILL.md` — auto-triggered by keyword matching in user messages; contains a routing algorithm that loads only the reference files relevant to the task (progressive disclosure). Skills: `setup-personal` (guided AWS deployment), `exasol-database` (SQL/exapump), `exasol-udfs` (UDFs/SLCs), `exasol-bucketfs` (BucketFS), `exasol-itde` (local Docker Exasol lifecycle)
+- `plugins/exasol/skills/*/SKILL.md` — auto-triggered by keyword matching in user messages; contains a routing algorithm that loads only the reference files relevant to the task (progressive disclosure). Skills: `setup-personal` (guided AWS deployment), `exasol-database` (SQL/exapump), `exasol-udfs` (UDFs/SLCs), `exasol-bucketfs` (BucketFS), `exasol-ai-setup` (notebook-connector setup), `exasol-itde` (local Docker Exasol lifecycle)
 - `plugins/exasol/commands/exasol.md` — `/exasol` slash command (Claude Code only)
 - `plugins/exasol/skills/*/references/*.md` — detailed docs loaded on-demand by SKILL.md routing
 
