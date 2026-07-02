@@ -1,6 +1,6 @@
 # Changelog
 
-## v0.10.2
+## v0.11.0
 
 - Add exasol-itde skill for notebook-connector local Docker database workflows
 
