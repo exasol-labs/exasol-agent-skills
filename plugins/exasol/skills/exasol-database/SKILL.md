@@ -1,11 +1,11 @@
 ---
 name: exasol-database
-description: Exasol database interaction via exapump CLI and Exasol SQL. Covers file upload/export, SQL queries, and Exasol-specific SQL behavior including data types, reserved keywords, and constraints.
+description: Exasol database interaction via exapump CLI and Exasol SQL. Covers SQL queries, file upload/export, table design, import/export, query profiling, and Exasol-specific SQL behavior.
 ---
 
 # Exasol Database Skill
 
-Trigger when the user mentions **Exasol**, **exapump**, **database import/export**, **CSV/Parquet upload**, **Exasol SQL**, **IMPORT INTO**, **EXPORT INTO**, **EXA_**, or any Exasol database interaction.
+Trigger when the user asks for **Exasol database interaction**, **exapump**, **database import/export**, **CSV/Parquet upload**, **Exasol SQL**, **IMPORT INTO**, **EXPORT INTO**, **EXA_** system views, schemas, tables, or query execution.
 
 ## Step 0: Establish Connection
 

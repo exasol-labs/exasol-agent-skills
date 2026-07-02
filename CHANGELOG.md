@@ -1,8 +1,10 @@
 # Changelog
 
-## v0.10.1
+## v0.11.0
 
-- Add exasol-ai-setup skill for notebook-connector CLI and Python API configuration
+- Add top-level Exasol router skill as the single public entry point for Exasol tasks
+- Expand `/exasol` into a unified command router for database, BucketFS, UDF, SLC, and setup workflows
+- Document contribution guidelines for adding specialized skills behind the unified router
 
 ## v0.9.0
 

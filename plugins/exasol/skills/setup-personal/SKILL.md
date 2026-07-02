@@ -332,11 +332,11 @@ Expected results: PRODUCTS = 1,000,000 rows; PRODUCT_REVIEWS = 1,822,007 rows.
 
 ### Step 6: Explore the data
 
-Tell the user that the **exasol-database skill** is now available to help them query and explore their database. Suggest a few things they can do:
+Tell the user that they can now use `/exasol` or ask naturally to query and explore their database. Suggest a few things they can do:
 
 - **Run SQL queries:** Ask Claude to query the PRODUCTS or PRODUCT_REVIEWS tables — e.g. "show me the top 10 products by price" or "how many reviews per product category?"
 - **Upload their own data:** Use `exapump upload` to load CSV or Parquet files into new tables
 - **Export data:** Use `exapump export` to extract query results to local files
 - **Explore schemas:** Ask Claude to list all tables and schemas in the database
 
-The exasol-database skill activates automatically whenever the user mentions Exasol, exapump, SQL queries, or data loading. They can just describe what they want to do and Claude will guide them.
+The Exasol router activates the right database guidance automatically whenever the user asks for Exasol SQL, exapump, data loading, BucketFS, or UDF work. They can just describe what they want to do and Claude will guide them.
