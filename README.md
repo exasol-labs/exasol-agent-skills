@@ -89,6 +89,12 @@ Manage files in Exasol's distributed file system — list, upload, download, and
 
 See [`plugins/exasol/skills/exasol-bucketfs/SKILL.md`](plugins/exasol/skills/exasol-bucketfs/SKILL.md) for details.
 
+### Exasol AI Setup Skill
+
+Set up notebook-connector configuration via the `scs` CLI or the `Secrets` Python API before using AI-related workflows.
+
+See [`plugins/exasol/skills/exasol-ai-setup/SKILL.md`](plugins/exasol/skills/exasol-ai-setup/SKILL.md) for details.
+
 ### Exasol Personal Setup Skill
 
 Step-by-step guided setup of your own Exasol database on AWS — from account creation and IAM configuration to deployment, data loading, and exploration. No prior AWS or Exasol experience required.
