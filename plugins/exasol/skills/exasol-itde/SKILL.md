@@ -28,8 +28,8 @@ Use the lifecycle scripts to validate the stored ITDE setup:
 
 - run `scripts/check_itde_status.py` after setup changes
 - after `bring_itde_up`, expect `ItdeContainerStatus.READY`
-pus- if the next step is the shared **exasol-ai-setup** validation flow, save `AILabConfig.storage_backend=onprem` first because `bring_itde_up(...)` does not populate that key itself
-- set `AILabConfig.db_schema` yourself before handing off to schema-dependent workflows such as SQLAlchemy, Ibis, TE, or TXAIE validation
+- if the next step is the shared **exasol-ai-setup** validation flow, save `storage_backend=onprem` first because `bring_itde_up(...)` does not populate that key itself
+- set `db_schema` yourself before handing off to schema-dependent workflows such as SQLAlchemy, Ibis, TE, or TXAIE validation
 - after teardown, expect `ABSENT` or a clean no-container state
 
 Expected failure mode:
