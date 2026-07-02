@@ -14,12 +14,12 @@ def main() -> None:
         db_file=Path("ai_config.db"),
         master_password=os.environ["SCS_MASTER_PASSWORD"],
     )
-
-    # Restart the managed local Exasol container using the stored notebook-connector configuration.
-    restart_itde(conf)
-
-    # Close the encrypted store after the restart request is issued.
-    conf.close()
+    try:
+        # Restart the managed local Exasol container using the stored notebook-connector configuration.
+        restart_itde(conf)
+    finally:
+        # Close the encrypted store even if the restart request fails.
+        conf.close()
 
 
 if __name__ == "__main__":

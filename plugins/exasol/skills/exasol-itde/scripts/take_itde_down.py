@@ -14,12 +14,12 @@ def main() -> None:
         db_file=Path("ai_config.db"),
         master_password=os.environ["SCS_MASTER_PASSWORD"],
     )
-
-    # Stop and remove the managed local Exasol container.
-    take_itde_down(conf)
-
-    # Close the encrypted store after teardown completes.
-    conf.close()
+    try:
+        # Stop and remove the managed local Exasol container.
+        take_itde_down(conf)
+    finally:
+        # Close the encrypted store even if teardown fails.
+        conf.close()
 
 
 if __name__ == "__main__":

@@ -15,16 +15,16 @@ def main() -> None:
         db_file=Path("ai_config.db"),
         master_password=os.environ["SCS_MASTER_PASSWORD"],
     )
+    try:
+        # Save the requested resource sizing before starting the ITDE container.
+        conf.save(CKey.mem_size, "4")
+        conf.save(CKey.disk_size, "10")
 
-    # Save the requested resource sizing before starting the ITDE container.
-    conf.save(CKey.mem_size, "4")
-    conf.save(CKey.disk_size, "10")
-
-    # Start the managed local Exasol container and let notebook-connector populate the derived connection values.
-    bring_itde_up(conf)
-
-    # Close the encrypted store when setup is complete.
-    conf.close()
+        # Start the managed local Exasol container and let notebook-connector populate the derived connection values.
+        bring_itde_up(conf)
+    finally:
+        # Close the encrypted store even if setup fails partway through.
+        conf.close()
 
 
 if __name__ == "__main__":

@@ -17,16 +17,16 @@ def main() -> None:
         db_file=Path("ai_config.db"),
         master_password=os.environ["SCS_MASTER_PASSWORD"],
     )
-
-    # Ask notebook-connector for the current container status instead of inferring it from raw Docker output.
-    status = get_itde_status(conf)
-    if status == ItdeContainerStatus.READY:
-        print("Docker DB is up and reachable")
-    else:
-        print(status)
-
-    # Close the encrypted store after the status check finishes.
-    conf.close()
+    try:
+        # Ask notebook-connector for the current container status instead of inferring it from raw Docker output.
+        status = get_itde_status(conf)
+        if status == ItdeContainerStatus.READY:
+            print("Docker DB is up and reachable")
+        else:
+            print(status)
+    finally:
+        # Close the encrypted store even if the status check fails.
+        conf.close()
 
 
 if __name__ == "__main__":
