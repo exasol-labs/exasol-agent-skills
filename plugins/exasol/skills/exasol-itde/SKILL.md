@@ -28,15 +28,19 @@ Use the lifecycle scripts to validate the stored ITDE setup:
 
 - run `scripts/check_itde_status.py` after setup changes
 - after `bring_itde_up`, expect `ItdeContainerStatus.READY`
+pus- if the next step is the shared **exasol-ai-setup** validation flow, save `AILabConfig.storage_backend=onprem` first because `bring_itde_up(...)` does not populate that key itself
+- set `AILabConfig.db_schema` yourself before handing off to schema-dependent workflows such as SQLAlchemy, Ibis, TE, or TXAIE validation
 - after teardown, expect `ABSENT` or a clean no-container state
 
 Expected failure mode:
 
 - `scripts/restart_itde.py` should raise a runtime error if the Docker-DB container does not exist yet
+- shared setup validation can fail with missing `STORAGE_BACKEND` or `DB_SCHEMA` even when ITDE itself is healthy, because those keys are not written by `bring_itde_up(...)`
 - if status checks fail because the store is missing, switch back to **exasol-ai-setup**
 
 ## Notes
 
 - ITDE is the easiest local development database path for notebook-connector.
 - `bring_itde_up` populates the secure config store with the generated DB and BucketFS connection details automatically.
+- `bring_itde_up` does not populate `storage_backend` or `db_schema`.
 - After ITDE is ready, other notebook-connector connection APIs can be used without manual DB/BucketFS entry.
