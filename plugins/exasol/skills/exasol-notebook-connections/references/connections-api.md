@@ -29,7 +29,7 @@ Use the scripts in `scripts/` as the primary runnable/editable examples:
 - supports context-manager usage
 - does **not** apply `db_schema` automatically
 - forwards extra keyword arguments to `pyexasol.connect(...)`
-- pass `schema=conf.get(CKey.db_schema)` when a default schema is needed
+- pass `schema=conf.get(CKey.db_schema)` when a default schema is needed, where `CKey` is `AILabConfig`
 
 ### `open_sqlalchemy_connection(conf)`
 
