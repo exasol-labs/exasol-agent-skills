@@ -102,7 +102,7 @@ Run and manage notebook-connector's local Docker-based Exasol development enviro
 
 See [`plugins/exasol/skills/exasol-itde/SKILL.md`](plugins/exasol/skills/exasol-itde/SKILL.md) for details.
 
-### Exasol notebook-connector Connections Skill
+### Exasol Notebook Connector Connections Skill
 
 Use notebook-connector's Python helpers for Exasol, BucketFS, SQLAlchemy, and Ibis connections.
 

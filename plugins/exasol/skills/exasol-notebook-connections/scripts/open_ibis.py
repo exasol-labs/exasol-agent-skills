@@ -14,15 +14,15 @@ def main() -> None:
         db_file=Path("ai_config.db"),
         master_password=os.environ["SCS_MASTER_PASSWORD"],
     )
+    try:
+        # Open an Ibis connection using notebook-connector's configured backend details.
+        ibis_conn = open_ibis_connection(conf)
 
-    # Open an Ibis connection using notebook-connector's configured backend details.
-    ibis_conn = open_ibis_connection(conf)
-
-    # Run a lightweight metadata call to prove the connection works.
-    print(ibis_conn.list_tables())
-
-    # Close the encrypted store after the Ibis check completes.
-    conf.close()
+        # Run a lightweight metadata call to prove the connection works.
+        print(ibis_conn.list_tables())
+    finally:
+        # Close the encrypted store even if the Ibis check fails.
+        conf.close()
 
 
 if __name__ == "__main__":

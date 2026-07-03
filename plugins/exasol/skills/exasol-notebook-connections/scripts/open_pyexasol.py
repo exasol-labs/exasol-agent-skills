@@ -14,12 +14,15 @@ def main() -> None:
         db_file=Path("ai_config.db"),
         master_password=os.environ["SCS_MASTER_PASSWORD"],
     )
-
-    # open_pyexasol_connection() does not apply db_schema automatically.
-    with open_pyexasol_connection(conf, schema=conf.get(CKey.db_schema)) as connection:
-        print(connection.execute("SELECT 1").fetchone())
-
-    conf.close()
+    try:
+        # open_pyexasol_connection() does not apply db_schema automatically.
+        with open_pyexasol_connection(
+            conf, schema=conf.get(CKey.db_schema)
+        ) as connection:
+            print(connection.execute("SELECT 1").fetchone())
+    finally:
+        # Close the encrypted store even if the connection or query fails.
+        conf.close()
 
 
 if __name__ == "__main__":

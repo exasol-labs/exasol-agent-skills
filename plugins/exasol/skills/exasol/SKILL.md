@@ -19,11 +19,15 @@ Choose the narrowest matching route. If multiple routes apply, load them in depe
    - Trigger phrases: `BucketFS`, `bfsdefault`, `bucket`, `upload jar`, `upload model`, `list files`, `download from bucket`, `delete bucket file`
    - Activate: **exasol-bucketfs**
 
-3. **UDFs and Script Language Containers**
+3. **notebook-connector connection helpers**
+   - Trigger phrases: `open_pyexasol_connection`, `open_sqlalchemy_connection`, `open_ibis_connection`, `open_bucketfs_bucket`, `open_bucketfs_location`, `get_backend`, `connection helper`, `notebook-connector`
+   - Activate: **exasol-notebook-connections**
+
+4. **UDFs and Script Language Containers**
    - Trigger phrases: `UDF`, `CREATE SCRIPT`, `SCALAR`, `SET script`, `ExaIterator`, `Python UDF`, `Java UDF`, `Lua UDF`, `R UDF`, `SLC`, `Script Language Container`, `exaslct`
    - Activate: **exasol-udfs**
 
-4. **Exasol Personal setup**
+5. **Exasol Personal setup**
    - Trigger phrases: `set up Exasol`, `Exasol Personal`, `deploy Exasol`, `install Exasol on AWS`, `new Exasol database`
    - Activate: **exasol-setup-personal**
 

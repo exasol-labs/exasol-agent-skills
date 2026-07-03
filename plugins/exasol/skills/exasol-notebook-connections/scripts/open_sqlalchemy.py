@@ -13,12 +13,13 @@ def main() -> None:
         db_file=Path("ai_config.db"),
         master_password=os.environ["SCS_MASTER_PASSWORD"],
     )
-
-    engine = open_sqlalchemy_connection(conf)
-    with engine.connect() as connection:
-        print(connection.exec_driver_sql("SELECT 1").fetchone())
-
-    conf.close()
+    try:
+        engine = open_sqlalchemy_connection(conf)
+        with engine.connect() as connection:
+            print(connection.exec_driver_sql("SELECT 1").fetchone())
+    finally:
+        # Close the encrypted store even if engine creation or the query fails.
+        conf.close()
 
 
 if __name__ == "__main__":

@@ -14,12 +14,12 @@ def main() -> None:
         db_file=Path("ai_config.db"),
         master_password=os.environ["SCS_MASTER_PASSWORD"],
     )
-
-    # Print the resolved backend, for example onprem or saas.
-    print(get_backend(conf).name)
-
-    # Close the encrypted store after the lookup.
-    conf.close()
+    try:
+        # Print the resolved backend, for example onprem or saas.
+        print(get_backend(conf).name)
+    finally:
+        # Close the encrypted store even if backend resolution fails.
+        conf.close()
 
 
 if __name__ == "__main__":

@@ -23,6 +23,7 @@ When invoked:
 1. **Classify the task before checking connections.**
    - Database, SQL, exapump, import/export, schemas, or tables -> use **exasol-database** behavior.
    - BucketFS files, buckets, `bfsdefault`, model/JAR uploads, BucketFS list/download/delete -> use **exasol-bucketfs** behavior.
+   - notebook-connector Python helper calls such as `open_pyexasol_connection`, `open_sqlalchemy_connection`, `open_ibis_connection`, `open_bucketfs_bucket`, `open_bucketfs_location`, or `get_backend` -> use **exasol-notebook-connections** behavior.
    - UDFs, `CREATE SCRIPT`, `ExaIterator`, Python/Java/Lua/R scripts, Script Language Containers, or `exaslct` -> use **exasol-udfs** behavior.
    - Exasol Personal, AWS setup, first Exasol deployment, or new database setup -> use **exasol-setup-personal** behavior.
 
@@ -45,15 +46,19 @@ When invoked:
    - Delete with `exapump bucketfs rm`, but always confirm before deleting.
    - `/bucketfs` remains a compatibility shortcut, but `/exasol bucketfs ...` is the preferred user-facing form.
 
-5. **For UDF and SLC routes:**
+5. **For notebook-connector helper routes:**
+   - Use the notebook-connector connection helper skill and its runnable Python templates.
+   - Resolve notebook-connector setup prerequisites before generating helper calls.
+
+6. **For UDF and SLC routes:**
    - Use Exasol UDF and Script Language Container guidance.
    - Route file upload or SLC activation sub-tasks through BucketFS or database behavior as needed.
 
-6. **For Exasol Personal setup routes:**
+7. **For Exasol Personal setup routes:**
    - Do not require an existing exapump profile before setup.
    - Guide deployment first, then create or validate the exapump profile after the database exists.
 
-7. **On errors:** Apply Exasol-specific knowledge to diagnose and fix issues. Common causes:
+8. **On errors:** Apply Exasol-specific knowledge to diagnose and fix issues. Common causes:
    - Reserved keyword used as identifier: verify by running `exapump sql "SELECT * FROM EXA_SQL_KEYWORDS WHERE KEYWORD = '<word>'"`, then double-quote the identifier.
    - Uppercase identifier mismatch
    - Missing NOT NULL on UNIQUE constraint columns

@@ -17,12 +17,13 @@ def main() -> None:
         db_file=Path("ai_config.db"),
         master_password=os.environ["SCS_MASTER_PASSWORD"],
     )
-
-    print(open_bucketfs_bucket(conf))
-    print(open_bucketfs_location(conf) / "models" / "my_model")
-    print(get_udf_bucket_path(conf))
-
-    conf.close()
+    try:
+        print(open_bucketfs_bucket(conf))
+        print(open_bucketfs_location(conf) / "models" / "my_model")
+        print(get_udf_bucket_path(conf))
+    finally:
+        # Close the encrypted store even if any BucketFS helper call fails.
+        conf.close()
 
 
 if __name__ == "__main__":
