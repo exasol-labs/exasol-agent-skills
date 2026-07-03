@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.14.0
+
+- Add exasol-extension-catalog skill for Exasol tools, extensions, connectors, integrations, and architecture patterns
+- Route extension, integration, migration, governance, BI/API, and scale questions through the unified Exasol router
+
 ## v0.13.0
 
 - Add exasol-notebook-connections skill for notebook-connector connection helper APIs

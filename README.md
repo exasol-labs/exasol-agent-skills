@@ -67,7 +67,7 @@ Use one entry point for Exasol work:
 /exasol <anything Exasol-related>
 ```
 
-The router chooses the right specialized guidance for SQL, data loading, BucketFS, UDFs, Script Language Containers, and setup tasks.
+The router chooses the right specialized guidance for SQL, data loading, BucketFS, UDFs, Script Language Containers, extension/integration selection, and setup tasks.
 
 See [`plugins/exasol/skills/exasol/SKILL.md`](plugins/exasol/skills/exasol/SKILL.md) and [`plugins/exasol/commands/exasol.md`](plugins/exasol/commands/exasol.md) for details.
 
@@ -76,6 +76,12 @@ See [`plugins/exasol/skills/exasol/SKILL.md`](plugins/exasol/skills/exasol/SKILL
 Work with Exasol databases — run queries, load and export data, handle cloud sources, and get help with Exasol-specific SQL quirks.
 
 See [`plugins/exasol/skills/exasol-database/SKILL.md`](plugins/exasol/skills/exasol-database/SKILL.md) for details.
+
+### Exasol Extension Catalog Skill
+
+Choose the right Exasol tool, extension, connector, integration, or architecture pattern for deployment, data loading, exploration, AI/ML enrichment, BI/API surfaces, governance, and scale.
+
+See [`plugins/exasol/skills/exasol-extension-catalog/SKILL.md`](plugins/exasol/skills/exasol-extension-catalog/SKILL.md) for details.
 
 ### Exasol UDF Skill
 
@@ -125,6 +131,7 @@ Run SQL or describe any Exasol task directly:
 /exasol upload sales.csv to analytics.sales
 /exasol export users to parquet
 /exasol list BucketFS files under models/
+/exasol which connector should I use for Databricks?
 /exasol write a Python UDF
 /exasol set up Exasol Personal on AWS
 ```
