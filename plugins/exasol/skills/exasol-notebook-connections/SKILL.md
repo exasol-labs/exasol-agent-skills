@@ -24,9 +24,10 @@ Trigger when the user mentions **open_pyexasol_connection**, **open_sqlalchemy_c
 
 ## Validation
 
-Validate the configured helper path in increasing order:
+Validate the configured connection helpers in this order:
 
 - run `scripts/check_backend.py` first to confirm the store resolves the expected backend
+- if helpers fail due to missing keys or placeholder values, activate **exasol-ai-setup** and run its `scripts/validate_config.py`
 - then run `scripts/open_pyexasol.py`, `scripts/open_sqlalchemy.py`, `scripts/open_ibis.py`, or `scripts/open_bucketfs.py` for the helper family the user needs
 
 Success signals:
