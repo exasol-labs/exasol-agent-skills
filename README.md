@@ -89,6 +89,12 @@ Manage files in Exasol's distributed file system — list, upload, download, and
 
 See [`plugins/exasol/skills/exasol-bucketfs/SKILL.md`](plugins/exasol/skills/exasol-bucketfs/SKILL.md) for details.
 
+### Exasol ITDE Skill
+
+Run and manage notebook-connector's local Docker-based Exasol development environment.
+
+See [`plugins/exasol/skills/exasol-itde/SKILL.md`](plugins/exasol/skills/exasol-itde/SKILL.md) for details.
+
 ### Exasol AI Setup Skill
 
 Set up notebook-connector configuration via the `scs` CLI or the `Secrets` Python API before using AI-related workflows.
