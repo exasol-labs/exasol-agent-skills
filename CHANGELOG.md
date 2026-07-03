@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.13.0
+
+- Add exasol-notebook-connections skill for notebook-connector connection helper APIs
+
 ## v0.12.0
 
 - Add exasol-itde skill for notebook-connector local Docker database workflows
