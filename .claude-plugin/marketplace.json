@@ -5,13 +5,13 @@
   },
   "metadata": {
     "description": "A collection of agent skills for working with Exasol databases (Claude Code, OpenAI Codex)",
-    "version": "0.13.0"
+    "version": "0.14.0"
   },
   "plugins": [
     {
       "name": "exasol",
       "source": "./plugins/exasol",
-      "description": "Unified Exasol router for SQL, exapump, BucketFS, UDFs, and setup"
+      "description": "Unified Exasol router for SQL, exapump, BucketFS, UDFs, extensions, integrations, and setup"
     }
   ]
 }
