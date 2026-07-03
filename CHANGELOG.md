@@ -1,6 +1,6 @@
 # Changelog
 
-## v0.11.0
+## v0.13.0
 
 - Add top-level Exasol router skill as the single public entry point for Exasol tasks
 - Expand `/exasol` into a unified command router for database, BucketFS, UDF, SLC, and setup workflows
