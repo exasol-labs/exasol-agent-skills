@@ -56,6 +56,15 @@ When a user mentions `Text AI Extension`, `TXAIE`, `deploy_license`,
     - Trigger phrases: `set up Exasol`, `Exasol Personal`, `deploy Exasol`, `install Exasol on AWS`, `new Exasol database`
     - Activate: **exasol-setup-personal**
 
+11. **Distributed ML, machine learning, data mining, iterative HPC**
+   - Trigger phrases: `distributed ML`, `machine learning`, `train model`, `batch inference`,
+     `prediction`, `feature engineering`, `hyperparameter`, `PyTorch`, `TensorFlow`,
+     `scikit-learn`, `RAPIDS`, `GPU model`, `model deployment`, `distributed training`,
+     `ensemble`, `anomaly detection`, `forecasting`, `clustering at scale`, `k-means`,
+     `gradient descent`, `iterative algorithm`, `frequent itemset`, `association rules`,
+     `market basket`, `Apriori`, `FP-Growth`, `data mining`, `SON algorithm`
+   - Activate: **exasol-distributed-ml**
+
 ## Dependency Order
 
 When setup and usage both apply, resolve prerequisites first:
@@ -66,6 +75,7 @@ When setup and usage both apply, resolve prerequisites first:
 4. Local Docker database lifecycle or helper-level connectivity validation
 5. Extension-specific TXAIE or Transformers workflow
 6. SQL, data movement, BucketFS, UDF, SLC, or integration task
+7. Distributed ML, data mining, or iterative HPC task (depends on UDF/SLC and BucketFS)
 
 ## User Interaction Rules
 

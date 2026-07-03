@@ -31,6 +31,7 @@ When invoked:
    - Text AI Extension workflows such as `deploy_license`, `initialize_text_ai_extension`, `Extraction`, `NamedEntityExtractor`, `PipelineExtractor`, `BranchExtractor`, `StandardExtractor`, `TopicClassifierExtractor`, feature extraction, or zero-shot classification -> use **exasol-text-ai** behavior.
    - Transformers Extension workflows such as `initialize_te_extension`, `deploy_scripts`, `TE UDF` usage, or Transformers model workflows in Exasol -> use **exasol-transformers** behavior.
    - UDFs, `CREATE SCRIPT`, `ExaIterator`, Python/Java/Lua/R scripts, Script Language Containers, or `exaslct` -> use **exasol-udfs** behavior.
+   - Distributed ML, machine learning, training, inference, feature engineering, hyperparameter search, GPU UDFs, PyTorch/TensorFlow/RAPIDS, model lifecycle, iterative algorithms, frequent itemset mining, data mining -> use **exasol-distributed-ml** behavior.
    - Exasol Personal, AWS setup, first Exasol deployment, or new database setup -> use **exasol-setup-personal** behavior.
 
    If a request matches the broad `extension` wording and also contains
