@@ -10,8 +10,9 @@ A skills marketplace for AI coding agents (Claude Code and OpenAI Codex) that gi
 
 - `.claude-plugin/marketplace.json` — discovery entry point; lists plugins with version
 - `plugins/exasol/.claude-plugin/plugin.json` — plugin metadata; version must match marketplace
-- `plugins/exasol/skills/*/SKILL.md` — auto-triggered by keyword matching in user messages; contains a routing algorithm that loads only the reference files relevant to the task (progressive disclosure). Skills: `setup-personal` (guided AWS deployment), `exasol-database` (SQL/exapump), `exasol-udfs` (UDFs/SLCs), `exasol-bucketfs` (BucketFS), `exasol-notebook-connections` (Python connection helpers)
-- `plugins/exasol/commands/exasol.md` — `/exasol` slash command (Claude Code only)
+- `plugins/exasol/skills/exasol/SKILL.md` — top-level router skill; public user model is `/exasol <task>` or natural-language Exasol requests
+- `plugins/exasol/skills/*/SKILL.md` — specialized skills with routing algorithms that load only the reference files relevant to the task (progressive disclosure). Skills: `exasol` (top-level router), `setup-personal` (guided AWS deployment), `exasol-database` (SQL/exapump), `exasol-udfs` (UDFs/SLCs), `exasol-bucketfs` (BucketFS), `exasol-notebook-connections` (Python connection helpers)
+- `plugins/exasol/commands/exasol.md` — unified `/exasol` slash command router (Claude Code only)
 - `plugins/exasol/skills/*/references/*.md` — detailed docs loaded on-demand by SKILL.md routing
 
 **Installer (`install.sh`)** — curl-pipeable, idempotent, POSIX shell (no bash, no jq). Supports both agents:

@@ -2,7 +2,7 @@
 
 All helpers accept a `Secrets` object and derive their connection parameters
 from it automatically.
-Connection helpers forward `**kwargs` to the underlying client library, so the
+Some helpers also forward `**kwargs` to the underlying client library, so the
 agent can override individual parameters without rebuilding the whole
 connection config.
 
@@ -31,11 +31,10 @@ Use the scripts in `scripts/` as the primary runnable/editable examples:
 - forwards extra keyword arguments to `pyexasol.connect(...)`
 - pass `schema=conf.get(CKey.db_schema)` when a default schema is needed
 
-### `open_sqlalchemy_connection(conf, **kwargs)`
+### `open_sqlalchemy_connection(conf)`
 
 - returns a SQLAlchemy engine
 - applies `db_schema` automatically
-- forwards extra keyword arguments to the SQLAlchemy engine setup
 - use it for `pandas.read_sql`, ORM work, or tooling that expects SQLAlchemy
 
 ### `open_ibis_connection(conf, **kwargs)`

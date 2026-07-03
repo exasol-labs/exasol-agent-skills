@@ -59,6 +59,18 @@ npx skills add exasol-labs/exasol-agent-skills --agent codex
 
 ## What You Get
 
+### Unified Exasol Router
+
+Use one entry point for Exasol work:
+
+```
+/exasol <anything Exasol-related>
+```
+
+The router chooses the right specialized guidance for SQL, data loading, BucketFS, UDFs, Script Language Containers, and setup tasks.
+
+See [`plugins/exasol/skills/exasol/SKILL.md`](plugins/exasol/skills/exasol/SKILL.md) and [`plugins/exasol/commands/exasol.md`](plugins/exasol/commands/exasol.md) for details.
+
 ### Exasol Database Skill
 
 Work with Exasol databases — run queries, load and export data, handle cloud sources, and get help with Exasol-specific SQL quirks.
@@ -83,6 +95,12 @@ Use notebook-connector's Python helpers for Exasol, BucketFS, SQLAlchemy, and Ib
 
 See [`plugins/exasol/skills/exasol-notebook-connections/SKILL.md`](plugins/exasol/skills/exasol-notebook-connections/SKILL.md) for details.
 
+### Exasol AI Setup Skill
+
+Set up notebook-connector configuration via the `scs` CLI or the `Secrets` Python API before using AI-related workflows.
+
+See [`plugins/exasol/skills/exasol-ai-setup/SKILL.md`](plugins/exasol/skills/exasol-ai-setup/SKILL.md) for details.
+
 ### Exasol Personal Setup Skill
 
 Step-by-step guided setup of your own Exasol database on AWS — from account creation and IAM configuration to deployment, data loading, and exploration. No prior AWS or Exasol experience required.
@@ -93,15 +111,33 @@ See [`plugins/exasol/skills/setup-personal/SKILL.md`](plugins/exasol/skills/setu
 
 ### `/exasol` Slash Command <sup>Claude Code only</sup>
 
-Run SQL or describe tasks directly:
+Run SQL or describe any Exasol task directly:
 
 ```
 /exasol SELECT * FROM my_table
 /exasol upload sales.csv to analytics.sales
 /exasol export users to parquet
+/exasol list BucketFS files under models/
+/exasol write a Python UDF
+/exasol set up Exasol Personal on AWS
 ```
 
 ---
+
+## Contributing Skills
+
+Keep the user interface simple: users should type `/exasol <task>` or ask naturally. Do not require users to know sub-skill names.
+
+When adding a new Exasol capability:
+
+1. Add a focused skill under `plugins/exasol/skills/<skill-name>/SKILL.md`.
+2. Put detailed docs in `references/` and runnable templates in `scripts/` when useful.
+3. Add the new route to `plugins/exasol/skills/exasol/SKILL.md`.
+4. Mirror the route in `plugins/exasol/commands/exasol.md`.
+5. Update this README only with user-facing capability text, not internal routing details.
+6. Bump both manifest versions and add a CHANGELOG entry.
+
+Avoid adding new slash commands unless there is a strong backwards-compatibility reason. Prefer `/exasol bucketfs ...` over introducing a separate command for each domain.
 
 ## Prerequisites
 
