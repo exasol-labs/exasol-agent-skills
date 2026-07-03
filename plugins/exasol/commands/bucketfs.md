@@ -1,5 +1,7 @@
 # /bucketfs Command
 
+Compatibility shortcut for BucketFS-specific tasks. Prefer `/exasol bucketfs <task>` in user-facing docs and examples.
+
 Manage files in Exasol BucketFS using the `exapump` CLI tool.
 
 ## Usage

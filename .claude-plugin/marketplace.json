@@ -11,7 +11,7 @@
     {
       "name": "exasol",
       "source": "./plugins/exasol",
-      "description": "Exasol database interaction via exapump CLI"
+      "description": "Unified Exasol router for SQL, exapump, BucketFS, UDFs, and setup"
     }
   ]
 }

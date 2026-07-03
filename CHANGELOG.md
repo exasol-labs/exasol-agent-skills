@@ -1,8 +1,14 @@
 # Changelog
 
-## v0.11.0
+## v0.12.0
 
 - Add exasol-itde skill for notebook-connector local Docker database workflows
+
+## v0.11.0
+
+- Add top-level Exasol router skill as the single public entry point for Exasol tasks
+- Expand `/exasol` into a unified command router for database, BucketFS, UDF, SLC, and setup workflows
+- Document contribution guidelines for adding specialized skills behind the unified router
 
 ## v0.10.1
 
