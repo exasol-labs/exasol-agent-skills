@@ -1,8 +1,31 @@
 # Changelog
 
-## v0.10.5
+## v0.15.0
 
 - Add exasol-transformers skill for notebook-connector Transformers Extension workflows
+
+## v0.14.0
+
+- Add exasol-extension-catalog skill for Exasol tools, extensions, connectors, integrations, and architecture patterns
+- Route extension, integration, migration, governance, BI/API, and scale questions through the unified Exasol router
+
+## v0.13.0
+
+- Add exasol-notebook-connections skill for notebook-connector connection helper APIs
+
+## v0.12.0
+
+- Add exasol-itde skill for notebook-connector local Docker database workflows
+
+## v0.11.0
+
+- Add top-level Exasol router skill as the single public entry point for Exasol tasks
+- Expand `/exasol` into a unified command router for database, BucketFS, UDF, SLC, and setup workflows
+- Document contribution guidelines for adding specialized skills behind the unified router
+
+## v0.10.1
+
+- Add exasol-ai-setup skill for notebook-connector CLI and Python API configuration
 
 ## v0.9.0
 

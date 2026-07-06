@@ -1,7 +1,7 @@
 {
   "name": "exasol",
-  "description": "Interact with Exasol databases using the exapump CLI tool. Upload CSV/Parquet files, run SQL queries, export data, leverage Exasol-specific SQL features, design tables with DISTRIBUTE BY/PARTITION BY, write UDFs in Python/Java/Lua/R, build custom Script Language Containers, and manage BucketFS files.",
-  "version": "0.10.5",
+  "description": "Unified Exasol assistance for SQL, exapump, data loading, BucketFS, UDFs, extensions, integrations, Script Language Containers, and Exasol Personal setup.",
+  "version": "0.15.0",
   "author": {
     "name": "exasol-labs"
   }
