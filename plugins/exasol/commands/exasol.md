@@ -31,6 +31,7 @@ When invoked:
    - If `CREATE CONNECTION` appears with `IMPORT` or object-store loading intent, prefer **exasol-import** behavior.
    - If `CREATE CONNECTION` appears with `EXPORT` or export-target setup intent, prefer **exasol-export** behavior.
    - If `CREATE CONNECTION` appears without clear import, load, or export intent, prefer **exasol-database** behavior.
+   - Document-file virtual schema workflows such as `document files virtual schema`, `S3 document files`, `BucketFS document files`, `Google Cloud Storage document files`, `Azure Blob document files`, `Azure Data Lake Storage Gen2 document files`, or document-file adapter decisions -> use **exasol-document-virtual-schemas** behavior.
    - JDBC/database-source virtual schema workflows such as `JDBC virtual schema`, `generic JDBC`, database-source federation, supported JDBC dialect selection, or `EXPLAIN VIRTUAL` with JDBC context -> use **exasol-jdbc-virtual-schemas** behavior.
    - Notebook-connector setup, `Secrets`, `scs`, secure config store values, or backend configuration keys such as `db_host_name`, `db_schema`, `storage_backend`, or `huggingface_token` -> use **exasol-ai-setup** behavior.
    - Exasol tools, extensions, connectors, integrations, migration, governance, observability, BI/API surfaces, or architecture recommendations -> use **exasol-extension-catalog** behavior.

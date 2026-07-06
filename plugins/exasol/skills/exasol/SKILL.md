@@ -29,6 +29,10 @@ or `query`.
 When a request mentions `EXPORT`, `EXPORT INTO`, or `exapump export`,
 prefer **exasol-export** over the broader database route.
 
+When a request mentions `document files virtual schema`, `S3 document files`,
+`BucketFS document files`, `Google Cloud Storage document files`,
+`Azure Blob document files`, or `Azure Data Lake Storage Gen2 document files`,
+prefer **exasol-document-virtual-schemas** over the JDBC virtual schema route.
 When a request mentions `JDBC virtual schema`, `generic JDBC`, or a
 database-source virtual schema such as PostgreSQL, Oracle, MySQL, SQL Server,
 or DB2, prefer **exasol-jdbc-virtual-schemas** over the broader extension
@@ -58,31 +62,35 @@ object-store file movement intent, prefer **exasol-database**.
    - Trigger phrases: `JDBC virtual schema`, `generic JDBC`, `database-source virtual schema`, `query external database through a virtual schema`, `supported JDBC dialect`, `PostgreSQL virtual schema`, `Oracle virtual schema`, `SQL Server virtual schema`, `MySQL virtual schema`, `DB2 virtual schema`, `EXPLAIN VIRTUAL` with JDBC/database-source context, `ALTER VIRTUAL SCHEMA` with JDBC/database-source context
    - Activate: **exasol-jdbc-virtual-schemas**
 
-6. **Notebook-connector AI setup**
+
+6. **Document-file virtual schema workflows**
+   - Trigger phrases: `document files virtual schema`, `S3 document files`, `BucketFS document files`, `Google Cloud Storage document files`, `Azure Blob document files`, `Azure Data Lake Storage Gen2 document files`, `document-file adapter`, `query object storage via virtual schema`
+   - Activate: **exasol-document-virtual-schemas**
+8. **Notebook-connector AI setup**
    - Trigger phrases: `Secrets`, `scs`, `secure config store`, `notebook-connector setup`, `db_host_name`, `db_schema`, `storage_backend`, `huggingface_token`
    - Activate: **exasol-ai-setup**
 
-7. **Transformers Extension workflows**
+8. **Transformers Extension workflows**
    - Trigger phrases: `Transformers Extension`, `TE extension`, `initialize_te_extension`, `deploy_scripts`, `TE UDF`, `PYTHON3_TE`, `Hugging Face models in Exasol`
    - Activate: **exasol-transformers**
 
-8. **Exasol tools, extensions, connectors, integrations, and architecture patterns**
+9. **Exasol tools, extensions, connectors, integrations, and architecture patterns**
    - Trigger phrases: `extension`, `connector`, `integration`, `catalog`, `tool`, `which Exasol tool`, `Virtual Schema adapter`, `MCP`, `Text-to-SQL`, `Lakehouse Turbo`, `Terraform`, `Ansible`, `Databricks`, `SAP`, `Power BI`, `Tableau`, `migration`, `governance`, `observability`, `semantic layer`, `Agent Control Plane`
    - Activate: **exasol-extension-catalog**
 
-9. **BucketFS file management**
+10. **BucketFS file management**
    - Trigger phrases: `BucketFS`, `bfsdefault`, `bucket`, `upload jar`, `upload model`, `list files`, `download from bucket`, `delete bucket file`
    - Activate: **exasol-bucketfs**
 
-10. **Notebook-connector connection helpers**
+11. **Notebook-connector connection helpers**
    - Trigger phrases: `open_pyexasol_connection`, `open_sqlalchemy_connection`, `open_ibis_connection`, `open_bucketfs_bucket`, `open_bucketfs_location`, `get_backend`, `connection helper`, `notebook-connector`
    - Activate: **exasol-notebook-connections**
 
-11. **Notebook Connector local Docker database workflows**
+12. **Notebook Connector local Docker database workflows**
    - Trigger phrases: `bring_itde_up`, `restart_itde`, `get_itde_status`, `take_itde_down`, `ITDE`
    - Activate: **exasol-itde**
 
-12. **Text AI Extension workflows**
+13. **Text AI Extension workflows**
    - Trigger phrases: `Text AI Extension`, `TXAIE`, `deploy_license`, `initialize_text_ai_extension`, `Extraction`, `NamedEntityExtractor`, `PipelineExtractor`, `BranchExtractor`, `StandardExtractor`, `TopicClassifierExtractor`, `zero-shot classification`, `feature extraction`, `PYTHON3_TXAIE`
    - Activate: **exasol-text-ai**
 
@@ -91,11 +99,11 @@ When a user mentions `Text AI Extension`, `TXAIE`, `deploy_license`,
 `NamedEntityExtractor`, prefer **exasol-text-ai** over the broader
 **exasol-extension-catalog** route.
 
-13. **UDFs and Script Language Containers**
+14. **UDFs and Script Language Containers**
    - Trigger phrases: `UDF`, `CREATE SCRIPT`, `SCALAR`, `SET script`, `ExaIterator`, `Python UDF`, `Java UDF`, `Lua UDF`, `R UDF`, `SLC`, `Script Language Container`, `exaslct`
    - Activate: **exasol-udfs**
 
-14. **Exasol Personal setup**
+15. **Exasol Personal setup**
    - Trigger phrases: `set up Exasol`, `Exasol Personal`, `deploy Exasol`, `install Exasol on AWS`, `new Exasol database`
    - Activate: **exasol-setup-personal**
 

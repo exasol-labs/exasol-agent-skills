@@ -71,6 +71,7 @@ Choose the narrowest matching category and load only the matching reference file
 - Use **exasol-export** for direct native `EXPORT`, local file export, and connection objects for export.
 - Use **exasol-cloud-storage-extension** for Cloud Storage Extension import/export workflows after choosing that extension family.
 - Use **exasol-jdbc-virtual-schemas** for JDBC/database-source virtual schema usage after choosing that federation family.
+- Use **exasol-document-virtual-schemas** for document-file virtual schema usage (S3, BucketFS, GCS, Azure object storage) after choosing that federation family.
 - Use **exasol-bucketfs** for BucketFS file upload, download, list, and delete workflows.
 - Use **exasol-udfs** for UDF and Script Language Container implementation details.
 - Use **exasol-ai-setup** and **exasol-notebook-connections** for notebook-connector configuration and Python connection helpers.
