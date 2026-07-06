@@ -1,6 +1,6 @@
 ---
 name: exasol-transformers
-description: "Deploy and use the Exasol Transformers Extension for NLP inference inside Exasol with notebook-connector. Covers initialize_te_extension, deploy_scripts, Hugging Face model upload, activation SQL, and the current TE SQL UDF surface."
+description: "Deploy and use the Exasol Transformers Extension for NLP inference inside Exasol with notebook-connector. Covers initialize_te_extension, deploy_scripts, activation SQL, current model-handling limits, and the current TE SQL UDF surface."
 ---
 
 # Exasol Transformers Extension Skill
@@ -32,7 +32,8 @@ The documented extension prerequisites are:
 ### Full Setup
 
 Use this first when the user wants notebook-connector to deploy the TE language
-container, create the required connection objects, and install the TE scripts.
+container, ensure the required BucketFS connection exists, optionally create
+the Hugging Face token connection object, and install the TE scripts.
 
 ```python
 from exasol.nb_connector.transformers_extension_wrapper import initialize_te_extension
@@ -54,11 +55,14 @@ initialize_te_extension(
     my_secrets,
     run_deploy_container=False,
     run_deploy_scripts=True,
-    run_encapsulate_bfs_credentials=False,
     run_encapsulate_hf_token=False,
     allow_override=True,
 )
 ```
+
+Note: notebook-connector currently ensures the BucketFS `CONNECTION` object
+unconditionally inside `initialize_te_extension()`. Do not rely on
+`run_encapsulate_bfs_credentials=False` to skip that step.
 
 ### Deploy Scripts Only
 
@@ -88,13 +92,16 @@ print(get_activation_sql(my_secrets))
 
 Models must be available in BucketFS before the TE UDFs can use them.
 
-Notebook Connector exposes model-upload helper APIs in
-`exasol.nb_connector.transformers_extension_wrapper` for this part of the
-workflow, including `upload_model(...)`.
+Notebook Connector exposes `upload_model(...)` and
+`upload_model_from_cache(...)` in
+`exasol.nb_connector.transformers_extension_wrapper`, but on notebook-connector
+main they are not a working end-to-end upload path because
+`upload_model_from_cache(...)` still raises `NotImplementedError`.
 
-For programmatic setup, initialize the extension first and then ensure the
-desired model artifacts are present under the configured model subdirectory in
-BucketFS.
+For a supported workflow, initialize the extension first and then follow the
+bundled Transformers notebooks from notebook-connector for model preparation
+and loading steps. Do not tell the agent to rely on `upload_model(...)` as a
+working path on its own.
 
 If the user needs private or gated Hugging Face models, store
 `huggingface_token` in the SCS before initialization so notebook-connector can
@@ -299,6 +306,7 @@ Success signals:
 Expected failure mode:
 
 - if DB, BucketFS, or Hugging Face settings are incomplete, initialization or UDF execution should fail until **exasol-ai-setup** has been completed with real values
+- if the workflow tries to use `upload_model(...)` directly, expect a runtime failure on current notebook-connector main because model upload is not fully implemented there
 
 ## Guidance
 
