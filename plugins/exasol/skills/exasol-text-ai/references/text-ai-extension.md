@@ -48,7 +48,7 @@ deploy_license(my_secrets, license_file=Path("text-ai-license.yaml"))
 ```
 
 Only use inline content for short-lived local experiments when the content will
-not be committed or shared:
+not be shared:
 
 ```python
 deploy_license(my_secrets, license_content="signature: ...")
@@ -206,8 +206,8 @@ Expected failure mode:
 
 ## Safety Notes
 
-- Do not store real license content, tokens, or credentials in committed code,
-  shared notebooks, or PR discussion threads.
+- Prefer a local license file over embedding real license content inline.
+- Do not share real license content.
 - Prefer local files and the secure config store for sensitive inputs.
 - Do not expose real customer text or sensitive datasets in extraction
   examples.

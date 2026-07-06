@@ -23,15 +23,15 @@ Choose the narrowest matching route. If multiple routes apply, load them in depe
    - Trigger phrases: `BucketFS`, `bfsdefault`, `bucket`, `upload jar`, `upload model`, `list files`, `download from bucket`, `delete bucket file`
    - Activate: **exasol-bucketfs**
 
-4. **Notebook-connector AI setup**
+4. **Notebook Connector AI setup**
    - Trigger phrases: `Secrets`, `secure config store`, `configure notebook-connector`, `AI setup`, `set up credentials for TE`, `set up credentials for TXAIE`
    - Activate: **exasol-ai-setup**
 
-5. **Notebook-connector local Docker database workflows**
+5. **Notebook Connector local Docker database workflows**
    - Trigger phrases: `bring_itde_up`, `restart_itde`, `get_itde_status`, `take_itde_down`, `ITDE`
    - Activate: **exasol-itde**
 
-6. **Notebook-connector connection helpers**
+6. **Notebook Connector connection helpers**
    - Trigger phrases: `open_pyexasol_connection`, `open_sqlalchemy_connection`, `open_ibis_connection`, `open_bucketfs_bucket`, `open_bucketfs_location`, `get_backend`, `connection helper`, `notebook-connector`
    - Activate: **exasol-notebook-connections**
 
@@ -53,7 +53,7 @@ When setup and usage both apply, resolve prerequisites first:
 
 1. Exasol Personal or external database availability
 2. Tool, extension, connector, or architecture selection
-3. notebook-connector AI setup when required
+3. Notebook Connector AI setup when required
 4. local Docker database lifecycle or helper-level connectivity validation
 5. extension-specific TXAIE workflow
 6. SQL, data movement, BucketFS, UDF, SLC, or integration task

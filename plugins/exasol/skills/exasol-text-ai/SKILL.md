@@ -57,6 +57,6 @@ Expected failure mode:
 
 ## Safety Rules
 
-- Do not paste real license material, tokens, or credentials into committed files, long-lived notebooks, or PR comments.
 - Prefer the built-in community license or a local license file over embedding real license content inline.
+- Do not share real license content.
 - Do not guess DB, BucketFS, or model-related configuration values.
