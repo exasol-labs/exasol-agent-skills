@@ -28,7 +28,7 @@ Current notebook-connector main behavior to preserve in this skill:
 
 ## Step 1: Deploy a License
 
-The Text AI extension requires a license before DB objects can be created.
+The Text AI Extension requires a license before DB objects can be created.
 
 Use the built-in community license for non-commercial and evaluation use:
 
@@ -71,7 +71,7 @@ from pathlib import Path
 
 initialize_text_ai_extension(
     my_secrets,
-    version="1.2.3",
+    version="<txaie-version>",
     container_file=Path("/tmp/txaie.tar.gz"),
     install_slc=False,
     install_models=False,

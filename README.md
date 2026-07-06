@@ -115,7 +115,7 @@ See [`plugins/exasol/skills/exasol-notebook-connections/SKILL.md`](plugins/exaso
 
 ### Exasol Text AI Skill
 
-Deploy and use the notebook-connector based Text AI Extension for named-entity recognition, zero-shot classification, feature extraction, and pipeline-based text workflows inside Exasol.
+Deploy and use the notebook-connector-based Text AI Extension for named-entity recognition, zero-shot classification, feature extraction, and pipeline-based text workflows inside Exasol.
 
 See [`plugins/exasol/skills/exasol-text-ai/SKILL.md`](plugins/exasol/skills/exasol-text-ai/SKILL.md) for details.
 
