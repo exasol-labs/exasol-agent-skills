@@ -23,6 +23,7 @@ When invoked:
 
 1. **Classify the task before checking connections.**
    - Database, SQL, exapump, import/export, schemas, or tables -> use **exasol-database** behavior.
+   - Virtual schema workflows such as adapter setup, `EXPLAIN VIRTUAL`, refresh, or generic JDBC and document-file adapter decisions -> use **exasol-virtual-schemas** behavior.
    - Exasol tools, extensions, connectors, integrations, migration, governance, observability, BI/API surfaces, or architecture recommendations -> use **exasol-extension-catalog** behavior.
    - BucketFS files, buckets, `bfsdefault`, model/JAR uploads, BucketFS list/download/delete -> use **exasol-bucketfs** behavior.
    - Notebook-connector Python helper calls such as `open_pyexasol_connection`, `open_sqlalchemy_connection`, `open_ibis_connection`, `open_bucketfs_bucket`, `open_bucketfs_location`, or `get_backend` -> use **exasol-notebook-connections** behavior.

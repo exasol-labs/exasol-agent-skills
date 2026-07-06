@@ -1,11 +1,11 @@
 ---
 name: exasol-database
-description: Exasol database interaction via exapump CLI and Exasol SQL. Covers SQL queries, file upload/export, table design, import/export, query profiling, and Exasol-specific SQL behavior.
+description: Exasol database interaction via exapump CLI and Exasol SQL. Covers SQL queries, file upload/export, table design, import/export, query profiling, and Exasol-specific SQL behavior outside the dedicated virtual-schema skill.
 ---
 
 # Exasol Database Skill
 
-Trigger when the user asks for **Exasol database interaction**, **exapump**, **database import/export**, **CSV/Parquet upload**, **Exasol SQL**, **IMPORT INTO**, **EXPORT INTO**, **EXA_** system views, schemas, tables, or query execution.
+Trigger when the user asks for **Exasol database interaction**, **exapump**, **database import/export**, **CSV/Parquet upload**, **Exasol SQL**, **IMPORT INTO**, **EXPORT INTO**, **EXA_** system views, schemas, tables, or query execution outside the dedicated virtual-schema skill.
 
 ## Step 0: Establish Connection
 
@@ -43,18 +43,15 @@ After the connection is established, determine the task type and load **only** t
 6. **Analytics / window functions** (ROW_NUMBER, RANK, LAG/LEAD, QUALIFY, GROUPING SETS):
    - Load: `references/analytics-qualify.md`
 
-7. **Virtual Schemas** (external data sources, adapter scripts):
-   - Load: `references/virtual-schemas.md`
-
-8. **BucketFS file management** (upload/download/list/delete files in BucketFS, bfsdefault, bucket paths):
+7. **BucketFS file management** (upload/download/list/delete files in BucketFS, bfsdefault, bucket paths):
    - Activate the **exasol-bucketfs** skill for guidance
 
-9. **UDF development** (CREATE SCRIPT, ExaIterator, SCALAR/SET, Script Language Containers, SLC, exaslct):
+8. **UDF development** (CREATE SCRIPT, ExaIterator, SCALAR/SET, Script Language Containers, SLC, exaslct):
    - Activate the **exasol-udfs** skill for guidance
 
 Multiple routes can apply — load all that match.
 
-10. **Before writing any SQL** (applies to routes 2–7):
+9. **Before writing any SQL** (applies to routes 2–6):
    - **Always double-quote every identifier** (column names, table names, schema names) in SELECT, FROM, WHERE, GROUP BY, ORDER BY, and JOIN clauses — without exception
    - This preserves mixed-case names and prevents reserved-keyword errors in a single rule
    - Do NOT quote SQL keywords, functions, or aliases — only object identifiers
@@ -63,5 +60,6 @@ Multiple routes can apply — load all that match.
 ## Related Skills
 
 This skill handles core database interaction: connecting, uploading/exporting files, SQL execution, and table design.
+For federated read-only access, adapter setup, `EXPLAIN VIRTUAL`, and virtual-schema troubleshooting, the **exasol-virtual-schemas** skill provides specialized guidance and will activate automatically when relevant.
 For BucketFS file management (upload, download, list, delete), the **exasol-bucketfs** skill provides specialized guidance and will activate automatically when relevant.
 For UDF development and Script Language Containers, the **exasol-udfs** skill provides specialized guidance and will activate automatically when relevant.

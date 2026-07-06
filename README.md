@@ -77,6 +77,12 @@ Work with Exasol databases — run queries, load and export data, handle cloud s
 
 See [`plugins/exasol/skills/exasol-database/SKILL.md`](plugins/exasol/skills/exasol-database/SKILL.md) for details.
 
+### Exasol Virtual Schemas Skill
+
+Use Exasol virtual schemas for federated read-only access to external systems and document-file adapters, including refresh, debugging, and adapter-development workflows.
+
+See [`plugins/exasol/skills/exasol-virtual-schemas/SKILL.md`](plugins/exasol/skills/exasol-virtual-schemas/SKILL.md) for details.
+
 ### Exasol Extension Catalog Skill
 
 Choose the right Exasol tool, extension, connector, integration, or architecture pattern for deployment, data loading, exploration, AI/ML enrichment, BI/API surfaces, governance, and scale.
