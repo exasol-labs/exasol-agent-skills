@@ -54,3 +54,9 @@ Expected failure mode:
 - Use **exasol-ai-setup** when SCS, DB, or BucketFS values are still missing.
 - Use **exasol-bucketfs** when the user needs to inspect the uploaded SLC or model assets.
 - Use **exasol-udfs** when the task moves beyond the packaged Text AI extraction API into lower-level UDF or SLC work.
+
+## Safety Rules
+
+- Do not paste real license material, tokens, or credentials into committed files, long-lived notebooks, or PR comments.
+- Prefer the built-in community license or a local license file over embedding real license content inline.
+- Do not guess DB, BucketFS, or model-related configuration values.

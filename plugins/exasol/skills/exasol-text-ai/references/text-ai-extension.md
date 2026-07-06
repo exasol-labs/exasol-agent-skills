@@ -38,12 +38,19 @@ from exasol.nb_connector.text_ai_extension_wrapper import deploy_license
 deploy_license(my_secrets)
 ```
 
-Or pass a file or inline content:
+Prefer a local license file for custom licenses so the content does not end up
+embedded in code or notebook history:
 
 ```python
 from pathlib import Path
 
 deploy_license(my_secrets, license_file=Path("text-ai-license.yaml"))
+```
+
+Only use inline content for short-lived local experiments when the content will
+not be committed or shared:
+
+```python
 deploy_license(my_secrets, license_content="signature: ...")
 ```
 
@@ -196,3 +203,11 @@ Success signals:
 Expected failure mode:
 
 - if the source tables, DB config, BucketFS config, or extension assets are missing, extraction should fail until **exasol-ai-setup** and the required DB objects are in place
+
+## Safety Notes
+
+- Do not store real license content, tokens, or credentials in committed code,
+  shared notebooks, or PR discussion threads.
+- Prefer local files and the secure config store for sensitive inputs.
+- Do not expose real customer text or sensitive datasets in extraction
+  examples.
