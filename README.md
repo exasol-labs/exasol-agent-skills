@@ -77,6 +77,12 @@ Work with Exasol databases — run queries, load and export data, handle cloud s
 
 See [`plugins/exasol/skills/exasol-database/SKILL.md`](plugins/exasol/skills/exasol-database/SKILL.md) for details.
 
+### Exasol Import Export Skill
+
+Use Exasol IMPORT and EXPORT SQL plus exapump local file workflows for moving data into or out of Exasol.
+
+See [`plugins/exasol/skills/exasol-import-export/SKILL.md`](plugins/exasol/skills/exasol-import-export/SKILL.md) for details.
+
 ### Exasol Extension Catalog Skill
 
 Choose the right Exasol tool, extension, connector, integration, or architecture pattern for deployment, data loading, exploration, AI/ML enrichment, BI/API surfaces, governance, and scale.

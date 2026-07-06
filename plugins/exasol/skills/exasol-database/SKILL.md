@@ -1,11 +1,11 @@
 ---
 name: exasol-database
-description: Exasol database interaction via exapump CLI and Exasol SQL. Covers SQL queries, file upload/export, table design, import/export, query profiling, and Exasol-specific SQL behavior.
+description: Exasol database interaction via exapump CLI and Exasol SQL. Covers SQL queries, schema inspection, table design, query profiling, analytics, and Exasol-specific SQL behavior outside the dedicated import/export and virtual-schema skills.
 ---
 
 # Exasol Database Skill
 
-Trigger when the user asks for **Exasol database interaction**, **exapump**, **database import/export**, **CSV/Parquet upload**, **Exasol SQL**, **IMPORT INTO**, **EXPORT INTO**, **EXA_** system views, schemas, tables, or query execution.
+Trigger when the user asks for **Exasol database interaction**, **exapump**, **Exasol SQL**, **EXA_** system views, schemas, tables, or query execution outside the dedicated import/export and virtual-schema skills.
 
 ## Step 0: Establish Connection
 
@@ -23,38 +23,28 @@ Ensure a working exapump profile before proceeding:
 
 After the connection is established, determine the task type and load **only** the references needed:
 
-1. **Local files** (upload CSV/Parquet, export to local files):
-   - Load: `references/exapump-reference.md`
-   - Load: `references/import-export.md` (decision tree, connection objects)
-
-2. **Remote files / bulk loading** (S3, Azure, GCS, FTP, HTTP — IMPORT/EXPORT):
-   - Load: `references/import-export.md`
-
-3. **SQL execution** (queries, DDL, DML, schema inspection):
+1. **SQL execution** (queries, DDL, DML, schema inspection):
    - Load: `references/exapump-reference.md` (CLI usage)
    - Load: `references/exasol-sql.md` (core SQL behavior)
 
-4. **Table design** (DISTRIBUTE BY, PARTITION BY, CREATE TABLE layout):
+2. **Table design** (DISTRIBUTE BY, PARTITION BY, CREATE TABLE layout):
    - Load: `references/table-design.md`
 
-5. **Query profiling / performance** (slow queries, data skew, REORGANIZE):
+3. **Query profiling / performance** (slow queries, data skew, REORGANIZE):
    - Load: `references/query-profiling.md`
 
-6. **Analytics / window functions** (ROW_NUMBER, RANK, LAG/LEAD, QUALIFY, GROUPING SETS):
+4. **Analytics / window functions** (ROW_NUMBER, RANK, LAG/LEAD, QUALIFY, GROUPING SETS):
    - Load: `references/analytics-qualify.md`
 
-7. **Virtual Schemas** (external data sources, adapter scripts):
-   - Load: `references/virtual-schemas.md`
-
-8. **BucketFS file management** (upload/download/list/delete files in BucketFS, bfsdefault, bucket paths):
+5. **BucketFS file management** (upload/download/list/delete files in BucketFS, bfsdefault, bucket paths):
    - Activate the **exasol-bucketfs** skill for guidance
 
-9. **UDF development** (CREATE SCRIPT, ExaIterator, SCALAR/SET, Script Language Containers, SLC, exaslct):
+6. **UDF development** (CREATE SCRIPT, ExaIterator, SCALAR/SET, Script Language Containers, SLC, exaslct):
    - Activate the **exasol-udfs** skill for guidance
 
 Multiple routes can apply — load all that match.
 
-10. **Before writing any SQL** (applies to routes 2–7):
+7. **Before writing any SQL** (applies to routes 1–4):
    - **Always double-quote every identifier** (column names, table names, schema names) in SELECT, FROM, WHERE, GROUP BY, ORDER BY, and JOIN clauses — without exception
    - This preserves mixed-case names and prevents reserved-keyword errors in a single rule
    - Do NOT quote SQL keywords, functions, or aliases — only object identifiers
@@ -62,6 +52,7 @@ Multiple routes can apply — load all that match.
 
 ## Related Skills
 
-This skill handles core database interaction: connecting, uploading/exporting files, SQL execution, and table design.
+This skill handles core database interaction: connecting, SQL execution, schema inspection, and table design.
+For direct native `IMPORT` and `EXPORT` plus local file movement, the **exasol-import-export** skill provides specialized guidance and will activate automatically when relevant.
 For BucketFS file management (upload, download, list, delete), the **exasol-bucketfs** skill provides specialized guidance and will activate automatically when relevant.
 For UDF development and Script Language Containers, the **exasol-udfs** skill provides specialized guidance and will activate automatically when relevant.

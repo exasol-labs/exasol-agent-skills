@@ -15,23 +15,27 @@ Choose the narrowest matching route. If multiple routes apply, load them in depe
    - Trigger phrases: `SQL`, `query`, `SELECT`, `CREATE TABLE`, `IMPORT`, `EXPORT`, `upload CSV`, `upload Parquet`, `exapump`, `profile`, `schema`, `table`
    - Activate: **exasol-database**
 
-2. **Exasol tools, extensions, connectors, integrations, and architecture patterns**
+2. **Import and export workflows**
+   - Trigger phrases: `IMPORT INTO`, `EXPORT INTO`, `upload CSV`, `upload Parquet`, `export table`, `local file load`, `S3 import`, `CREATE CONNECTION`
+   - Activate: **exasol-import-export**
+
+3. **Exasol tools, extensions, connectors, integrations, and architecture patterns**
    - Trigger phrases: `extension`, `connector`, `integration`, `catalog`, `tool`, `which Exasol tool`, `Virtual Schema adapter`, `MCP`, `Text-to-SQL`, `Lakehouse Turbo`, `Terraform`, `Ansible`, `Databricks`, `SAP`, `Power BI`, `Tableau`, `migration`, `governance`, `observability`, `semantic layer`, `Agent Control Plane`
    - Activate: **exasol-extension-catalog**
 
-3. **BucketFS file management**
+4. **BucketFS file management**
    - Trigger phrases: `BucketFS`, `bfsdefault`, `bucket`, `upload jar`, `upload model`, `list files`, `download from bucket`, `delete bucket file`
    - Activate: **exasol-bucketfs**
 
-4. **Notebook-connector connection helpers**
+5. **Notebook-connector connection helpers**
    - Trigger phrases: `open_pyexasol_connection`, `open_sqlalchemy_connection`, `open_ibis_connection`, `open_bucketfs_bucket`, `open_bucketfs_location`, `get_backend`, `connection helper`, `notebook-connector`
    - Activate: **exasol-notebook-connections**
 
-5. **UDFs and Script Language Containers**
+6. **UDFs and Script Language Containers**
    - Trigger phrases: `UDF`, `CREATE SCRIPT`, `SCALAR`, `SET script`, `ExaIterator`, `Python UDF`, `Java UDF`, `Lua UDF`, `R UDF`, `SLC`, `Script Language Container`, `exaslct`
    - Activate: **exasol-udfs**
 
-6. **Exasol Personal setup**
+7. **Exasol Personal setup**
    - Trigger phrases: `set up Exasol`, `Exasol Personal`, `deploy Exasol`, `install Exasol on AWS`, `new Exasol database`
    - Activate: **exasol-setup-personal**
 
