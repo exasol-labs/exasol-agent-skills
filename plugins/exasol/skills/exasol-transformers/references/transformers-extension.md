@@ -17,7 +17,7 @@ extension-specific workflow and validation.
 Current notebook-connector main behavior to preserve in this skill:
 
 - `initialize_te_extension(...)` always ensures the BucketFS `CONNECTION`
-  object exists, even if `run_encapsulate_bfs_credentials=False`
+  object exists as part of its setup flow
 - `upload_model(...)` is not a working end-to-end model-upload path because it
   reaches `upload_model_from_cache(...)`, which still raises
   `NotImplementedError`

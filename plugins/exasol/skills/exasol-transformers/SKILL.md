@@ -61,8 +61,8 @@ initialize_te_extension(
 ```
 
 Note: notebook-connector currently ensures the BucketFS `CONNECTION` object
-unconditionally inside `initialize_te_extension()`. Do not rely on
-`run_encapsulate_bfs_credentials=False` to skip that step.
+inside `initialize_te_extension()`. Do not assume this setup path skips BucketFS
+connection creation.
 
 ### Deploy Scripts Only
 
