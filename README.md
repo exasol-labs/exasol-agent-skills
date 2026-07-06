@@ -59,11 +59,29 @@ npx skills add exasol-labs/exasol-agent-skills --agent codex
 
 ## What You Get
 
+### Unified Exasol Router
+
+Use one entry point for Exasol work:
+
+```
+/exasol <anything Exasol-related>
+```
+
+The router chooses the right specialized guidance for SQL, data loading, BucketFS, UDFs, Script Language Containers, extension/integration selection, and setup tasks.
+
+See [`plugins/exasol/skills/exasol/SKILL.md`](plugins/exasol/skills/exasol/SKILL.md) and [`plugins/exasol/commands/exasol.md`](plugins/exasol/commands/exasol.md) for details.
+
 ### Exasol Database Skill
 
 Work with Exasol databases — run queries, load and export data, handle cloud sources, and get help with Exasol-specific SQL quirks.
 
 See [`plugins/exasol/skills/exasol-database/SKILL.md`](plugins/exasol/skills/exasol-database/SKILL.md) for details.
+
+### Exasol Extension Catalog Skill
+
+Choose the right Exasol tool, extension, connector, integration, or architecture pattern for deployment, data loading, exploration, AI/ML enrichment, BI/API surfaces, governance, and scale.
+
+See [`plugins/exasol/skills/exasol-extension-catalog/SKILL.md`](plugins/exasol/skills/exasol-extension-catalog/SKILL.md) for details.
 
 ### Exasol UDF Skill
 
@@ -77,9 +95,27 @@ Manage files in Exasol's distributed file system — list, upload, download, and
 
 See [`plugins/exasol/skills/exasol-bucketfs/SKILL.md`](plugins/exasol/skills/exasol-bucketfs/SKILL.md) for details.
 
+### Exasol AI Setup Skill
+
+Set up notebook-connector configuration via the `scs` CLI or the `Secrets` Python API before using AI-related workflows.
+
+See [`plugins/exasol/skills/exasol-ai-setup/SKILL.md`](plugins/exasol/skills/exasol-ai-setup/SKILL.md) for details.
+
+### Exasol ITDE Skill
+
+Run and manage notebook-connector's local Docker-based Exasol development environment.
+
+See [`plugins/exasol/skills/exasol-itde/SKILL.md`](plugins/exasol/skills/exasol-itde/SKILL.md) for details.
+
+### Exasol Notebook Connector Connections Skill
+
+Use notebook-connector's Python helpers for Exasol, BucketFS, SQLAlchemy, and Ibis connections.
+
+See [`plugins/exasol/skills/exasol-notebook-connections/SKILL.md`](plugins/exasol/skills/exasol-notebook-connections/SKILL.md) for details.
+
 ### Exasol Text AI Skill
 
-Deploy and use the notebook-connector based Text AI Extension for NER, embeddings, and zero-shot workflows.
+Deploy and use the notebook-connector based Text AI Extension for named-entity recognition, zero-shot classification, feature extraction, and pipeline-based text workflows inside Exasol.
 
 See [`plugins/exasol/skills/exasol-text-ai/SKILL.md`](plugins/exasol/skills/exasol-text-ai/SKILL.md) for details.
 
@@ -93,15 +129,35 @@ See [`plugins/exasol/skills/setup-personal/SKILL.md`](plugins/exasol/skills/setu
 
 ### `/exasol` Slash Command <sup>Claude Code only</sup>
 
-Run SQL or describe tasks directly:
+Run SQL or describe any Exasol task directly:
 
 ```
 /exasol SELECT * FROM my_table
 /exasol upload sales.csv to analytics.sales
 /exasol export users to parquet
+/exasol list BucketFS files under models/
+/exasol which connector should I use for Databricks?
+/exasol initialize the Text AI Extension for notebook-connector
+/exasol write a Python UDF
+/exasol set up Exasol Personal on AWS
 ```
 
 ---
+
+## Contributing Skills
+
+Keep the user interface simple: users should type `/exasol <task>` or ask naturally. Do not require users to know sub-skill names.
+
+When adding a new Exasol capability:
+
+1. Add a focused skill under `plugins/exasol/skills/<skill-name>/SKILL.md`.
+2. Put detailed docs in `references/` and runnable templates in `scripts/` when useful.
+3. Add the new route to `plugins/exasol/skills/exasol/SKILL.md`.
+4. Mirror the route in `plugins/exasol/commands/exasol.md`.
+5. Update this README only with user-facing capability text, not internal routing details.
+6. Bump both manifest versions and add a CHANGELOG entry.
+
+Avoid adding new slash commands unless there is a strong backwards-compatibility reason. Prefer `/exasol bucketfs ...` over introducing a separate command for each domain.
 
 ## Prerequisites
 
