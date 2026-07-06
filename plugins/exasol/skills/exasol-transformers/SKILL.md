@@ -295,7 +295,7 @@ Validate setup in layers:
 
 - after initialization, run `print(get_activation_sql(my_secrets))` and confirm the returned SQL contains the TE language definition
 - if the SLC is already present, re-run `deploy_scripts(...)` as a lightweight script-level validation
-- after model upload and activation, run one minimal TE SQL UDF call such as `TE_LIST_MODELS_UDF`
+- after the model artifacts are available in BucketFS and activation is done, run one minimal TE SQL UDF call such as `TE_LIST_MODELS_UDF`
 
 Success signals:
 

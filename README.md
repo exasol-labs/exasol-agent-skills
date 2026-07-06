@@ -115,7 +115,7 @@ See [`plugins/exasol/skills/exasol-notebook-connections/SKILL.md`](plugins/exaso
 
 ### Exasol Transformers Skill
 
-Deploy and use the notebook-connector based Transformers Extension with Hugging Face models inside Exasol.
+Deploy and use the notebook-connector based Transformers Extension for NLP inference inside Exasol, including workflows that use Hugging Face models.
 
 See [`plugins/exasol/skills/exasol-transformers/SKILL.md`](plugins/exasol/skills/exasol-transformers/SKILL.md) for details.
 
