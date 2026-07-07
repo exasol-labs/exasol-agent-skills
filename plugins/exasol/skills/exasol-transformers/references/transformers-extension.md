@@ -104,6 +104,19 @@ install_model(
 )
 ```
 
+Use the values that match the TE UDF you plan to call:
+
+| TE UDF | `task_type` for `install_model(...)` | model factory |
+|--------|--------------------------------------|----------------|
+| `TE_TEXT_GENERATION_UDF` | `text_generation` | `AutoModelForCausalLM` |
+| `TE_FILLING_MASK_UDF` | `filling_mask` | `AutoModelForMaskedLM` |
+| `TE_SEQUENCE_CLASSIFICATION_SINGLE_TEXT_UDF` | `sequence_classification` | `AutoModelForSequenceClassification` |
+| `TE_SEQUENCE_CLASSIFICATION_TEXT_PAIR_UDF` | `sequence_classification` | `AutoModelForSequenceClassification` |
+| `TE_ZERO_SHOT_TEXT_CLASSIFICATION_UDF` | `zero_shot_classification` | `AutoModelForSequenceClassification` |
+| `TE_QUESTION_ANSWERING_UDF` | `question_answering` | `AutoModelForQuestionAnswering` |
+| `TE_TOKEN_CLASSIFICATION_UDF` | `token_classification` | `AutoModelForTokenClassification` |
+| `TE_TRANSLATION_UDF` | `translation` | `AutoModelForSeq2SeqLM` |
+
 If the user needs private or gated Hugging Face models, store
 `huggingface_token` in the SCS before initialization so notebook-connector can
 create the corresponding DB `CONNECTION` object.
