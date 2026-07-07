@@ -1,4 +1,4 @@
-# Exasol Reserved Keywords
+# Exasol Reserved Keywords (Exasol 2026.1.0)
 
 > **Source of truth.** The complete list of **reserved** SQL keywords, pulled
 > verbatim from the `EXA_SQL_KEYWORDS` system table (`WHERE RESERVED = TRUE`).
@@ -6,22 +6,30 @@
 > column, schema, alias name) — it must be double-quoted, e.g. `"VALUE"`,
 > `"YEAR"`, `"POSITION"`.
 >
-> - **DB version:** 2026.1.0 (matches the `master`/v8 grammar in `exasol-grammar.md`)
+> - **Pinned to DB version:** **2026.1.0** (matches the `master`/v8 grammar in `exasol-grammar.md`)
 > - **Count:** 468 reserved keywords
 > - **Refresh:** re-run `SELECT KEYWORD FROM EXA_SQL_KEYWORDS WHERE RESERVED ORDER BY KEYWORD` against a live database of the target version. Do not hand-edit.
 
 ## How to use this
 
-- **Writing SQL:** if an identifier appears in this list, double-quote it. The
-  safe blanket rule (see the skill's SKILL.md) is to double-quote *every*
-  object identifier — this list explains *why* it's necessary and lets you
-  check a specific name.
+- **Before designing queries — ingest this list.** Read the full list below up
+  front and treat every name in it as requiring double-quotes when used as an
+  object identifier (table, column, schema, alias). Together with the skill's
+  blanket "double-quote every identifier" rule, this heads off reserved-word
+  syntax errors instead of discovering them after the fact.
+- **This snapshot is pinned to Exasol 2026.1.0.** Reserved keywords are
+  version-specific: a newer database may reserve additional words and an older
+  one fewer. If the target database is a different version, the list can drift
+  in either direction.
+- **On a reserved-keyword syntax error, re-query the live DB.** If a query
+  fails with a syntax error that looks like an unquoted reserved word, do not
+  trust this file blindly — fetch the authoritative list for the *running*
+  version and reconcile:
+  `exapump sql "SELECT KEYWORD FROM EXA_SQL_KEYWORDS WHERE RESERVED ORDER BY KEYWORD"`.
+  The live `EXA_SQL_KEYWORDS` table always wins over this snapshot.
 - **Non-reserved keywords** (e.g. many function names) are usable as unquoted
   identifiers and are **not** listed here. For the full picture query
   `SELECT KEYWORD, RESERVED FROM EXA_SQL_KEYWORDS ORDER BY KEYWORD`.
-- This list is version-specific. It rarely changes between releases, but the
-  live table on the target database is always authoritative:
-  `SELECT KEYWORD FROM EXA_SQL_KEYWORDS WHERE RESERVED ORDER BY KEYWORD`.
 
 ## Reserved keywords (468)
 
