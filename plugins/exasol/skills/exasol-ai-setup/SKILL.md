@@ -16,6 +16,7 @@ After configuration is complete:
 
 - activate **exasol-itde** for local Docker DB lifecycle
 - activate **exasol-notebook-connections** for Python DB and BucketFS helper APIs
+- activate **exasol-transformers** for Transformers Extension setup and usage
 - activate **exasol-text-ai** for Text AI Extension setup and usage
 - activate **exasol-bucketfs** or **exasol-udfs** only for deeper BucketFS or SLC work beyond notebook-connector setup
 
@@ -34,8 +35,8 @@ Choose the narrowest path that matches the user request:
    - Use scripts from: `scripts/`
 
 3. **Downstream notebook-connector work**
-   - Trigger phrases: `bring_itde_up`, `open_pyexasol_connection`, `open_sqlalchemy_connection`, `open_ibis_connection`, `open_bucketfs_bucket`, `initialize_text_ai_extension`, `deploy_license`
-   - Hand off to **exasol-itde**, **exasol-notebook-connections**, or **exasol-text-ai** after setup validation succeeds
+   - Trigger phrases: `bring_itde_up`, `open_pyexasol_connection`, `open_sqlalchemy_connection`, `open_ibis_connection`, `open_bucketfs_bucket`, `initialize_te_extension`, `initialize_text_ai_extension`, `deploy_license`
+   - Hand off to **exasol-itde**, **exasol-notebook-connections**, **exasol-transformers**, or **exasol-text-ai** after setup validation succeeds
 
 Multiple routes can apply. Load all matching references before responding.
 

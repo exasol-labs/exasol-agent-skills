@@ -58,8 +58,8 @@ When setup and usage both apply, resolve prerequisites first:
 1. Exasol Personal or external database availability
 2. Tool, extension, connector, or architecture selection
 3. Notebook-connector AI setup when required
-4. local Docker database lifecycle or helper-level connectivity validation
-5. extension-specific TXAIE or Transformers workflow
+4. Local Docker database lifecycle or helper-level connectivity validation
+5. Extension-specific TXAIE or Transformers workflow
 6. SQL, data movement, BucketFS, UDF, SLC, or integration task
 
 ## User Interaction Rules
