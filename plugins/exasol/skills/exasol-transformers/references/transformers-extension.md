@@ -8,21 +8,18 @@ It covers:
 - `initialize_te_extension(...)`
 - `deploy_scripts(...)`
 - `get_activation_sql(...)`
-- current limits of `upload_model(...)`
+- model installation with `install_model(...)`
 - the current SQL UDF examples documented in notebook-connector
 
 Keep setup prerequisites in `Secrets` first, then use this reference for the
 extension-specific workflow and validation.
 
-Current notebook-connector main behavior to preserve in this skill:
+Current notebook-connector behavior to preserve in this skill:
 
 - `initialize_te_extension(...)` always ensures the BucketFS `CONNECTION`
   object exists as part of its setup flow
-- `upload_model(...)` is not a working end-to-end model-upload path because it
-  reaches `upload_model_from_cache(...)`, which still raises
-  `NotImplementedError`
-- model-handling guidance should therefore point to the bundled Transformers
-  notebooks instead of presenting `upload_model(...)` as a supported workflow
+- model installation in the bundled Transformers notebooks uses
+  `exasol.nb_connector.model_installation.install_model(...)`
 
 ## Main Entry Points
 
@@ -89,16 +86,23 @@ print(get_activation_sql(my_secrets))
 
 Models must be available in BucketFS before the TE UDFs can use them.
 
-Notebook Connector exposes `upload_model(...)` and
-`upload_model_from_cache(...)` in
-`exasol.nb_connector.transformers_extension_wrapper`, but on notebook-connector
-main they are not a working end-to-end upload path because
-`upload_model_from_cache(...)` still raises `NotImplementedError`.
+For model installation, initialize the extension first and then install models
+with `exasol.nb_connector.model_installation.install_model(...)`. This is the
+model-installation path used in the bundled Transformers notebooks.
 
-For a supported workflow, initialize the extension first and then follow the
-bundled Transformers notebooks from notebook-connector for model preparation
-and loading steps. Do not tell the agent to rely on `upload_model(...)` as a
-working path on its own.
+```python
+from exasol.nb_connector.model_installation import TransformerModel, install_model
+from transformers import AutoModelForSequenceClassification
+
+install_model(
+    my_secrets,
+    TransformerModel(
+        "facebook/bart-large-mnli",
+        "sequence_classification",
+        AutoModelForSequenceClassification,
+    ),
+)
+```
 
 If the user needs private or gated Hugging Face models, store
 `huggingface_token` in the SCS before initialization so notebook-connector can
@@ -303,4 +307,3 @@ Success signals:
 Expected failure mode:
 
 - if DB, BucketFS, or Hugging Face settings are incomplete, initialization or UDF execution should fail until **exasol-ai-setup** has been completed with real values
-- if the workflow tries to use `upload_model(...)` directly, expect a runtime failure on current notebook-connector main because model upload is not fully implemented there

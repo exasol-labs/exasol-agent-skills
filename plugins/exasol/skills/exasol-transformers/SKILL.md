@@ -1,6 +1,6 @@
 ---
 name: exasol-transformers
-description: "Deploy and use the Exasol Transformers Extension for NLP inference inside Exasol with notebook-connector. Covers initialize_te_extension, deploy_scripts, activation SQL, current model-handling limits, and the current TE SQL UDF surface."
+description: "Deploy and use the Exasol Transformers Extension for NLP inference inside Exasol with notebook-connector. Covers initialize_te_extension, deploy_scripts, activation SQL, model-installation workflows, and the current TE SQL UDF surface."
 ---
 
 # Exasol Transformers Extension Skill
@@ -20,7 +20,7 @@ activate **exasol-ai-setup** first.
 ## Routing Algorithm
 
 1. **Extension setup and model handling**
-   - Trigger phrases: `initialize_te_extension`, `deploy_scripts`, `upload_model`, `huggingface_token`
+   - Trigger phrases: `initialize_te_extension`, `deploy_scripts`, `install_model`, `huggingface_token`
    - Load: `references/transformers-extension.md`
 
 2. **SQL UDF usage and validation**
@@ -52,7 +52,6 @@ Success signals:
 Expected failure mode:
 
 - if DB, BucketFS, or Hugging Face settings are incomplete, initialization or UDF execution should fail until **exasol-ai-setup** has been completed with real values
-- if the workflow tries to use `upload_model(...)` directly, expect a runtime failure on current notebook-connector main because model upload is not fully implemented there
 
 ## Guidance
 
