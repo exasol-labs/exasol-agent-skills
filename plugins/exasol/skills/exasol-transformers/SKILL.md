@@ -14,7 +14,7 @@ reference material that covers TE setup, activation, validation, and the
 current TE SQL UDF surface.
 
 Use this skill after notebook-connector configuration already exists in the
-secure config store. If the required DB or BucketFS values are still missing,
+SCS (secure config store). If the required DB or BucketFS values are still missing,
 activate **exasol-ai-setup** first.
 
 ## Routing Algorithm
