@@ -23,12 +23,13 @@ When invoked:
 
 1. **Classify the task before checking connections.**
    - Database, SQL, exapump, import/export, schemas, or tables -> use **exasol-database** behavior.
+   - Notebook-connector setup, `Secrets`, `scs`, secure config store values, or backend configuration keys such as `db_host_name`, `db_schema`, `storage_backend`, or `huggingface_token` -> use **exasol-ai-setup** behavior.
    - Exasol tools, extensions, connectors, integrations, migration, governance, observability, BI/API surfaces, or architecture recommendations -> use **exasol-extension-catalog** behavior.
    - BucketFS files, buckets, `bfsdefault`, model/JAR uploads, BucketFS list/download/delete -> use **exasol-bucketfs** behavior.
-   - Notebook Connector AI setup such as `Secrets`, secure config store, or configuring `notebook-connector` for TE or TXAIE -> use **exasol-ai-setup** behavior.
    - Notebook Connector local Docker database workflows such as `bring_itde_up`, `restart_itde`, `get_itde_status`, or `take_itde_down` -> use **exasol-itde** behavior.
    - Notebook Connector Python helper calls such as `open_pyexasol_connection`, `open_sqlalchemy_connection`, `open_ibis_connection`, `open_bucketfs_bucket`, `open_bucketfs_location`, or `get_backend` -> use **exasol-notebook-connections** behavior.
-   - Text AI Extension workflows such as `deploy_license`, `initialize_text_ai_extension`, `Extraction`, `NamedEntityExtractor`, `PipelineExtractor`, or `BranchExtractor` -> use **exasol-text-ai** behavior.
+   - Text AI Extension workflows such as `deploy_license`, `initialize_text_ai_extension`, `Extraction`, `NamedEntityExtractor`, `PipelineExtractor`, `BranchExtractor`, `StandardExtractor`, `TopicClassifierExtractor`, feature extraction, or zero-shot classification -> use **exasol-text-ai** behavior.
+   - Transformers Extension workflows such as `initialize_te_extension`, `deploy_scripts`, `TE UDF` usage, or Transformers model workflows in Exasol -> use **exasol-transformers** behavior.
    - UDFs, `CREATE SCRIPT`, `ExaIterator`, Python/Java/Lua/R scripts, Script Language Containers, or `exaslct` -> use **exasol-udfs** behavior.
    - Exasol Personal, AWS setup, first Exasol deployment, or new database setup -> use **exasol-setup-personal** behavior.
 
@@ -62,7 +63,7 @@ When invoked:
    - Use the Notebook Connector setup skill and validate prerequisites before generating downstream AI helper or extension calls.
 
 7. **For Notebook Connector helper and AI extension routes:**
-   - Use the Notebook Connector connection helper skill and its runnable Python templates.
+   - Use the Notebook Connector connection helper skill and its runnable Python templates for helper-level access.
    - Resolve Notebook Connector setup prerequisites before generating helper or extension calls.
 
 8. **For UDF and SLC routes:**

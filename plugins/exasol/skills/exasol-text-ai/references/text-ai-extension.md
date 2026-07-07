@@ -15,7 +15,7 @@ It covers:
 Keep setup prerequisites in `Secrets` first, then use this reference for the
 extension-specific workflow and validation.
 
-Current notebook-connector main behavior to preserve in this skill:
+Current notebook-connector behavior to preserve in this skill:
 
 - `deploy_license(...)` can use the bundled community license when no custom
   license arguments are supplied
@@ -71,6 +71,15 @@ initialize_text_ai_extension(my_secrets)
 2. install the default Hugging Face models into BucketFS
 3. deploy the TXAIE scripts into the configured schema
 
+When `install_models=True`, notebook-connector installs these default models
+through `install_model(...)`:
+
+| workflow | default model | `task_type` for `install_model(...)` | model factory |
+|----------|----------------|--------------------------------------|----------------|
+| semantic feature extraction | `answerdotai/ModernBERT-base` | `feature-extraction` | `AutoModel` |
+| named entity extraction | `guishe/nuner-v2_fewnerd_fine_super` | `token-classification` | `AutoModelForTokenClassification` |
+| zero-shot classification / default NLI model | `tasksource/ModernBERT-base-nli` | `zero-shot-classification` | `AutoModelForSequenceClassification` |
+
 Useful selective flags:
 
 ```python
@@ -92,6 +101,15 @@ initialize_text_ai_extension(
 The `Extraction` class wraps one or more UDF calls. Provide an extractor that
 defines which UDFs to invoke, for example `NamedEntityExtractor` for named
 entity recognition or a pipeline built with `StandardExtractor`.
+
+Use the extractor shape that matches the workflow:
+
+| extractor | use it for |
+|-----------|------------|
+| `NamedEntityExtractor` | direct named-entity extraction |
+| `StandardExtractor` | the built-in preprocessing flow with topic classification, keyword search, and named entity recognition |
+| `PipelineExtractor` | sequential workflows where one extractor step feeds the next |
+| `BranchExtractor` | fan-out workflows where multiple extractors run from the same source step |
 
 Text AI extraction is incremental: it processes only source rows for which no
 results have been written yet. Some workflows also create support and lookup

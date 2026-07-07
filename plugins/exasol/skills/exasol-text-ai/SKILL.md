@@ -5,7 +5,7 @@ description: "Deploy and use the Exasol Text AI Extension with notebook-connecto
 
 # Exasol Text AI Extension Skill
 
-Trigger when the user mentions **Text AI Extension**, **TXAIE**, **deploy_license**, **initialize_text_ai_extension**, **Extraction**, **named entity extraction**, **zero-shot classification**, **feature extraction**, or **PYTHON3_TXAIE**.
+Trigger when the user mentions **Text AI Extension**, **TXAIE**, **deploy_license**, **initialize_text_ai_extension**, **Extraction**, **named entity extraction**, **zero-shot classification**, **feature extraction**, **StandardExtractor**, **TopicClassifierExtractor**, or **PYTHON3_TXAIE**.
 
 ## Purpose
 
@@ -24,7 +24,7 @@ activate **exasol-ai-setup** first.
    - Load: `references/text-ai-extension.md`
 
 2. **Extraction workflows and validation**
-   - Trigger phrases: `Extraction`, `NamedEntityExtractor`, `PipelineExtractor`, `BranchExtractor`, `StandardExtractor`
+   - Trigger phrases: `Extraction`, `NamedEntityExtractor`, `PipelineExtractor`, `BranchExtractor`, `StandardExtractor`, `TopicClassifierExtractor`, `feature extraction`, `zero-shot classification`
    - Load: `references/text-ai-extension.md`
 
 Multiple routes can apply. Load the reference before responding.
@@ -51,7 +51,7 @@ Expected failure mode:
 
 ## Guidance
 
-- Use **exasol-ai-setup** when SCS, DB, or BucketFS values are still missing.
+- Use **exasol-ai-setup** when secure config store, DB, or BucketFS values are still missing.
 - Use **exasol-bucketfs** when the user needs to inspect the uploaded SLC or model assets.
 - Use **exasol-udfs** when the task moves beyond the packaged Text AI extraction API into lower-level UDF or SLC work.
 

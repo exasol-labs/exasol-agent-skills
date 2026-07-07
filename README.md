@@ -113,11 +113,17 @@ Use notebook-connector's Python helpers for Exasol, BucketFS, SQLAlchemy, and Ib
 
 See [`plugins/exasol/skills/exasol-notebook-connections/SKILL.md`](plugins/exasol/skills/exasol-notebook-connections/SKILL.md) for details.
 
-### Exasol Text AI Skill
+### Exasol Text AI Extension Skill
 
 Deploy and use the notebook-connector-based Text AI Extension for named-entity recognition, zero-shot classification, feature extraction, and pipeline-based text workflows inside Exasol.
 
 See [`plugins/exasol/skills/exasol-text-ai/SKILL.md`](plugins/exasol/skills/exasol-text-ai/SKILL.md) for details.
+
+### Exasol Transformers Extension Skill
+
+Deploy and use the notebook-connector-based Transformers Extension for NLP inference inside Exasol, including workflows that use Hugging Face models.
+
+See [`plugins/exasol/skills/exasol-transformers/SKILL.md`](plugins/exasol/skills/exasol-transformers/SKILL.md) for details.
 
 ### Exasol Personal Setup Skill
 
