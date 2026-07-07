@@ -62,9 +62,9 @@ When invoked:
 6. **For Notebook Connector setup routes:**
    - Use the Notebook Connector setup skill and validate prerequisites before generating downstream AI helper or extension calls.
 
-7. **For Notebook Connector helper and AI extension routes:**
+7. **For Notebook Connector helper routes:**
    - Use the Notebook Connector connection helper skill and its runnable Python templates for helper-level access.
-   - Resolve Notebook Connector setup prerequisites before generating helper or extension calls.
+   - Resolve Notebook Connector setup prerequisites before generating helper calls.
 
 8. **For UDF and SLC routes:**
    - Use Exasol UDF and Script Language Container guidance.
