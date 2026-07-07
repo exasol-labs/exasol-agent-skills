@@ -9,7 +9,7 @@
 >
 > - **DB version:** branch `master` (`master` = major version 8, incl. 2025; `R7.1` = 7.1)
 > - **Source commit:** `27ab185403619f8f1e37dfeb9b3cd6287a60047b`
-> - **Regenerate:** run `scripts/build_grammar.sh master` (see below). Do not hand-edit.
+> - **Regenerate:** re-vendor the `diagrams/*.bnf` files from [`exasol/sql-syntax-diagrams`](https://github.com/exasol/sql-syntax-diagrams) at the branch above. Do not hand-edit.
 
 ## How to read this notation
 

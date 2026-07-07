@@ -8,7 +8,7 @@
 >
 > - **DB version:** 2026.1.0 (matches the `master`/v8 grammar in `exasol-grammar.md`)
 > - **Count:** 468 reserved keywords
-> - **Refresh:** `scripts/refresh_reserved_keywords.sh <connection-flags>` (queries a live DB; do not hand-edit)
+> - **Refresh:** re-run `SELECT KEYWORD FROM EXA_SQL_KEYWORDS WHERE RESERVED ORDER BY KEYWORD` against a live database of the target version. Do not hand-edit.
 
 ## How to use this
 
