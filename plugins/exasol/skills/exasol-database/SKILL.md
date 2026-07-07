@@ -33,7 +33,8 @@ After the connection is established, determine the task type and load **only** t
 3. **SQL execution** (queries, DDL, DML, schema inspection):
    - Load: `references/exapump-reference.md` (CLI usage)
    - Load: `references/exasol-sql.md` (core SQL behavior)
-   - Load: `references/exasol-grammar.md` when you need the **exact, complete syntax** of a statement or clause — the full EBNF grammar (SELECT, DDL, DML, DCL, IMPORT/EXPORT, functions). Consult it before inventing syntax or when unsure a keyword/clause exists; it is the authoritative source the docs.exasol.com syntax diagrams are generated from.
+   - Load: `references/exasol-grammar.md` for the **exact statement syntax** (SELECT/DQL, DDL, DML, DCL, IMPORT/EXPORT, session & admin) — the EBNF the docs.exasol.com syntax diagrams are generated from. Consult it before inventing syntax or when unsure a clause exists. **Read only the section you need** — it is large.
+   - Load: `references/exasol-grammar-functions.md` for **built-in function, operator, predicate, literal, and data-type syntax** (e.g. the exact argument order of a function). Same EBNF source, split out so statement lookups don't pull in the full function catalog.
    - Load: `references/exasol-reserved-keywords.md` to check whether a specific identifier is a **reserved keyword** (must be double-quoted). Full list from `EXA_SQL_KEYWORDS WHERE RESERVED`.
 
 4. **Table design** (DISTRIBUTE BY, PARTITION BY, CREATE TABLE layout):
@@ -44,6 +45,7 @@ After the connection is established, determine the task type and load **only** t
 
 6. **Analytics / window functions** (ROW_NUMBER, RANK, LAG/LEAD, QUALIFY, GROUPING SETS):
    - Load: `references/analytics-qualify.md`
+   - Load: `references/exasol-grammar-functions.md` for exact analytic-function and `OVER (…)` window-clause syntax
 
 7. **Virtual Schemas** (external data sources, adapter scripts):
    - Load: `references/virtual-schemas.md`
@@ -61,7 +63,7 @@ Multiple routes can apply — load all that match.
    - This preserves mixed-case names and prevents reserved-keyword errors in a single rule
    - Do NOT quote SQL keywords, functions, or aliases — only object identifiers
    - If a query fails with a syntax error, check `references/exasol-reserved-keywords.md`, or fetch the live list: `exapump sql "SELECT KEYWORD FROM EXA_SQL_KEYWORDS WHERE RESERVED ORDER BY KEYWORD"`
-   - For the exact shape of any clause (optional parts, ordering, comma-lists), consult `references/exasol-grammar.md` rather than guessing from examples.
+   - For the exact shape of any clause (optional parts, ordering, comma-lists), consult `references/exasol-grammar.md` (statements) or `references/exasol-grammar-functions.md` (functions / predicates / literals / data types) rather than guessing from examples.
 
 ## Related Skills
 
