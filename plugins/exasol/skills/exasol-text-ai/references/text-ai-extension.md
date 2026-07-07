@@ -111,6 +111,9 @@ Use the extractor shape that matches the workflow:
 | `PipelineExtractor` | sequential workflows where one extractor step feeds the next |
 | `BranchExtractor` | fan-out workflows where multiple extractors run from the same source step |
 
+For `TopicClassifierExtractor`, follow the branch-extraction example below,
+where it is used as one branch inside a `BranchExtractor`.
+
 Text AI extraction is incremental: it processes only source rows for which no
 results have been written yet. Some workflows also create support and lookup
 tables in addition to the main output table.
