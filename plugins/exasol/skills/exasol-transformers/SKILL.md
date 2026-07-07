@@ -55,6 +55,6 @@ Expected failure mode:
 
 ## Guidance
 
-- Use **exasol-ai-setup** when SCS, DB, or BucketFS values are still missing.
+- Use **exasol-ai-setup** when secure config store, DB, or BucketFS values are still missing.
 - Use **exasol-bucketfs** when the user needs to inspect or manipulate the uploaded SLC or model files directly.
 - Use **exasol-udfs** when the task is about language activation or custom UDF work beyond the packaged TE surface.

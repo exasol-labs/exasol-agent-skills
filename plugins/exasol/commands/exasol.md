@@ -23,6 +23,7 @@ When invoked:
 
 1. **Classify the task before checking connections.**
    - Database, SQL, exapump, import/export, schemas, or tables -> use **exasol-database** behavior.
+   - Notebook-connector setup, `Secrets`, `scs`, secure config store values, or backend configuration keys such as `db_host_name`, `db_schema`, `storage_backend`, or `huggingface_token` -> use **exasol-ai-setup** behavior.
    - Transformers Extension workflows such as `initialize_te_extension`, `deploy_scripts`, `TE UDF` usage, or Transformers model workflows in Exasol -> use **exasol-transformers** behavior.
    - Exasol tools, extensions, connectors, integrations, migration, governance, observability, BI/API surfaces, or architecture recommendations -> use **exasol-extension-catalog** behavior.
    - BucketFS files, buckets, `bfsdefault`, model/JAR uploads, BucketFS list/download/delete -> use **exasol-bucketfs** behavior.
@@ -60,15 +61,19 @@ When invoked:
    - Use the notebook-connector connection helper skill and its runnable Python templates.
    - Resolve notebook-connector setup prerequisites before generating helper calls.
 
-7. **For UDF and SLC routes:**
+7. **For notebook-connector setup routes:**
+   - Use the notebook-connector AI setup skill and its setup-validation flow.
+   - Resolve secure config store values before routing users into dependent notebook-connector workflows.
+
+8. **For UDF and SLC routes:**
    - Use Exasol UDF and Script Language Container guidance.
    - Route file upload or SLC activation sub-tasks through BucketFS or database behavior as needed.
 
-8. **For Exasol Personal setup routes:**
+9. **For Exasol Personal setup routes:**
    - Do not require an existing exapump profile before setup.
    - Guide deployment first, then create or validate the exapump profile after the database exists.
 
-9. **On errors:** Apply Exasol-specific knowledge to diagnose and fix issues. Common causes:
+10. **On errors:** Apply Exasol-specific knowledge to diagnose and fix issues. Common causes:
    - Reserved keyword used as identifier: verify by running `exapump sql "SELECT * FROM EXA_SQL_KEYWORDS WHERE KEYWORD = '<word>'"`, then double-quote the identifier.
    - Uppercase identifier mismatch
    - Missing NOT NULL on UNIQUE constraint columns

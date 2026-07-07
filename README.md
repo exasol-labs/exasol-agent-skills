@@ -113,7 +113,7 @@ Use notebook-connector's Python helpers for Exasol, BucketFS, SQLAlchemy, and Ib
 
 See [`plugins/exasol/skills/exasol-notebook-connections/SKILL.md`](plugins/exasol/skills/exasol-notebook-connections/SKILL.md) for details.
 
-### Exasol Transformers Skill
+### Exasol Transformers Extension Skill
 
 Deploy and use the notebook-connector-based Transformers Extension for NLP inference inside Exasol, including workflows that use Hugging Face models.
 
