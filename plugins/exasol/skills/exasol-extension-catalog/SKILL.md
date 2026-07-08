@@ -5,7 +5,7 @@ description: Catalog and routing guide for Exasol tools, extensions, connectors,
 
 # Exasol Extension Catalog Skill
 
-Last reviewed: 2026-07-03.
+Last reviewed: 2026-07-08.
 
 Use this skill when a user asks how to extend, customize, integrate, deploy, operate, automate, enrich, expose, or scale Exasol.
 
@@ -32,7 +32,7 @@ The catalog organizes Exasol capabilities into six categories:
 Choose the narrowest matching category and load only the matching reference files. If multiple categories apply, load all relevant references before answering.
 
 1. **Run Exasol somewhere or operate deployment tooling**
-   - Trigger phrases: `deploy`, `install`, `Exasol SaaS`, `Exasol Personal`, `Docker DB`, `Terraform`, `Ansible`, `scheduler`, `public keys`, `artifact verification`, `Extension Manager`
+   - Trigger phrases: `deploy`, `install`, `Exasol SaaS`, `Exasol Personal`, `Exasol Local`, `exasol-local-vm`, `STACKIT`, `Docker DB`, `Terraform`, `OpenTofu`, `Ansible`, `scheduler`, `public keys`, `artifact verification`, `Extension Manager`
    - Load: `references/deploy.md`
 
 2. **Bring data into Exasol or query data elsewhere**
@@ -48,11 +48,11 @@ Choose the narrowest matching category and load only the matching reference file
    - Load: `references/enrich.md`
 
 5. **Expose Exasol to apps, BI, APIs, users, or agents**
-   - Trigger phrases: `BI`, `dashboard`, `Tableau`, `Power BI`, `Superset`, `REST API`, `ERA`, `Power Apps`, `low-code`, `application driver`, `CData`, `Denodo`, `Trino`
+   - Trigger phrases: `BI`, `dashboard`, `Dash`, `Plotly`, `dash-server`, `Grafana`, `Tableau`, `Power BI`, `Superset`, `REST API`, `ERA`, `Power Apps`, `low-code`, `application driver`, `CData`, `Denodo`, `Trino`
    - Load: `references/surface.md`
 
 6. **Improve scale, governance, performance, observability, repeatability, or reliability**
-   - Trigger phrases: `scale`, `performance`, `governance`, `RBAC`, `observability`, `CloudWatch`, `telemetry`, `SBOM`, `testing`, `CI`, `change management`, `data protection`, `warehouse automation`
+   - Trigger phrases: `scale`, `performance`, `governance`, `RBAC`, `observability`, `CloudWatch`, `telemetry`, `SBOM`, `testing`, `CI`, `pytest-slc`, `SLC testing`, `change management`, `data protection`, `warehouse automation`
    - Load: `references/scale.md`
 
 ## Fast Routing Guide
