@@ -1,11 +1,11 @@
 ---
 name: exasol-text-ai
-description: "Deploy and use the Exasol Text AI Extension with notebook-connector. Covers deploy_license, initialize_text_ai_extension, the Extraction API, default-model installation, and pipeline or branch-based text extraction workflows."
+description: "Deploy and use the Exasol Text AI Extension with notebook-connector. Covers deploy_license, initialize_text_ai_extension, the Extraction API, default-model installation, result-table querying, and pipeline or branch-based text extraction workflows."
 ---
 
 # Exasol Text AI Extension Skill
 
-Trigger when the user mentions **Text AI Extension**, **TXAIE**, **deploy_license**, **initialize_text_ai_extension**, **Extraction**, **named entity extraction**, **zero-shot classification**, **feature extraction**, **StandardExtractor**, **TopicClassifierExtractor**, or **PYTHON3_TXAIE**.
+Trigger when the user mentions **Text AI Extension**, **TXAIE**, **deploy_license**, **initialize_text_ai_extension**, **Extraction**, **named entity extraction**, **zero-shot classification**, **feature extraction**, **StandardExtractor**, **TopicClassifierExtractor**, **CO_OCCURRENCE**, **TXAIE_AUDIT_LOG**, or **PYTHON3_TXAIE**.
 
 ## Purpose
 
@@ -24,7 +24,7 @@ activate **exasol-ai-setup** first.
    - Load: `references/text-ai-extension.md`
 
 2. **Extraction workflows and validation**
-   - Trigger phrases: `Extraction`, `NamedEntityExtractor`, `PipelineExtractor`, `BranchExtractor`, `StandardExtractor`, `TopicClassifierExtractor`, `feature extraction`, `zero-shot classification`
+   - Trigger phrases: `Extraction`, `NamedEntityExtractor`, `PipelineExtractor`, `BranchExtractor`, `StandardExtractor`, `TopicClassifierExtractor`, `feature extraction`, `zero-shot classification`, `TOPIC_CLASSIFIER_VIEW`, `TOPICS_VIEW`, `NAMED_ENTITY_VIEW`, `KEYWORD_SEARCH_VIEW`, `CO_OCCURRENCE`, `TXAIE_AUDIT_LOG`
    - Load: `references/text-ai-extension.md`
 
 Multiple routes can apply. Load the reference before responding.

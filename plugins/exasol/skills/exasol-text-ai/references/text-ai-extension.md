@@ -11,6 +11,8 @@ It covers:
 - `NamedEntityExtractor`
 - `PipelineExtractor` with `StandardExtractor`
 - `BranchExtractor`
+- querying generated TXAIE tables and views
+- notebook-style analytics on extraction results
 
 Keep setup prerequisites in `Secrets` first, then use this reference for the
 extension-specific workflow and validation.
@@ -152,18 +154,29 @@ from exasol.ai.text.extractors.source_table_extractor import (
 )
 from exasol.ai.text.extractors.standard_extractor import StandardExtractor
 
+topics = {"urgent", "not urgent"}
+
 src_extractor = SourceTableExtractor(
-    source=TableSource(
-        source=SchemaSource("MY_SCHEMA"),
-        table_names=NameSelector(["CUSTOMER_SUPPORT_TICKETS"]),
-    )
+    name="DOCUMENTS",
+    sources=[
+        SchemaSource(
+            db_schema=NameSelector(pattern="MY_SCHEMA"),
+            tables=[
+                TableSource(
+                    table=NameSelector(pattern="CUSTOMER_SUPPORT_TICKETS_VIEW"),
+                    columns=[NameSelector(pattern="TICKET_DESCRIPTION")],
+                    keys=[NameSelector(pattern="TICKET_ID")],
+                )
+            ],
+        )
+    ],
 )
-std_extractor = StandardExtractor()
+std_extractor = StandardExtractor(topics=topics)
 
 extraction = Extraction(
     extractor=PipelineExtractor(steps=[src_extractor, std_extractor]),
     output=Output(db_schema="MY_SCHEMA"),
-    defaults=Defaults(),
+    defaults=Defaults(parallelism_per_node=1, batch_size=10),
 )
 extraction.run(my_secrets)
 ```
@@ -187,10 +200,19 @@ from exasol.ai.text.extractors.source_table_extractor import (
 from exasol.ai.text.extractors.topic_classifier_extractor import TopicClassifierExtractor
 
 src_extractor = SourceTableExtractor(
-    source=TableSource(
-        source=SchemaSource("MY_SCHEMA"),
-        table_names=NameSelector(["CUSTOMER_SUPPORT_TICKETS"]),
-    )
+    name="DOCUMENTS",
+    sources=[
+        SchemaSource(
+            db_schema=NameSelector(pattern="MY_SCHEMA"),
+            tables=[
+                TableSource(
+                    table=NameSelector(pattern="CUSTOMER_SUPPORT_TICKETS_VIEW"),
+                    columns=[NameSelector(pattern="TICKET_DESCRIPTION")],
+                    keys=[NameSelector(pattern="TICKET_ID")],
+                )
+            ],
+        )
+    ],
 )
 branched_extractors = BranchExtractor(
     steps=[
@@ -206,6 +228,131 @@ extraction = Extraction(
 )
 extraction.run(my_secrets)
 ```
+
+## Step 4: Query the Generated Tables and Views
+
+The Text AI notebooks do not stop at `extraction.run(...)`. They query the
+generated tables and views directly to inspect results and build analytics on
+top of them.
+
+The preprocessing notebook uses these result objects:
+
+- `DOCUMENTS` for the normalized source-document table with span identifiers
+- `DOCUMENTS_<...>_VIEW` for the source data plus the generated text span keys
+- `TOPIC_CLASSIFIER_VIEW` in the preprocessing notebook for topic-classifier output
+- `NAMED_ENTITY_VIEW` for named entities
+- `KEYWORD_SEARCH_VIEW` for keywords
+- `TXAIE_AUDIT_LOG` for run-level logging
+
+When the workflow uses `StandardExtractor`, the analytics notebook also uses:
+
+- `TOPICS_VIEW` for topic rows joined in a form used by later analytics queries
+- `CO_OCCURRENCE` for combined topic, entity, and keyword results in the same document
+
+Typical inspection flow from the notebooks:
+
+```sql
+SELECT TABLE_SCHEMA, TABLE_NAME
+FROM EXA_ALL_TABLES
+WHERE TABLE_SCHEMA = 'MY_SCHEMA';
+```
+
+```sql
+DESC "MY_SCHEMA".DOCUMENTS;
+SELECT * FROM "MY_SCHEMA".DOCUMENTS WHERE TEXT_DOC_ID < 5;
+```
+
+```sql
+DESC "MY_SCHEMA".TOPIC_CLASSIFIER_VIEW;
+SELECT * FROM "MY_SCHEMA".TOPIC_CLASSIFIER_VIEW LIMIT 5;
+```
+
+```sql
+DESC "MY_SCHEMA".NAMED_ENTITY_VIEW;
+SELECT TEXT_DOC_ID, ENTITY, ENTITY_TYPE, ENTITY_SCORE
+FROM "MY_SCHEMA".NAMED_ENTITY_VIEW;
+```
+
+```sql
+DESC "MY_SCHEMA".KEYWORD_SEARCH_VIEW;
+SELECT TEXT_DOC_ID, KEYWORD, KEYWORD_SCORE
+FROM "MY_SCHEMA".KEYWORD_SEARCH_VIEW
+WHERE TEXT_DOC_ID < 5;
+```
+
+The preprocessing notebook also reads the audit log after reruns:
+
+```python
+from exasol.nb_connector.connections import open_pyexasol_connection
+
+with open_pyexasol_connection(my_secrets, compression=True) as conn:
+    audit_log = conn.export_to_pandas(
+        """
+        SELECT
+            RUN_ID,
+            DB_OBJECT_NAME,
+            EVENT_NAME,
+            ROW_COUNT,
+            LOG_TIMESTAMP
+        FROM "MY_SCHEMA".TXAIE_AUDIT_LOG
+        """
+    )
+```
+
+If the user wants to restart a fixed preprocessing demo from scratch instead of
+using the incremental behavior, the preprocessing notebook explicitly drops the
+generated TXAIE tables first. That reset pattern is optional and notebook-level,
+not something required by `Extraction.run(...)`.
+
+## Step 5: Build Analytics on Top of TXAIE Results
+
+The `txaie_analytics.ipynb` notebook shows that notebook-connector workflows
+often create regular SQL views on top of TXAIE output rather than calling new
+Python wrappers.
+
+Common patterns from that notebook:
+
+- join the source-document view with `TOPICS_VIEW` to derive urgency flags
+- join the source-document view with `NAMED_ENTITY_VIEW` to count products
+- filter `CO_OCCURRENCE` when the workflow came from `StandardExtractor`
+- create downstream analysis views such as `TICKET_URGENCY`, `PRODUCT_ATTENTION`,
+  and `URGENT_PRODUCT_CO_OCCURRENCE`
+
+The analytics notebook assumes the preprocessing workflow already ran and
+produced those views.
+
+Example pattern for deriving a view from topic output:
+
+```sql
+CREATE OR REPLACE VIEW TICKET_URGENCY AS
+SELECT
+    D.*,
+    T.TOPIC_SCORE,
+    T.TOPIC_SCORE > 0.7 AS IS_URGENT
+FROM DOCUMENTS_AI_LAB_CUSTOMER_SUPPORT_TICKETS_VIEW_VIEW D
+JOIN TOPICS_VIEW T
+    ON D.TEXT_DOC_ID = T.TEXT_DOC_ID
+   AND D.TEXT_CHAR_BEGIN = T.TEXT_CHAR_BEGIN
+   AND D.TEXT_CHAR_END = T.TEXT_CHAR_END
+WHERE T.TOPIC = 'urgent';
+```
+
+Example pattern for product analysis from named entities:
+
+```sql
+SELECT E.ENTITY AS PRODUCT, COUNT(DISTINCT D.TICKET_ID) AS TICKET_COUNT
+FROM DOCUMENTS_AI_LAB_CUSTOMER_SUPPORT_TICKETS_VIEW_VIEW D
+JOIN NAMED_ENTITY_VIEW E
+    ON D.TEXT_DOC_ID = E.TEXT_DOC_ID
+   AND D.TEXT_CHAR_BEGIN = E.TEXT_CHAR_BEGIN
+   AND D.TEXT_CHAR_END = E.TEXT_CHAR_END
+WHERE E.ENTITY_TYPE LIKE 'product%'
+GROUP BY E.ENTITY
+ORDER BY TICKET_COUNT DESC;
+```
+
+Use `CO_OCCURRENCE` only when the workflow actually produced it, which in the
+notebook examples happens through `StandardExtractor`.
 
 ## Validation
 
