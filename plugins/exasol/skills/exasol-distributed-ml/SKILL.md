@@ -41,7 +41,7 @@ Do not re-explain these — activate the relevant skill instead:
 
 - **UDF API basics** (ctx.emit, ctx.get_dataframe, SCALAR vs SET syntax, CREATE SCRIPT templates) → **exasol-udfs**
 - **SLC build/deploy** (exaslct CLI, flavor selection, Dockerfile customization) → **exasol-udfs** `references/slc-reference.md`
-- **Lua execute script orchestration** (pquery API, error handling) → **exasol-udfs** `references/lua-execute-scripts.md`
+- **Lua execute script orchestration** (query/pquery API, error handling) → **exasol-udfs** `references/lua-execute-scripts.md`
 - **BucketFS file operations** (cp/ls/rm via exapump) → **exasol-bucketfs**
 - **DISTRIBUTE BY table design and query profiling** → **exasol-database**
 
@@ -51,5 +51,5 @@ Do not re-explain these — activate the relevant skill instead:
 - Avoid `ctx.get_dataframe(num_rows='all')` — it materializes the entire group in memory
 - For algorithms without `partial_fit` (RandomForest, GradientBoosting): use the map-reduce ensemble pattern (Section 6 of distributed-ml-patterns.md) rather than loading all data at once
 - Load models at module level (outside `run()`), never inside `run()`
-- Orchestrate iterative algorithms with Lua execute scripts (`pquery`) rather than external drivers when possible
+- Orchestrate iterative algorithms with Lua execute scripts (`query`) rather than external drivers when possible
 - DISTRIBUTE BY on the training/inference key keeps related rows on the same node and eliminates shuffles

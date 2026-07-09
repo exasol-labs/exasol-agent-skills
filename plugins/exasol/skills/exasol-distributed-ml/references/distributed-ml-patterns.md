@@ -511,9 +511,9 @@ def run(ctx):
 
 ## 8. Iterative Algorithms
 
-### Preferred: Lua Execute Script with `pquery`
+### Preferred: Lua Execute Script with `query`
 
-Orchestrate iterations entirely in-database. See **exasol-udfs** `references/lua-execute-scripts.md` for the `pquery` API.
+Orchestrate iterations entirely in-database. See **exasol-udfs** `references/lua-execute-scripts.md` for the `query`/`pquery` API — default to `query()` for these loops since it already raises on failure, so no error-handling wrapper is needed.
 
 **K-means** — pure SQL + Lua, no UDFs needed. A naive assignment/update loop has three gaps that matter at scale: it never stops early once centroids settle, it can silently lose clusters, and it can seed duplicate centroids. The version below fixes all three.
 
@@ -528,17 +528,11 @@ CREATE OR REPLACE LUA SCRIPT ml.kmeans_orchestrator(
   max_iter      INT,
   tol           DOUBLE
 ) AS
-local function sql(q)
-  local r = pquery(q)
-  if not r.status then error(r.error_message) end
-  return r
-end
-
 -- Initialize: sample k DISTINCT points as starting centroids. Sampling
 -- from distinct feature vectors (not raw rows) avoids seeding two
 -- centroids at the exact same point when source_table has duplicate
 -- or near-duplicate rows. Needs >= k distinct ("f1","f2") vectors.
-sql([[
+query([[
   CREATE OR REPLACE TABLE ml.centroids AS
   SELECT ROW_NUMBER() OVER (ORDER BY "sample_order") AS centroid_id, "f1", "f2"
   FROM (
@@ -552,10 +546,10 @@ for iter = 1, max_iter do
   -- Snapshot centroids before this iteration's update — used both to
   -- measure convergence and to identify any centroid that loses all
   -- its points below.
-  sql("CREATE OR REPLACE TABLE ml.centroids_prev AS SELECT * FROM ml.centroids")
+  query("CREATE OR REPLACE TABLE ml.centroids_prev AS SELECT * FROM ml.centroids")
 
   -- Assignment: each point gets the nearest centroid (distributed scan)
-  sql([[
+  query([[
     CREATE OR REPLACE TABLE ml.assignments AS
     SELECT
       p."id",
@@ -568,7 +562,7 @@ for iter = 1, max_iter do
 
   -- Update: recompute centroids as group means (distributed aggregation).
   -- A centroid_id with zero assigned points has no row here at all.
-  sql([[
+  query([[
     CREATE OR REPLACE TABLE ml.centroids_updated AS
     SELECT a.centroid_id, AVG(p."f1") AS "f1", AVG(p."f2") AS "f2"
     FROM ml.assignments a
@@ -580,7 +574,7 @@ for iter = 1, max_iter do
   -- centroids_updated) with the point currently farthest from its own
   -- (surviving) centroid, ranked on both sides via ROW_NUMBER() so no
   -- cross join is needed.
-  sql([[
+  query([[
     CREATE OR REPLACE TABLE ml.centroids AS
     SELECT centroid_id, "f1", "f2" FROM ml.centroids_updated
     UNION ALL
@@ -607,7 +601,7 @@ for iter = 1, max_iter do
   -- start of this iteration. A reseeded centroid shows a large
   -- "movement" by construction, so this correctly avoids declaring
   -- convergence while a cluster is still being re-seeded.
-  local res = sql([[
+  local res = query([[
     SELECT MAX(
       (n."f1" - p."f1") * (n."f1" - p."f1")
     + (n."f2" - p."f2") * (n."f2" - p."f2")
@@ -634,13 +628,13 @@ EXECUTE SCRIPT ml.kmeans_orchestrator('ml.features', 5, 20, 0.0001) WITH OUTPUT;
 
 ```lua
 for iter = 1, max_iter do
-    sql("INSERT INTO ml.gradients "
+    query("INSERT INTO ml.gradients "
      .. "SELECT compute_gradients(\"id\", \"f1\", \"f2\", \"label\", " .. iter .. ") "
      .. "FROM ml.features GROUP BY \"partition_key\"")
-    sql("INSERT INTO ml.params "
+    query("INSERT INTO ml.params "
      .. "SELECT update_params(\"gradient\") "
      .. "FROM ml.gradients WHERE \"iter\" = " .. iter .. " GROUP BY 0")
-    local res = sql("SELECT \"loss\" FROM ml.params WHERE \"iter\" = " .. iter)
+    local res = query("SELECT \"loss\" FROM ml.params WHERE \"iter\" = " .. iter)
     if tonumber(res[1][1]) < 0.001 then break end
 end
 ```
@@ -649,13 +643,13 @@ end
 
 ```lua
 -- k=1: count individual item support
-sql("CREATE OR REPLACE TABLE ml.freq_1 AS "
+query("CREATE OR REPLACE TABLE ml.freq_1 AS "
  .. "SELECT \"item\", COUNT(DISTINCT \"txn_id\") AS support "
  .. "FROM market.transactions GROUP BY \"item\" "
  .. "HAVING COUNT(DISTINCT \"txn_id\") >= " .. min_support)
 
 -- k=2: count pairs
-sql("CREATE OR REPLACE TABLE ml.freq_2 AS "
+query("CREATE OR REPLACE TABLE ml.freq_2 AS "
  .. "SELECT t1.\"item\" AS item1, t2.\"item\" AS item2, COUNT(DISTINCT t1.\"txn_id\") AS support "
  .. "FROM market.transactions t1 "
  .. "JOIN market.transactions t2 ON t1.\"txn_id\" = t2.\"txn_id\" AND t1.\"item\" < t2.\"item\" "
@@ -667,7 +661,7 @@ sql("CREATE OR REPLACE TABLE ml.freq_2 AS "
 -- At k>=3, join fanout becomes prohibitive — hand off to SON algorithm (Section 6)
 ```
 
-Lua reads row counts from each step — if `res.rows == 0` for a given k, stop iteration.
+`CREATE TABLE ... AS SELECT` doesn't reliably report a row count on its own — follow each step with `local res = query("SELECT COUNT(*) FROM ml.freq_" .. k)` and stop iterating once `tonumber(res[1][1]) == 0`.
 
 ### Fallback: External Python Driver
 
