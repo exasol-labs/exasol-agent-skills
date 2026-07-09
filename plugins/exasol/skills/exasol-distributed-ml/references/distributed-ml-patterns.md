@@ -563,10 +563,10 @@ The update step's `GROUP BY a.centroid_id` only ever emits a row for centroid ID
 
 ```sql
 CREATE OR REPLACE LUA SCRIPT ml.kmeans_orchestrator(
-  source_table  VARCHAR(200),
-  k             INT,
-  max_iter      INT,
-  tol           DOUBLE
+  source_table,
+  k,
+  max_iter,
+  tol
 ) AS
 -- Initialize: sample k DISTINCT points as starting centroids. Sampling
 -- from distinct feature vectors (not raw rows) avoids seeding two

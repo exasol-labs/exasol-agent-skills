@@ -35,13 +35,13 @@ end
 
 ## Script Parameters and Output
 
-Scripts accept typed parameters in the signature:
+Scripts accept parameters in the signature — unlike UDF scripts, these are **untyped names**, no `VARCHAR`/`INT`/`DOUBLE` annotations. Adding a type raises `syntax error, invalid script parameter list`:
 
 ```sql
 CREATE OR REPLACE LUA SCRIPT ml.my_script(
-  source_table  VARCHAR(200),
-  iterations    INT,
-  threshold     DOUBLE
+  source_table,
+  iterations,
+  threshold
 ) AS
   output("Running on: " .. source_table)
   output("Iterations: " .. iterations)
