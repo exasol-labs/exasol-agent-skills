@@ -76,7 +76,7 @@ for iter = 1, max_iter do
   -- Lightweight single-node aggregation: update parameters
   query("INSERT INTO ml.params "
    .. "SELECT update_params(\"gradient\") "
-   .. "FROM ml.gradients WHERE \"iter\" = " .. iter .. " GROUP BY 0")
+   .. "FROM ml.gradients WHERE \"iter\" = " .. iter .. " GROUP BY 'x'")
 
   -- Check convergence
   local res = query("SELECT \"loss\" FROM ml.params WHERE \"iter\" = " .. iter)

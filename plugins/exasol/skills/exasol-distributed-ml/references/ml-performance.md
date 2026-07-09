@@ -201,7 +201,7 @@ The `hp_search_batch` UDF reads HP configs from the first chunk, processes each 
 | Cause | Fix |
 |-------|-----|
 | `ctx.get_dataframe(num_rows='all')` on large groups | Chunked loop + `ctx.reset()` for multi-pass |
-| `GROUP BY 0` on full table | Only when dataset < `exa.meta.memory_limit` |
+| `GROUP BY 'x'` on full table | Only when dataset < `exa.meta.memory_limit` |
 | Model loading inside `run()` | Move to module-level lazy init |
 | GPU tensor not freed between groups | `torch.cuda.empty_cache()` in `finally` |
 | Collect-then-fit on skewed entity with 10M rows | Use `partial_fit` or map-reduce ensemble |

@@ -191,10 +191,10 @@ Force all data to one node for algorithms that need the full dataset:
 ```sql
 SELECT ml.train_global_model("f1", "f2", label)
 FROM ml.training_data
-GROUP BY 0;
+GROUP BY 'x';
 ```
 
-`GROUP BY 0` (or any constant) sends all rows to a single node. Only viable when the full dataset fits in one node's memory limit (`exa.meta.memory_limit`). Check first:
+`GROUP BY 'x'` (any non-integer constant) sends all rows to a single node. Don't use an integer literal like `GROUP BY 0` — Exasol parses integer literals in `GROUP BY` as ordinal column references, and `0` is below the minimum valid ordinal (`1`), so it fails with `Wrong column number`. Only viable when the full dataset fits in one node's memory limit (`exa.meta.memory_limit`). Check first:
 
 ```sql
 SELECT COUNT(*) * 8 * 3 AS estimated_bytes  -- 3 DOUBLE columns × 8 bytes
@@ -321,7 +321,7 @@ def run(ctx):
 ```sql
 SELECT ml.combine_ensemble("partition_id", "model_path")
 FROM ml.sub_models
-GROUP BY 0;
+GROUP BY 'x';
 ```
 
 ```sql
@@ -374,7 +374,7 @@ GROUP BY MOD("partition_id", 8);
 -- Final combine: 8 → 1
 SELECT ml.combine_ensemble("partition_id", "model_path")
 FROM ml.partial_models
-GROUP BY 0;
+GROUP BY 'x';
 ```
 
 ### SON Algorithm for Frequent Itemset Mining
@@ -633,7 +633,7 @@ for iter = 1, max_iter do
      .. "FROM ml.features GROUP BY \"partition_key\"")
     query("INSERT INTO ml.params "
      .. "SELECT update_params(\"gradient\") "
-     .. "FROM ml.gradients WHERE \"iter\" = " .. iter .. " GROUP BY 0")
+     .. "FROM ml.gradients WHERE \"iter\" = " .. iter .. " GROUP BY 'x'")
     local res = query("SELECT \"loss\" FROM ml.params WHERE \"iter\" = " .. iter)
     if tonumber(res[1][1]) < 0.001 then break end
 end

@@ -27,7 +27,7 @@ def run(ctx):
     ctx.emit(exa.meta.node_id, has_gpu, gpu_name)
 /
 
-SELECT ml.check_gpu() FROM (SELECT 1) GROUP BY 0;
+SELECT ml.check_gpu() FROM (SELECT 1) GROUP BY 'x';
 ```
 
 ---
