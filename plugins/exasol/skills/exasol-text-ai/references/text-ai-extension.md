@@ -321,16 +321,21 @@ Common patterns from that notebook:
 The analytics notebook assumes the preprocessing workflow already ran and
 produced those views.
 
+In the notebook, the source-document view name depends on the original source
+view. In this skill, use a schema-qualified placeholder such as
+`"MY_SCHEMA"."DOCUMENTS_<SOURCE_VIEW_NAME>_VIEW"` rather than hardcoding one
+notebook-specific generated name.
+
 Example pattern for deriving a view from topic output:
 
 ```sql
-CREATE OR REPLACE VIEW TICKET_URGENCY AS
+CREATE OR REPLACE VIEW "MY_SCHEMA".TICKET_URGENCY AS
 SELECT
     D.*,
     T.TOPIC_SCORE,
     T.TOPIC_SCORE > 0.7 AS IS_URGENT
-FROM DOCUMENTS_AI_LAB_CUSTOMER_SUPPORT_TICKETS_VIEW_VIEW D
-JOIN TOPICS_VIEW T
+FROM "MY_SCHEMA"."DOCUMENTS_<SOURCE_VIEW_NAME>_VIEW" D
+JOIN "MY_SCHEMA".TOPICS_VIEW T
     ON D.TEXT_DOC_ID = T.TEXT_DOC_ID
    AND D.TEXT_CHAR_BEGIN = T.TEXT_CHAR_BEGIN
    AND D.TEXT_CHAR_END = T.TEXT_CHAR_END
@@ -341,8 +346,8 @@ Example pattern for product analysis from named entities:
 
 ```sql
 SELECT E.ENTITY AS PRODUCT, COUNT(DISTINCT D.TICKET_ID) AS TICKET_COUNT
-FROM DOCUMENTS_AI_LAB_CUSTOMER_SUPPORT_TICKETS_VIEW_VIEW D
-JOIN NAMED_ENTITY_VIEW E
+FROM "MY_SCHEMA"."DOCUMENTS_<SOURCE_VIEW_NAME>_VIEW" D
+JOIN "MY_SCHEMA".NAMED_ENTITY_VIEW E
     ON D.TEXT_DOC_ID = E.TEXT_DOC_ID
    AND D.TEXT_CHAR_BEGIN = E.TEXT_CHAR_BEGIN
    AND D.TEXT_CHAR_END = E.TEXT_CHAR_END
