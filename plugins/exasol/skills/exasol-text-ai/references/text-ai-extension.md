@@ -17,6 +17,10 @@ It covers:
 Keep setup prerequisites in `Secrets` first, then use this reference for the
 extension-specific workflow and validation.
 
+If the required DB or BucketFS values are still missing in the secure config
+store, switch to **exasol-ai-setup** first and complete its setup-validation
+flow before returning here.
+
 Current notebook-connector behavior to preserve in this skill:
 
 - `deploy_license(...)` can use the bundled community license when no custom
