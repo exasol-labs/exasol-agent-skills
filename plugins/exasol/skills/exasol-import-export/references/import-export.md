@@ -22,17 +22,25 @@ USER 'username' IDENTIFIED BY 'password';
 
 Typical patterns:
 
-- S3 static keys in `IDENTIFIED BY`
+- S3 long-lived access key in `USER` and secret key in `IDENTIFIED BY`
+- S3 temporary access key in `USER`, secret key in `IDENTIFIED BY`, and `SESSION TOKEN` for expiring credentials
 - Azure SAS token in `IDENTIFIED BY`
 - GCS access key and secret key in `IDENTIFIED BY`
-- Replace or drop the connection object when the credential changes
+- Prefer `ALTER CONNECTION` when a credential changes and existing grants should stay intact
 
 Examples:
 
 ```sql
 CREATE OR REPLACE CONNECTION s3_conn
 TO 'https://my-bucket.s3.eu-west-1.amazonaws.com'
-USER '' IDENTIFIED BY 'S3_ACCESS_KEY=...;S3_SECRET_KEY=...';
+USER 'AKIA...'
+IDENTIFIED BY 'secret...';
+
+CREATE OR REPLACE CONNECTION s3_temp_conn
+TO 'https://my-bucket.s3.eu-west-1.amazonaws.com'
+USER 'ASIA...'
+IDENTIFIED BY 'secret...'
+SESSION TOKEN 'FwoGZXIvYXdz...';
 
 CREATE OR REPLACE CONNECTION azure_conn
 TO 'https://myaccount.blob.core.windows.net/mycontainer'
@@ -43,7 +51,17 @@ TO 'https://storage.googleapis.com/my-bucket'
 USER '' IDENTIFIED BY 'GCS_ACCESS_KEY=...;GCS_SECRET_KEY=...';
 ```
 
-If the source requires temporary tokens or rotated credentials, update the connection object first and then run the load.
+Use `SESSION TOKEN` when the source relies on short-lived AWS credentials.
+When the token or secret changes, refresh the existing object with
+`ALTER CONNECTION` before running the next load:
+
+```sql
+ALTER CONNECTION s3_temp_conn
+TO 'https://my-bucket.s3.eu-west-1.amazonaws.com'
+USER 'ASIA...'
+IDENTIFIED BY 'new_secret...'
+SESSION TOKEN 'new_token...';
+```
 
 ## Security and Boundaries
 

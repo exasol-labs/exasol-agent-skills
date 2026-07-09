@@ -101,7 +101,6 @@ Manage files in Exasol's distributed file system — list, upload, download, and
 
 See [`plugins/exasol/skills/exasol-bucketfs/SKILL.md`](plugins/exasol/skills/exasol-bucketfs/SKILL.md) for details.
 
-
 ### Exasol AI Setup Skill
 
 Set up notebook-connector configuration via the `scs` CLI or the `Secrets` Python API before using AI-related workflows.
@@ -119,6 +118,12 @@ See [`plugins/exasol/skills/exasol-itde/SKILL.md`](plugins/exasol/skills/exasol-
 Use notebook-connector's Python helpers for Exasol, BucketFS, SQLAlchemy, and Ibis connections.
 
 See [`plugins/exasol/skills/exasol-notebook-connections/SKILL.md`](plugins/exasol/skills/exasol-notebook-connections/SKILL.md) for details.
+
+### Exasol Transformers Extension Skill
+
+Deploy and use the notebook-connector-based Transformers Extension for NLP inference inside Exasol, including workflows that use Hugging Face models.
+
+See [`plugins/exasol/skills/exasol-transformers/SKILL.md`](plugins/exasol/skills/exasol-transformers/SKILL.md) for details.
 
 ### Exasol Personal Setup Skill
 

@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.15.0
+
+- Add exasol-transformers skill for notebook-connector Transformers Extension workflows
+
 ## v0.14.0
 
 - Add exasol-extension-catalog skill for Exasol tools, extensions, connectors, integrations, and architecture patterns
