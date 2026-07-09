@@ -26,6 +26,30 @@ CREATE TABLE ml.training_data (
 
 DISTRIBUTE BY `entity_id` means all rows for entity 42 are always on the same node — no shuffle needed for per-entity training or inference.
 
+### BucketFS is read-only inside a UDF sandbox
+
+`/buckets/<service>/<bucket>/...` is mounted **read-only** inside a UDF's execution sandbox — `open(path, 'rb')` (loading a model) works fine, but `open(path, 'wb')` (saving one) fails with `OSError: [Errno 30] Read-only file system`. **Writing from inside a UDF requires an HTTPS PUT to the BucketFS service**, not a filesystem write. Store the endpoint and write credentials in a `CREATE CONNECTION` object rather than hardcoding them in script text:
+
+```sql
+CREATE OR REPLACE CONNECTION bucketfs_write
+  TO 'https://<bucketfs-host>:2581'
+  USER 'w'
+  IDENTIFIED BY '<write-password>';
+```
+
+```python
+import json, requests
+
+def save_model(bucket_path, obj):
+    conn = exa.get_connection('BUCKETFS_WRITE')
+    url = conn.address.rstrip('/') + '/default/' + bucket_path
+    resp = requests.put(url, data=json.dumps(obj).encode('utf-8'),
+                         auth=(conn.user, conn.password), verify=False, timeout=30)
+    resp.raise_for_status()
+```
+
+Every "write a model to BucketFS from inside a UDF" example below uses this helper instead of `open(path, 'wb')`. Reads are unaffected — `open('/buckets/.../model.pkl', 'rb')` for loading stays exactly as shown throughout this doc and in `model-lifecycle.md`. Uploading from **outside** a UDF (via `exapump bucketfs cp`, see **exasol-bucketfs**) is a separate, already-correct path since it talks to the BucketFS HTTP API directly rather than going through a UDF's mounted filesystem.
+
 ---
 
 ## 2. Feature Engineering
@@ -108,13 +132,19 @@ CREATE OR REPLACE PYTHON3 SET SCRIPT ml.train_entity_model(
     entity_id DECIMAL(18,0), f1 DOUBLE, f2 DOUBLE, label DOUBLE
 )
 EMITS (entity_id DECIMAL(18,0), model_path VARCHAR(500), final_loss DOUBLE) AS
-import pickle, io, numpy as np
+import pickle, io, numpy as np, requests
 from sklearn.linear_model import SGDRegressor
 
 CHUNK = 5000
-BUCKET = '/buckets/bfsdefault/default/models'
 MAX_EPOCHS = 10
 CONVERGE_DELTA = 1e-4
+
+def save_model_bytes(bucket_path, data):
+    conn = exa.get_connection('BUCKETFS_WRITE')
+    url = conn.address.rstrip('/') + '/default/' + bucket_path
+    resp = requests.put(url, data=data, auth=(conn.user, conn.password),
+                         verify=False, timeout=30)
+    resp.raise_for_status()
 
 def run(ctx):
     entity = None
@@ -150,10 +180,9 @@ def run(ctx):
             break
         prev_loss = loss
 
-    path = f'{BUCKET}/entity_{entity}.pkl'
-    with open(path, 'wb') as f:
-        pickle.dump(model, f)
-    ctx.emit(entity, f'models/entity_{entity}.pkl', prev_loss)
+    bucket_path = f'models/entity_{entity}.pkl'
+    save_model_bytes(bucket_path, pickle.dumps(model))
+    ctx.emit(entity, bucket_path, prev_loss)
 /
 
 SELECT ml.train_entity_model(entity_id, "f1", "f2", label)
@@ -180,7 +209,7 @@ def run(ctx):
     model.fit(X, y)
 ```
 
-**BucketFS replication caveat**: A model written to `/buckets/...` from inside a UDF is immediately available on the writing node but replicates to other nodes asynchronously. For inference queries that run immediately after training, add a brief pause or run inference with `DISTRIBUTE BY entity_id` to guarantee the reading node is the same as the writing node.
+**BucketFS replication caveat**: A model written via the HTTPS PUT above is immediately available on the node that served the write but replicates to other nodes' `/buckets/...` mounts asynchronously. For inference queries that run immediately after training, add a brief pause or run inference with `DISTRIBUTE BY entity_id` to guarantee the reading node is the same as the writing node.
 
 ---
 
@@ -282,11 +311,17 @@ CREATE OR REPLACE PYTHON3 SET SCRIPT ml.train_sub_model(
     partition_id DECIMAL(18,0), f1 DOUBLE, f2 DOUBLE, label DOUBLE
 )
 EMITS (partition_id DECIMAL(18,0), model_path VARCHAR(500)) AS
-import pickle
+import pickle, requests
 from sklearn.ensemble import RandomForestClassifier
 
-BUCKET = '/buckets/bfsdefault/default/models/ensemble'
 CHUNK = 5000
+
+def save_model_bytes(bucket_path, data):
+    conn = exa.get_connection('BUCKETFS_WRITE')
+    url = conn.address.rstrip('/') + '/default/' + bucket_path
+    resp = requests.put(url, data=data, auth=(conn.user, conn.password),
+                         verify=False, timeout=30)
+    resp.raise_for_status()
 
 def run(ctx):
     X_parts, y_parts = [], []
@@ -309,10 +344,9 @@ def run(ctx):
     model = RandomForestClassifier(n_estimators=10)
     model.fit(X, y)
 
-    path = f'{BUCKET}/sub_{partition}.pkl'
-    with open(path, 'wb') as f:
-        pickle.dump(model, f)
-    ctx.emit(partition, f'models/ensemble/sub_{partition}.pkl')
+    bucket_path = f'models/ensemble/sub_{partition}.pkl'
+    save_model_bytes(bucket_path, pickle.dumps(model))
+    ctx.emit(partition, bucket_path)
 /
 ```
 
@@ -329,10 +363,17 @@ CREATE OR REPLACE PYTHON3 SET SCRIPT ml.combine_ensemble(
     partition_id DECIMAL(18,0), model_path VARCHAR(500)
 )
 EMITS (model_path VARCHAR(500), n_estimators DECIMAL(10,0)) AS
-import pickle
+import pickle, requests
 
 BUCKET = '/buckets/bfsdefault/default'
 CHUNK = 100
+
+def save_model_bytes(bucket_path, data):
+    conn = exa.get_connection('BUCKETFS_WRITE')
+    url = conn.address.rstrip('/') + '/default/' + bucket_path
+    resp = requests.put(url, data=data, auth=(conn.user, conn.password),
+                         verify=False, timeout=30)
+    resp.raise_for_status()
 
 def run(ctx):
     all_estimators = []
@@ -353,10 +394,9 @@ def run(ctx):
     combined.estimators_ = all_estimators
     combined.n_estimators = len(all_estimators)
 
-    final_path = f'{BUCKET}/models/ensemble/final.pkl'
-    with open(final_path, 'wb') as f:
-        pickle.dump(combined, f)
-    ctx.emit('models/ensemble/final.pkl', len(all_estimators))
+    bucket_path = 'models/ensemble/final.pkl'
+    save_model_bytes(bucket_path, pickle.dumps(combined))
+    ctx.emit(bucket_path, len(all_estimators))
 /
 ```
 
