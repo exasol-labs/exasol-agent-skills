@@ -515,21 +515,120 @@ def run(ctx):
 
 Orchestrate iterations entirely in-database. See **exasol-udfs** `references/lua-execute-scripts.md` for the `pquery` API.
 
-**K-means** — pure SQL + Lua, no UDFs needed:
+**K-means** — pure SQL + Lua, no UDFs needed. A naive assignment/update loop has three gaps that matter at scale: it never stops early once centroids settle, it can silently lose clusters, and it can seed duplicate centroids. The version below fixes all three.
 
-```lua
-for iter = 1, max_iter do
-    sql("CREATE OR REPLACE TABLE ml.assignments AS "
-     .. "SELECT p.\"id\", "
-     .. "(SELECT c.centroid_id FROM ml.centroids c "
-     .. " ORDER BY (p.\"f1\"-c.\"f1\")^2 + (p.\"f2\"-c.\"f2\")^2 LIMIT 1) AS centroid_id "
-     .. "FROM " .. source_table .. " p")
-    sql("CREATE OR REPLACE TABLE ml.centroids AS "
-     .. "SELECT a.centroid_id, AVG(p.\"f1\") AS \"f1\", AVG(p.\"f2\") AS \"f2\" "
-     .. "FROM ml.assignments a JOIN " .. source_table .. " p ON p.\"id\" = a.\"id\" "
-     .. "GROUP BY a.centroid_id")
+**Prerequisite:** `source_table` should be `DISTRIBUTE BY "id"` — see **exasol-database** `references/table-design.md`. Both the assignment step's per-point nearest-centroid lookup and the update step's join back to `source_table` key off `"id"`, so distributing on it keeps each point's row on the node that computes its own assignment.
+
+The update step's `GROUP BY a.centroid_id` only ever emits a row for centroid IDs that have at least one assigned point — there is no "empty group" row, not even with `NULL` aggregates. If a centroid attracts zero points in some iteration, its row disappears from `ml.centroids` entirely and the cluster count silently drops below `k` for every remaining iteration unless something detects and fixes it. The fix: snapshot centroids before the update, diff old vs. new IDs to find anything missing, and reseed each missing centroid at the point currently farthest from its own (surviving) centroid — the standard remedy for the k-means empty-cluster problem, expressible with two `ROW_NUMBER()` rankings joined rank-to-rank (no UDF, no cross-join fan-out).
+
+```sql
+CREATE OR REPLACE LUA SCRIPT ml.kmeans_orchestrator(
+  source_table  VARCHAR(200),
+  k             INT,
+  max_iter      INT,
+  tol           DOUBLE
+) AS
+local function sql(q)
+  local r = pquery(q)
+  if not r.status then error(r.error_message) end
+  return r
 end
+
+-- Initialize: sample k DISTINCT points as starting centroids. Sampling
+-- from distinct feature vectors (not raw rows) avoids seeding two
+-- centroids at the exact same point when source_table has duplicate
+-- or near-duplicate rows. Needs >= k distinct ("f1","f2") vectors.
+sql([[
+  CREATE OR REPLACE TABLE ml.centroids AS
+  SELECT ROW_NUMBER() OVER (ORDER BY "sample_order") AS centroid_id, "f1", "f2"
+  FROM (
+    SELECT "f1", "f2", RAND() AS "sample_order"
+    FROM (SELECT DISTINCT "f1", "f2" FROM ]] .. source_table .. [[) d
+    ORDER BY "sample_order"
+    LIMIT ]] .. k .. [[
+  ) sampled]])
+
+for iter = 1, max_iter do
+  -- Snapshot centroids before this iteration's update — used both to
+  -- measure convergence and to identify any centroid that loses all
+  -- its points below.
+  sql("CREATE OR REPLACE TABLE ml.centroids_prev AS SELECT * FROM ml.centroids")
+
+  -- Assignment: each point gets the nearest centroid (distributed scan)
+  sql([[
+    CREATE OR REPLACE TABLE ml.assignments AS
+    SELECT
+      p."id",
+      (SELECT c.centroid_id
+       FROM ml.centroids_prev c
+       ORDER BY (p."f1" - c."f1") * (p."f1" - c."f1")
+              + (p."f2" - c."f2") * (p."f2" - c."f2")
+       LIMIT 1) AS centroid_id
+    FROM ]] .. source_table .. [[ p]])
+
+  -- Update: recompute centroids as group means (distributed aggregation).
+  -- A centroid_id with zero assigned points has no row here at all.
+  sql([[
+    CREATE OR REPLACE TABLE ml.centroids_updated AS
+    SELECT a.centroid_id, AVG(p."f1") AS "f1", AVG(p."f2") AS "f2"
+    FROM ml.assignments a
+    JOIN ]] .. source_table .. [[ p ON p."id" = a."id"
+    GROUP BY a.centroid_id]])
+
+  -- Reseed any centroid that lost all its points: pair each missing
+  -- centroid_id (present in centroids_prev, absent from
+  -- centroids_updated) with the point currently farthest from its own
+  -- (surviving) centroid, ranked on both sides via ROW_NUMBER() so no
+  -- cross join is needed.
+  sql([[
+    CREATE OR REPLACE TABLE ml.centroids AS
+    SELECT centroid_id, "f1", "f2" FROM ml.centroids_updated
+    UNION ALL
+    SELECT missing.centroid_id, farthest."f1", farthest."f2"
+    FROM (
+      SELECT prev.centroid_id,
+             ROW_NUMBER() OVER (ORDER BY prev.centroid_id) AS rn
+      FROM ml.centroids_prev prev
+      LEFT JOIN ml.centroids_updated upd ON upd.centroid_id = prev.centroid_id
+      WHERE upd.centroid_id IS NULL
+    ) missing
+    JOIN (
+      SELECT p."f1", p."f2",
+             ROW_NUMBER() OVER (
+               ORDER BY (p."f1" - cu."f1") * (p."f1" - cu."f1")
+                      + (p."f2" - cu."f2") * (p."f2" - cu."f2") DESC
+             ) AS rn
+      FROM ml.assignments a
+      JOIN ]] .. source_table .. [[ p ON p."id" = a."id"
+      JOIN ml.centroids_updated cu ON cu.centroid_id = a.centroid_id
+    ) farthest ON farthest.rn = missing.rn]])
+
+  -- Convergence check: max squared movement of any centroid since the
+  -- start of this iteration. A reseeded centroid shows a large
+  -- "movement" by construction, so this correctly avoids declaring
+  -- convergence while a cluster is still being re-seeded.
+  local res = sql([[
+    SELECT MAX(
+      (n."f1" - p."f1") * (n."f1" - p."f1")
+    + (n."f2" - p."f2") * (n."f2" - p."f2")
+    )
+    FROM ml.centroids n
+    JOIN ml.centroids_prev p ON p.centroid_id = n.centroid_id]])
+
+  local max_shift = tonumber(res[1][1])
+  output("Iteration " .. iter .. " complete (max centroid shift " .. tostring(max_shift) .. ")")
+
+  if max_shift ~= nil and max_shift < tol then
+    output("Converged at iteration " .. iter)
+    break
+  end
+end
+/
+
+EXECUTE SCRIPT ml.kmeans_orchestrator('ml.features', 5, 20, 0.0001) WITH OUTPUT;
 ```
+
+`tol` is a **squared**-distance threshold (sum of squared per-feature differences, not Euclidean distance) — `0.0001` stops the loop once no centroid moves more than roughly `0.01` in combined per-dimension terms between iterations.
 
 **SGD with distributed gradients** — Lua orchestrates, Python SET script does the heavy work:
 

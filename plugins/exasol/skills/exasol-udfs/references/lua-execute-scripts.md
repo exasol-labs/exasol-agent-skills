@@ -67,58 +67,6 @@ To pass computed results back to SQL, write them to a table inside the script:
 sql("INSERT INTO ml.results SELECT ...")
 ```
 
-## Iterative K-Means Orchestration
-
-Classic use case: iterative algorithm where each step is a distributed SQL query and Lua manages the loop.
-
-```sql
-CREATE OR REPLACE LUA SCRIPT ml.kmeans_orchestrator(
-  source_table  VARCHAR(200),
-  k             INT,
-  max_iter      INT
-) AS
-local function sql(q)
-  local r = pquery(q)
-  if not r.status then error(r.error_message) end
-  return r
-end
-
--- Initialize: sample k random points as starting centroids
-sql([[
-  CREATE OR REPLACE TABLE ml.centroids AS
-  SELECT ROW_NUMBER() OVER () AS centroid_id, "f1", "f2"
-  FROM ]] .. source_table .. [[
-  ORDER BY RAND()
-  LIMIT ]] .. k)
-
-for iter = 1, max_iter do
-  -- Assignment: each point gets the nearest centroid (distributed scan)
-  sql([[
-    CREATE OR REPLACE TABLE ml.assignments AS
-    SELECT
-      p."id",
-      (SELECT c.centroid_id
-       FROM ml.centroids c
-       ORDER BY (p."f1" - c."f1") * (p."f1" - c."f1")
-              + (p."f2" - c."f2") * (p."f2" - c."f2")
-       LIMIT 1) AS centroid_id
-    FROM ]] .. source_table .. [[ p]])
-
-  -- Update: recompute centroids as group means (distributed aggregation)
-  sql([[
-    CREATE OR REPLACE TABLE ml.centroids AS
-    SELECT a.centroid_id, AVG(p."f1") AS "f1", AVG(p."f2") AS "f2"
-    FROM ml.assignments a
-    JOIN ]] .. source_table .. [[ p ON p."id" = a."id"
-    GROUP BY a.centroid_id]])
-
-  output("Iteration " .. iter .. " complete")
-end
-/
-
-EXECUTE SCRIPT ml.kmeans_orchestrator('ml.features', 5, 20) WITH OUTPUT;
-```
-
 ## Combining Execute Scripts with Python SET UDFs
 
 The power pattern for ML and HPC: Lua orchestrates the loop; a Python SET script handles the expensive distributed computation on every cluster node in parallel.
