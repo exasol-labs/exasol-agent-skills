@@ -238,7 +238,7 @@ top of them.
 The preprocessing notebook uses these result objects:
 
 - `DOCUMENTS` for the normalized source-document table with span identifiers
-- `DOCUMENTS_<...>_VIEW` for the source data plus the generated text span keys
+- `DOCUMENTS_<SOURCE_VIEW_NAME>_VIEW` for the source data plus the generated text span keys
 - `TOPIC_CLASSIFIER_VIEW` in the preprocessing notebook for topic-classifier output
 - `NAMED_ENTITY_VIEW` for named entities
 - `KEYWORD_SEARCH_VIEW` for keywords
