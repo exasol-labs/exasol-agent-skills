@@ -35,13 +35,26 @@ Choose the narrowest matching route. If multiple routes apply, load them in depe
    - Trigger phrases: `open_pyexasol_connection`, `open_sqlalchemy_connection`, `open_ibis_connection`, `open_bucketfs_bucket`, `open_bucketfs_location`, `get_backend`, `connection helper`, `notebook-connector`
    - Activate: **exasol-notebook-connections**
 
-7. **UDFs and Script Language Containers**
+7. **Notebook Connector local Docker database workflows**
+   - Trigger phrases: `bring_itde_up`, `restart_itde`, `get_itde_status`, `take_itde_down`, `ITDE`
+   - Activate: **exasol-itde**
+
+8. **Text AI Extension workflows**
+   - Trigger phrases: `Text AI Extension`, `TXAIE`, `deploy_license`, `initialize_text_ai_extension`, `Extraction`, `NamedEntityExtractor`, `PipelineExtractor`, `BranchExtractor`, `StandardExtractor`, `TopicClassifierExtractor`, `zero-shot classification`, `feature extraction`, `PYTHON3_TXAIE`
+   - Activate: **exasol-text-ai**
+
+When a user mentions `Text AI Extension`, `TXAIE`, `deploy_license`,
+`initialize_text_ai_extension`, or extraction classes such as
+`NamedEntityExtractor`, prefer **exasol-text-ai** over the broader
+**exasol-extension-catalog** route.
+
+9. **UDFs and Script Language Containers**
    - Trigger phrases: `UDF`, `CREATE SCRIPT`, `SCALAR`, `SET script`, `ExaIterator`, `Python UDF`, `Java UDF`, `Lua UDF`, `R UDF`, `SLC`, `Script Language Container`, `exaslct`
    - Activate: **exasol-udfs**
 
-8. **Exasol Personal setup**
-   - Trigger phrases: `set up Exasol`, `Exasol Personal`, `deploy Exasol`, `install Exasol on AWS`, `new Exasol database`
-   - Activate: **exasol-setup-personal**
+10. **Exasol Personal setup**
+    - Trigger phrases: `set up Exasol`, `Exasol Personal`, `deploy Exasol`, `install Exasol on AWS`, `new Exasol database`
+    - Activate: **exasol-setup-personal**
 
 ## Dependency Order
 
@@ -49,9 +62,10 @@ When setup and usage both apply, resolve prerequisites first:
 
 1. Exasol Personal or external database availability
 2. Tool, extension, connector, or architecture selection
-3. exapump profile or connection configuration
-4. BucketFS or database connectivity validation
-5. SQL, data movement, BucketFS, UDF, SLC, or integration task
+3. Notebook-connector AI setup when required
+4. Local Docker database lifecycle or helper-level connectivity validation
+5. Extension-specific TXAIE or Transformers workflow
+6. SQL, data movement, BucketFS, UDF, SLC, or integration task
 
 ## User Interaction Rules
 
