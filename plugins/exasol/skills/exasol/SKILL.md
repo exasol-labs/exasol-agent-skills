@@ -43,6 +43,11 @@ Choose the narrowest matching route. If multiple routes apply, load them in depe
    - Trigger phrases: `Text AI Extension`, `TXAIE`, `deploy_license`, `initialize_text_ai_extension`, `Extraction`, `NamedEntityExtractor`, `PipelineExtractor`, `BranchExtractor`, `StandardExtractor`, `TopicClassifierExtractor`, `zero-shot classification`, `feature extraction`, `PYTHON3_TXAIE`
    - Activate: **exasol-text-ai**
 
+When a user mentions `Text AI Extension`, `TXAIE`, `deploy_license`,
+`initialize_text_ai_extension`, or extraction classes such as
+`NamedEntityExtractor`, prefer **exasol-text-ai** over the broader
+**exasol-extension-catalog** route.
+
 9. **UDFs and Script Language Containers**
    - Trigger phrases: `UDF`, `CREATE SCRIPT`, `SCALAR`, `SET script`, `ExaIterator`, `Python UDF`, `Java UDF`, `Lua UDF`, `R UDF`, `SLC`, `Script Language Container`, `exaslct`
    - Activate: **exasol-udfs**

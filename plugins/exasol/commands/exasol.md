@@ -33,6 +33,11 @@ When invoked:
    - UDFs, `CREATE SCRIPT`, `ExaIterator`, Python/Java/Lua/R scripts, Script Language Containers, or `exaslct` -> use **exasol-udfs** behavior.
    - Exasol Personal, AWS setup, first Exasol deployment, or new database setup -> use **exasol-setup-personal** behavior.
 
+   If a request matches the broad `extension` wording and also contains
+   `Text AI Extension`, `TXAIE`, `deploy_license`, `initialize_text_ai_extension`,
+   or extraction-class entrypoints, prefer **exasol-text-ai** over
+   **exasol-extension-catalog**.
+
 2. **Do not ask the user to choose a sub-skill.**
    Infer the route from the task. If the task is ambiguous, ask one concrete question about the desired outcome.
 
