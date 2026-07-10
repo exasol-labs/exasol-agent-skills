@@ -26,7 +26,7 @@ Example pattern:
 ```sql
 CREATE OR REPLACE JAVA ADAPTER SCRIPT adapter_schema.doc_adapter AS
   %scriptclass com.exasol.adapter.RequestDispatcher;
-  %jar /buckets/bfsdefault/default/document-virtual-schema-dist.jar;
+  %jar /buckets/bfsdefault/default/document-virtual-schema-<version>.jar;
 /
 
 CREATE OR REPLACE CONNECTION doc_conn
