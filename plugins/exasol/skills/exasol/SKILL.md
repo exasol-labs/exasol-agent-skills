@@ -15,9 +15,9 @@ Choose the narrowest matching route. If multiple routes apply, load them in depe
    - Trigger phrases: `SQL`, `query`, `SELECT`, `CREATE TABLE`, `IMPORT`, `EXPORT`, `upload CSV`, `upload Parquet`, `exapump`, `profile`, `schema`, `table`
    - Activate: **exasol-database**
 
-2. **Import and export workflows**
-   - Trigger phrases: `IMPORT INTO`, `EXPORT INTO`, `upload CSV`, `upload Parquet`, `export table`, `local file load`, `S3 import`, `CREATE CONNECTION`
-   - Activate: **exasol-import-export**
+2. **Import workflows**
+   - Trigger phrases: `IMPORT INTO`, `upload CSV`, `upload Parquet`, `local file load`, `S3 import`, `Azure Blob import`, `GCS import`, `CREATE CONNECTION`, `Parquet import`
+   - Activate: **exasol-import**
 
 3. **Notebook-connector AI setup**
    - Trigger phrases: `Secrets`, `scs`, `secure config store`, `notebook-connector setup`, `db_host_name`, `db_schema`, `storage_backend`, `huggingface_token`

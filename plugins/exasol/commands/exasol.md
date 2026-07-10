@@ -23,10 +23,9 @@ When invoked:
 
 1. **Classify the task before checking connections.**
    - Database, SQL, exapump, import/export, schemas, or tables -> use **exasol-database** behavior.
-   - Import or export workflows such as `IMPORT INTO`, `EXPORT INTO`, local CSV or Parquet upload, or remote file loading via connection objects -> use **exasol-import-export** behavior.
+   - Import workflows such as `IMPORT INTO`, local CSV or Parquet upload, or remote file loading via connection objects -> use **exasol-import** behavior.
    - Notebook-connector setup, `Secrets`, `scs`, secure config store values, or backend configuration keys such as `db_host_name`, `db_schema`, `storage_backend`, or `huggingface_token` -> use **exasol-ai-setup** behavior.
    - Transformers Extension workflows such as `initialize_te_extension`, `deploy_scripts`, `TE UDF` usage, or Transformers model workflows in Exasol -> use **exasol-transformers** behavior.
-   - Import or export workflows such as `IMPORT INTO`, `EXPORT INTO`, local CSV or Parquet upload, or remote file loading via connection objects -> use **exasol-import-export** behavior.
    - Exasol tools, extensions, connectors, integrations, migration, governance, observability, BI/API surfaces, or architecture recommendations -> use **exasol-extension-catalog** behavior.
    - BucketFS files, buckets, `bfsdefault`, model/JAR uploads, BucketFS list/download/delete -> use **exasol-bucketfs** behavior.
    - Notebook-connector Python helper calls such as `open_pyexasol_connection`, `open_sqlalchemy_connection`, `open_ibis_connection`, `open_bucketfs_bucket`, `open_bucketfs_location`, or `get_backend` -> use **exasol-notebook-connections** behavior.

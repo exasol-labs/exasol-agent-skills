@@ -1,18 +1,18 @@
-# Import and Export Workflows
+# Import Workflows
 
 ## Decision Guide
 
 Choose the narrowest matching workflow:
 
-- Local CSV or Parquet files on the user's machine: use `exapump upload` or `exapump export`
-- Remote CSV or FBV files reachable by Exasol: use native `IMPORT` or `EXPORT`
+- Local CSV or Parquet files on the user's machine: use `exapump upload`
+- Remote CSV or FBV files reachable by Exasol: use native `IMPORT`
 - S3 Parquet files: use native `IMPORT ... FROM PARQUET AT <connection>`
 - Read-only access to external systems without copying data: use **exasol-virtual-schemas**
 - Extension-based file readers or streaming loaders: use **exasol-data-loading**
 
 ## Connection Objects
 
-Use Exasol connection objects for remote credentials instead of embedding secrets directly in `IMPORT` or `EXPORT`.
+Use Exasol connection objects for remote credentials instead of embedding secrets directly in `IMPORT`.
 
 ```sql
 CREATE OR REPLACE CONNECTION my_conn
@@ -107,27 +107,13 @@ Important Parquet behavior:
 - use `SkipCols` in the `FILE` clause when the source contains leading columns you want to skip
 - use `MaxConnections` and `MaxConcurrentReads` in the `FILE` clause to tune large parallel loads
 
-## Native EXPORT
-
-Use native `EXPORT` when Exasol should write the result to a remote target or to a local JDBC-style target.
-
-```sql
-EXPORT my_schema.my_table
-INTO CSV AT s3_conn
-FILE 'exports/orders.csv'
-WITH COLUMN NAMES;
-```
-
-For local exports on the user's machine, `exapump export` is usually the simpler path.
-
 ## Local File Workflows With exapump
 
 Use `exapump` when the file lives on the user's machine and the user wants a terminal workflow.
 
-Typical patterns:
+Typical pattern:
 
 - `exapump upload <file> --table <schema.table>`
-- `exapump export <schema.table> --output <file>`
 
 Use `exapump upload --dry-run` first when the user wants to preview inferred schema or mappings before the actual load.
 
@@ -167,5 +153,6 @@ WHEN NOT MATCHED THEN INSERT VALUES (
 
 ## Adjacent Routing
 
-- If the user needs a connector, extension, or migration framework rather than direct IMPORT/EXPORT, switch to **exasol-data-loading**
+- If the user needs a connector, extension, or migration framework rather than direct IMPORT, switch to **exasol-data-loading**
+- If the user wants to write data out of Exasol, switch to **exasol-export**
 - If the user wants federated read-only access instead of copying data, switch to **exasol-virtual-schemas**
