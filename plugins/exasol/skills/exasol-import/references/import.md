@@ -7,8 +7,8 @@ Choose the narrowest matching workflow:
 - Local CSV or Parquet files on the user's machine: use `exapump upload`
 - Remote CSV or FBV files reachable by Exasol: use native `IMPORT`
 - S3 Parquet files: use native `IMPORT ... FROM PARQUET AT <connection>`
-- Read-only access to external systems without copying data: use **exasol-jdbc-virtual-schemas** or **exasol-document-virtual-schemas**
-- Extension-based object-storage file readers: use **exasol-cloud-storage-extension**
+- Read-only access to external systems without copying data: use **exasol-extension-catalog** to choose the right Virtual Schema path
+- Extension-based object-storage file readers: use **exasol-extension-catalog** to route to the Cloud Storage Extension material
 
 ## Connection Objects
 
@@ -153,6 +153,6 @@ WHEN NOT MATCHED THEN INSERT VALUES (
 
 ## Adjacent Routing
 
-- If the user needs an extension-based object-storage loading workflow rather than direct IMPORT, switch to **exasol-cloud-storage-extension**
-- If the user wants to write data out of Exasol, switch to **exasol-export**
-- If the user wants federated read-only access instead of copying data, switch to **exasol-jdbc-virtual-schemas** or **exasol-document-virtual-schemas**
+- If the user needs an extension-based object-storage loading workflow rather than direct `IMPORT`, switch to **exasol-extension-catalog**
+- If the user wants to write data out of Exasol, switch to **exasol-database** for native `EXPORT`
+- If the user wants federated read-only access instead of copying data, switch to **exasol-extension-catalog**

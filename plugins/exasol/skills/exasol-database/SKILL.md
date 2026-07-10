@@ -1,11 +1,11 @@
 ---
 name: exasol-database
-description: Exasol database interaction via exapump CLI and Exasol SQL. Covers SQL queries, schema inspection, table design, query profiling, analytics, and Exasol-specific SQL behavior outside the dedicated import/export and virtual-schema skills.
+description: Exasol database interaction via exapump CLI and Exasol SQL. Covers SQL queries, schema inspection, table design, query profiling, analytics, native EXPORT, and Exasol-specific SQL behavior outside the dedicated import skill and other specialized skills.
 ---
 
 # Exasol Database Skill
 
-Trigger when the user asks for **Exasol database interaction**, **exapump**, **Exasol SQL**, **EXA_** system views, schemas, tables, or query execution outside the dedicated import/export and virtual-schema skills.
+Trigger when the user asks for **Exasol database interaction**, **exapump**, **Exasol SQL**, **EXA_** system views, schemas, tables, native `EXPORT`, or query execution outside the dedicated import skill and other specialized skills.
 
 ## Step 0: Establish Connection
 
@@ -48,7 +48,7 @@ After the connection is established, determine the task type and load **only** t
 
 Multiple routes can apply — load all that match.
 
-10. **Before writing any SQL** (applies to routes 2–7):
+10. **Before writing any SQL** (applies to routes 1–6):
    - **Ingest `references/exasol-reserved-keywords.md` before designing queries** — load the reserved-word list (pinned to Exasol 2026.1.0) up front so you quote reserved identifiers from the start rather than discovering them through errors
    - **Always double-quote every identifier** (column names, table names, schema names) in SELECT, FROM, WHERE, GROUP BY, ORDER BY, and JOIN clauses — without exception
    - This preserves mixed-case names and prevents reserved-keyword errors in a single rule
@@ -58,7 +58,7 @@ Multiple routes can apply — load all that match.
 
 ## Related Skills
 
-This skill handles core database interaction: connecting, SQL execution, schema inspection, and table design.
-For direct native `IMPORT`, native `EXPORT`, and local file movement, the **exasol-import** and **exasol-export** skills provide specialized guidance and will activate automatically when relevant.
+This skill handles core database interaction: connecting, SQL execution, schema inspection, table design, and native `EXPORT`.
+For direct native `IMPORT` and local file movement into Exasol, the **exasol-import** skill provides specialized guidance and will activate automatically when relevant.
 For BucketFS file management (upload, download, list, delete), the **exasol-bucketfs** skill provides specialized guidance and will activate automatically when relevant.
 For UDF development and Script Language Containers, the **exasol-udfs** skill provides specialized guidance and will activate automatically when relevant.
