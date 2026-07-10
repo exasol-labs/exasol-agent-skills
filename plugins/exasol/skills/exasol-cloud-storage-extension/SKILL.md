@@ -17,4 +17,5 @@ Trigger when the user mentions **Cloud Storage Extension**, **load from object s
 
 - Use this skill when the user needs the Cloud Storage Extension path rather than direct native `IMPORT`.
 - Use **exasol-import** for direct local-file and native SQL import behavior.
-- Use **exasol-virtual-schemas** when the user wants federated read-only access instead of loading data into Exasol.
+- Use **exasol-document-virtual-schemas** when the user wants federated read-only access to object or file storage instead of loading data into Exasol.
+- Use **exasol-jdbc-virtual-schemas** when the user wants federated read-only access to a JDBC source instead of loading data into Exasol.

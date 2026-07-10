@@ -7,7 +7,8 @@ Pick the narrowest supported loading path:
 - Direct local CSV or Parquet movement: use **exasol-import**
 - Direct native `IMPORT` SQL: use **exasol-import**
 - Object storage file-reading extension path: use Cloud Storage Extension
-- Read-only federation instead of copying data: use **exasol-virtual-schemas**
+- Read-only federation for object or file storage instead of copying data: use **exasol-document-virtual-schemas**
+- Read-only federation for JDBC sources instead of copying data: use **exasol-jdbc-virtual-schemas**
 
 ## Security and Boundaries
 
@@ -32,5 +33,5 @@ Do not route simple native `IMPORT` cases here if Exasol `IMPORT` already fits t
 ## Practical Routing Rules
 
 - If the user says `IMPORT INTO`, `CREATE CONNECTION`, `upload CSV`, or `upload Parquet`, switch back to **exasol-import**
-- If the user says `virtual schema`, `adapter`, `federated query`, or `read external tables without loading`, switch to **exasol-virtual-schemas**
+- If the user says `virtual schema`, `adapter`, `federated query`, or `read external tables without loading`, switch to **exasol-document-virtual-schemas** for object or file storage, or **exasol-jdbc-virtual-schemas** for JDBC sources
 - If the user asks which object-storage extension path fits the workflow, stay in this skill and choose the narrowest supported extension workflow
