@@ -84,8 +84,8 @@ Supported native paths covered here:
 ### CSV Example
 
 ```sql
-IMPORT INTO my_schema.my_table
-FROM CSV AT s3_conn
+IMPORT INTO "MY_SCHEMA"."MY_TABLE"
+FROM CSV AT "S3_CONN"
 FILE 'data/orders.csv'
 COLUMN SEPARATOR = ','
 SKIP = 1
@@ -95,8 +95,8 @@ REJECT LIMIT 0;
 ### Parquet Example
 
 ```sql
-IMPORT INTO my_schema.my_table
-FROM PARQUET AT s3_conn
+IMPORT INTO "MY_SCHEMA"."MY_TABLE"
+FROM PARQUET AT "S3_CONN"
 FILE 'data/*.parquet';
 ```
 
@@ -132,22 +132,22 @@ Constraint violations are not a row-rejection case. They fail the import immedia
 When the target table is business-critical, prefer staging first and merge later:
 
 ```sql
-CREATE TABLE staging.orders_stg (LIKE production.orders INCLUDING DEFAULTS);
+CREATE TABLE "STAGING"."ORDERS_STG" (LIKE "PRODUCTION"."ORDERS" INCLUDING DEFAULTS);
 
-IMPORT INTO staging.orders_stg
-FROM CSV AT s3_conn
+IMPORT INTO "STAGING"."ORDERS_STG"
+FROM CSV AT "S3_CONN"
 FILE 'daily/orders_*.csv'
 COLUMN SEPARATOR = ','
 SKIP = 1
 REJECT LIMIT 100;
 
-MERGE INTO production.orders t
-USING staging.orders_stg s ON (t.order_id = s.order_id)
+MERGE INTO "PRODUCTION"."ORDERS" t
+USING "STAGING"."ORDERS_STG" s ON (t."ORDER_ID" = s."ORDER_ID")
 WHEN MATCHED THEN UPDATE SET
-    t.status = s.status,
-    t.amount = s.amount
+    t."STATUS" = s."STATUS",
+    t."AMOUNT" = s."AMOUNT"
 WHEN NOT MATCHED THEN INSERT VALUES (
-    s.order_id, s.customer_id, s.status, s.amount
+    s."ORDER_ID", s."CUSTOMER_ID", s."STATUS", s."AMOUNT"
 );
 ```
 

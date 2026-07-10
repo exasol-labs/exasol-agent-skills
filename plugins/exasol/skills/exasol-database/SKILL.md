@@ -30,25 +30,28 @@ After the connection is established, determine the task type and load **only** t
    - Load: `references/exasol-grammar-functions.md` for **built-in function, operator, predicate, literal, and data-type syntax** (e.g. the exact argument order of a function). Same EBNF source, split out so statement lookups don't pull in the full function catalog.
    - Load: `references/exasol-reserved-keywords.md` and **ingest the full list before designing queries** — every reserved word (pinned to Exasol 2026.1.0) must be double-quoted when used as an identifier. On a keyword-related syntax error, re-query the running DB as described in **Before writing any SQL** in case the file has drifted from the DB version.
 
-2. **Table design** (DISTRIBUTE BY, PARTITION BY, CREATE TABLE layout):
+2. **Native EXPORT and remote file export workflows**:
+   - Load: `references/import-export.md`
+
+3. **Table design** (DISTRIBUTE BY, PARTITION BY, CREATE TABLE layout):
    - Load: `references/table-design.md`
 
-3. **Query profiling / performance** (slow queries, data skew, REORGANIZE):
+4. **Query profiling / performance** (slow queries, data skew, REORGANIZE):
    - Load: `references/query-profiling.md`
 
-4. **Analytics / window functions** (ROW_NUMBER, RANK, LAG/LEAD, QUALIFY, GROUPING SETS):
+5. **Analytics / window functions** (ROW_NUMBER, RANK, LAG/LEAD, QUALIFY, GROUPING SETS):
    - Load: `references/analytics-qualify.md`
    - Load: `references/exasol-grammar-functions.md` for exact analytic-function and `OVER (…)` window-clause syntax
 
-5. **BucketFS file management** (upload/download/list/delete files in BucketFS, bfsdefault, bucket paths):
+6. **BucketFS file management** (upload/download/list/delete files in BucketFS, bfsdefault, bucket paths):
    - Activate the **exasol-bucketfs** skill for guidance
 
-6. **UDF development** (CREATE SCRIPT, ExaIterator, SCALAR/SET, Script Language Containers, SLC, exaslct):
+7. **UDF development** (CREATE SCRIPT, ExaIterator, SCALAR/SET, Script Language Containers, SLC, exaslct):
    - Activate the **exasol-udfs** skill for guidance
 
 Multiple routes can apply — load all that match.
 
-7. **Before writing any SQL** (applies to routes 1–6):
+8. **Before writing any SQL** (applies to routes 1–7):
    - **Ingest `references/exasol-reserved-keywords.md` before designing queries** — load the reserved-word list (pinned to Exasol 2026.1.0) up front so you quote reserved identifiers from the start rather than discovering them through errors
    - **Always double-quote every identifier** (column names, table names, schema names) in SELECT, FROM, WHERE, GROUP BY, ORDER BY, and JOIN clauses — without exception
    - This preserves mixed-case names and prevents reserved-keyword errors in a single rule
