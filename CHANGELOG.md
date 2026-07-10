@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.22.0
+
+- Add exasol-virtual-schema-adapter-development skill for custom virtual schema adapter build and debugging workflows
+
 ## v0.15.0
 
 - Add exasol-transformers skill for notebook-connector Transformers Extension workflows
