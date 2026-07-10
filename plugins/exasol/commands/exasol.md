@@ -22,10 +22,12 @@ The argument can be either:
 When invoked:
 
 1. **Classify the task before checking connections.**
-   - Database, general SQL outside direct `IMPORT`, export, schemas, tables, or general `CREATE CONNECTION` questions -> use **exasol-database** behavior.
+   - Database, general SQL outside direct `IMPORT` or `EXPORT`, schemas, tables, or general `CREATE CONNECTION` questions -> use **exasol-database** behavior.
    - Import workflows such as `IMPORT` or `IMPORT INTO`, local CSV or Parquet upload, remote file loading via connection objects, `CREATE CONNECTION` for import/object-store loading, or `exapump upload` -> use **exasol-import** behavior.
-   - If `CREATE CONNECTION` appears with `EXPORT` or without import/load intent, prefer **exasol-database** behavior.
+   - Export workflows such as `EXPORT`, `EXPORT INTO`, local CSV or Parquet export, remote file export via connection objects, or `exapump export` -> use **exasol-export** behavior.
+   - If `CREATE CONNECTION` appears with `IMPORT` or object-store loading intent, prefer **exasol-import** behavior. If it appears with `EXPORT` or without import/load intent, prefer **exasol-export** for export setup or **exasol-database** for general connection-object questions.
    - Notebook-connector setup, `Secrets`, `scs`, secure config store values, or backend configuration keys such as `db_host_name`, `db_schema`, `storage_backend`, or `huggingface_token` -> use **exasol-ai-setup** behavior.
+   - Transformers Extension workflows such as `initialize_te_extension`, `deploy_scripts`, `TE UDF` usage, or Transformers model workflows in Exasol -> use **exasol-transformers** behavior.
    - Exasol tools, extensions, connectors, integrations, migration, governance, observability, BI/API surfaces, or architecture recommendations -> use **exasol-extension-catalog** behavior.
    - BucketFS files, buckets, `bfsdefault`, model/JAR uploads, BucketFS list/download/delete -> use **exasol-bucketfs** behavior.
    - Notebook Connector local Docker database workflows such as `bring_itde_up`, `restart_itde`, `get_itde_status`, or `take_itde_down` -> use **exasol-itde** behavior.
@@ -52,8 +54,9 @@ When invoked:
    - Apply this check before database SQL work and before `exapump upload` or `exapump export`; if a non-default profile is selected, keep using `--profile <name>` after the subcommand.
    - If the task is an import or upload workflow, follow **exasol-import** behavior first.
    - Use direct `exapump sql` execution for `IMPORT` only when that guidance resolves to an executable remote-file `IMPORT` statement rather than a local-file workflow such as `exapump upload` or `IMPORT INTO "MY_SCHEMA"."MY_TABLE" FROM LOCAL CSV FILE '/path/to/data.csv'`.
-   - If the argument is another SQL query (starts with SELECT, CREATE, DROP, INSERT, UPDATE, DELETE, MERGE, EXPORT, ALTER, GRANT, etc.), execute it via `exapump sql "<query>"`.
-   - For exports, use `exapump export` with the appropriate format.
+   - If the task is an export workflow, follow **exasol-export** behavior first.
+   - Use direct `exapump sql` execution for `EXPORT` only when that guidance resolves to an executable remote-file `EXPORT` statement rather than a local-file workflow such as `exapump export`.
+   - If the argument is another SQL query (starts with SELECT, CREATE, DROP, INSERT, UPDATE, DELETE, MERGE, ALTER, GRANT, etc.), execute it via `exapump sql "<query>"`.
 
 4. **For extension catalog routes:**
    - Classify the user objective as deploy, load, explore, enrich, surface, or scale.

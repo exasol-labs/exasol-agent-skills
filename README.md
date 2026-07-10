@@ -73,15 +73,21 @@ See [`plugins/exasol/skills/exasol/SKILL.md`](plugins/exasol/skills/exasol/SKILL
 
 ### Exasol Database Skill
 
-Work with Exasol databases — run queries, export data, handle cloud sources, and get help with Exasol-specific SQL quirks outside the dedicated import skill.
+Work with Exasol databases — run queries, inspect schemas, design tables, and get help with Exasol-specific SQL quirks outside the dedicated import and export skills.
 
 See [`plugins/exasol/skills/exasol-database/SKILL.md`](plugins/exasol/skills/exasol-database/SKILL.md) for details.
 
 ### Exasol Import Skill
 
-Use Exasol IMPORT SQL plus exapump local file upload workflows for moving data into Exasol. For native EXPORT workflows, continue using the Exasol Database skill.
+Use Exasol IMPORT SQL plus exapump local file upload workflows for moving data into Exasol. For native EXPORT workflows, use the Exasol Export skill.
 
 See [`plugins/exasol/skills/exasol-import/SKILL.md`](plugins/exasol/skills/exasol-import/SKILL.md) for details.
+
+### Exasol Export Skill
+
+Use Exasol EXPORT SQL plus exapump local file export workflows for moving data out of Exasol.
+
+See [`plugins/exasol/skills/exasol-export/SKILL.md`](plugins/exasol/skills/exasol-export/SKILL.md) for details.
 
 ### Exasol Extension Catalog Skill
 
