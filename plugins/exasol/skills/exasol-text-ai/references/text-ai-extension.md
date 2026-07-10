@@ -267,7 +267,9 @@ When the workflow uses `StandardExtractor`, notebook-connector workflows can
 also produce and query:
 
 - `TOPICS_VIEW` for topic rows joined in a form used by later analytics queries
-- `CO_OCCURRENCE` for combined topic, entity, and keyword results in the same document
+- `CO_OCCURRENCE` for rows that combine topic, named-entity, and keyword hits
+  found in the same document span, which makes it useful for downstream
+  correlation or co-mention analysis
 
 Typical inspection flow from the notebooks:
 
@@ -343,7 +345,9 @@ Common analytics patterns are:
   classification flags
 - join the source-document view with `NAMED_ENTITY_VIEW` to aggregate extracted
   entities
-- filter `CO_OCCURRENCE` when the workflow came from `StandardExtractor`
+- filter `CO_OCCURRENCE` when the workflow came from `StandardExtractor` and
+  the user wants to analyze which topics, entities, and keywords occur
+  together in the same source text
 - create downstream analysis views on top of the generated TXAIE result views
 
 A downstream analytics workflow assumes the preprocessing workflow already ran
