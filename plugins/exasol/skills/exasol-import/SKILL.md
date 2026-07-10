@@ -26,4 +26,4 @@ Trigger when the user mentions **IMPORT INTO**, **upload CSV**, **upload Parquet
 - Use this skill for direct data movement into Exasol.
 - Use **exasol-database** for general SQL, schema inspection, and table design outside the import/export workflow itself.
 - Use **exasol-export** when the user wants to write data out of Exasol instead of loading it in.
-- Use **exasol-data-loading** when the user is asking for extension-based or connector-based loading workflows rather than direct IMPORT behavior.
+- Use **exasol-cloud-storage-extension** when the user is asking for extension-based object-storage loading workflows rather than direct IMPORT behavior.
