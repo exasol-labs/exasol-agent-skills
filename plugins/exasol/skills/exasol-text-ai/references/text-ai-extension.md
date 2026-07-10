@@ -146,6 +146,13 @@ extraction.run(my_secrets)
 Use this when the user wants a reusable preprocessing workflow rather than a
 single extractor.
 
+Pattern:
+
+- start with a source-step extractor that defines which source tables or views
+  and columns feed the workflow
+- add one or more downstream extractor steps that consume that source output
+- write the generated TXAIE result objects into the configured schema
+
 ```python
 from exasol.nb_connector.text_ai_extension_wrapper import Extraction
 from exasol.ai.text.extraction.abstract_extraction import Defaults, Output
@@ -189,6 +196,13 @@ extraction.run(my_secrets)
 
 Use this when the workflow should fan out into multiple extractor branches from
 the same source data.
+
+Pattern:
+
+- define one shared source step
+- branch into multiple extractors that should run from the same source rows
+- use this when one preprocessing flow should produce several TXAIE result
+  objects in parallel
 
 ```python
 from exasol.nb_connector.text_ai_extension_wrapper import Extraction
@@ -239,16 +253,18 @@ The Text AI notebooks do not stop at `extraction.run(...)`. They query the
 generated tables and views directly to inspect results and build analytics on
 top of them.
 
-The preprocessing notebook uses these result objects:
+The exact object names depend on the extractor shape and the source objects
+used in the workflow, but the notebooks show these general result patterns:
 
 - `DOCUMENTS` for the normalized source-document table with span identifiers
 - `DOCUMENTS_<SOURCE_VIEW_NAME>_VIEW` for the source data plus the generated text span keys
-- `TOPIC_CLASSIFIER_VIEW` in the preprocessing notebook for topic-classifier output
+- `TOPIC_CLASSIFIER_VIEW` for topic-classifier output
 - `NAMED_ENTITY_VIEW` for named entities
 - `KEYWORD_SEARCH_VIEW` for keywords
 - `TXAIE_AUDIT_LOG` for run-level logging
 
-When the workflow uses `StandardExtractor`, the analytics notebook also uses:
+When the workflow uses `StandardExtractor`, notebook-connector workflows can
+also produce and query:
 
 - `TOPICS_VIEW` for topic rows joined in a form used by later analytics queries
 - `CO_OCCURRENCE` for combined topic, entity, and keyword results in the same document
@@ -309,62 +325,63 @@ with open_pyexasol_connection(my_secrets, compression=True) as conn:
     )
 ```
 
-If the user wants to restart a fixed preprocessing demo from scratch instead of
-using the incremental behavior, the preprocessing notebook uses the helper
-`delete_text_ai_preprocessing_tables()` to drop the generated TXAIE tables
-first. That reset pattern is optional and notebook-level, not something
+If the user wants to rerun a preprocessing workflow from a clean state instead
+of using the incremental behavior, the preprocessing notebook shows the helper
+`delete_text_ai_preprocessing_tables()` as one way to drop generated TXAIE
+tables first. This is an optional notebook-level reset pattern, not something
 required by `Extraction.run(...)`.
 
 ## Step 5: Build Analytics on Top of TXAIE Results
 
 The `txaie_analytics.ipynb` notebook shows that notebook-connector workflows
-often create regular SQL views on top of TXAIE output rather than calling new
-Python wrappers.
+can create regular SQL views on top of TXAIE output rather than calling
+additional Python wrappers.
 
-Common patterns from that notebook:
+Common analytics patterns are:
 
-- join the source-document view with `TOPICS_VIEW` to derive urgency flags
-- join the source-document view with `NAMED_ENTITY_VIEW` to count products
+- join the source-document view with `TOPICS_VIEW` to derive downstream
+  classification flags
+- join the source-document view with `NAMED_ENTITY_VIEW` to aggregate extracted
+  entities
 - filter `CO_OCCURRENCE` when the workflow came from `StandardExtractor`
-- create downstream analysis views such as `TICKET_URGENCY`, `PRODUCT_ATTENTION`,
-  and `URGENT_PRODUCT_CO_OCCURRENCE`
+- create downstream analysis views on top of the generated TXAIE result views
 
-The analytics notebook assumes the preprocessing workflow already ran and
-produced those views.
+A downstream analytics workflow assumes the preprocessing workflow already ran
+and produced those views.
 
 In the notebook, the source-document view name depends on the original source
 view. In this skill, use a schema-qualified placeholder such as
 `"MY_SCHEMA"."DOCUMENTS_<SOURCE_VIEW_NAME>_VIEW"` rather than hardcoding one
 notebook-specific generated name.
 
-Example pattern for deriving a view from topic output:
+Example pattern for deriving a downstream view from topic output:
 
 ```sql
-CREATE OR REPLACE VIEW "MY_SCHEMA".TICKET_URGENCY AS
+CREATE OR REPLACE VIEW "MY_SCHEMA".TEXT_TOPIC_ANALYSIS AS
 SELECT
     D.*,
     T.TOPIC_SCORE,
-    T.TOPIC_SCORE > 0.7 AS IS_URGENT
+    T.TOPIC_SCORE > 0.7 AS MATCHES_TARGET_TOPIC
 FROM "MY_SCHEMA"."DOCUMENTS_<SOURCE_VIEW_NAME>_VIEW" D
 JOIN "MY_SCHEMA".TOPICS_VIEW T
     ON D.TEXT_DOC_ID = T.TEXT_DOC_ID
    AND D.TEXT_CHAR_BEGIN = T.TEXT_CHAR_BEGIN
    AND D.TEXT_CHAR_END = T.TEXT_CHAR_END
-WHERE T.TOPIC = 'urgent';
+WHERE T.TOPIC = 'target_topic';
 ```
 
-Example pattern for product analysis from named entities:
+Example pattern for aggregating extracted entities:
 
 ```sql
-SELECT E.ENTITY AS PRODUCT, COUNT(DISTINCT D.TICKET_ID) AS TICKET_COUNT
+SELECT E.ENTITY AS ENTITY_VALUE, COUNT(DISTINCT D.ROW_ID) AS ROW_COUNT
 FROM "MY_SCHEMA"."DOCUMENTS_<SOURCE_VIEW_NAME>_VIEW" D
 JOIN "MY_SCHEMA".NAMED_ENTITY_VIEW E
     ON D.TEXT_DOC_ID = E.TEXT_DOC_ID
    AND D.TEXT_CHAR_BEGIN = E.TEXT_CHAR_BEGIN
    AND D.TEXT_CHAR_END = E.TEXT_CHAR_END
-WHERE E.ENTITY_TYPE LIKE 'product%'
+WHERE E.ENTITY_TYPE LIKE 'target_type%'
 GROUP BY E.ENTITY
-ORDER BY TICKET_COUNT DESC;
+ORDER BY ROW_COUNT DESC;
 ```
 
 Use `CO_OCCURRENCE` only when the workflow actually produced it, which in the
