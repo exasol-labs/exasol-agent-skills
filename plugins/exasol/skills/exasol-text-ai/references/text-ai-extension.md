@@ -310,9 +310,10 @@ with open_pyexasol_connection(my_secrets, compression=True) as conn:
 ```
 
 If the user wants to restart a fixed preprocessing demo from scratch instead of
-using the incremental behavior, the preprocessing notebook explicitly drops the
-generated TXAIE tables first. That reset pattern is optional and notebook-level,
-not something required by `Extraction.run(...)`.
+using the incremental behavior, the preprocessing notebook uses the helper
+`delete_text_ai_preprocessing_tables()` to drop the generated TXAIE tables
+first. That reset pattern is optional and notebook-level, not something
+required by `Extraction.run(...)`.
 
 ## Step 5: Build Analytics on Top of TXAIE Results
 

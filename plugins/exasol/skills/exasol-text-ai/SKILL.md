@@ -52,7 +52,8 @@ Expected failure mode:
 ## Guidance
 
 - Use **exasol-ai-setup** when secure config store, DB, or BucketFS values are still missing.
-- Use **exasol-notebook-connections** when the user wants to inspect TXAIE result tables or views through notebook-connector Python connection helpers instead of the SQL examples in this skill.
+- Keep simple TXAIE-specific inspection here, including the SQL examples in this skill and small Python snippets tied directly to TXAIE result objects such as `TXAIE_AUDIT_LOG`.
+- Use **exasol-notebook-connections** when the user wants broader notebook-connector connection-helper work beyond these TXAIE-specific inspection patterns.
 - Use **exasol-bucketfs** when the user needs to inspect the uploaded SLC or model assets.
 - Use **exasol-udfs** when the task moves beyond the packaged Text AI extraction API into lower-level UDF or SLC work.
 
