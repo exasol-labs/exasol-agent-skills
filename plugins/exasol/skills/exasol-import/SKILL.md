@@ -5,6 +5,8 @@ description: "Use Exasol IMPORT SQL plus exapump local file upload workflows for
 
 # Exasol Import Skill
 
+This skill covers only workflows that move data into Exasol.
+
 Trigger when the user mentions **IMPORT INTO**, **upload CSV**, **upload Parquet**, **local file load**, **S3 import**, **Azure Blob import**, **GCS import**, **CREATE CONNECTION**, or **Parquet import**.
 
 ## Routing Algorithm
@@ -23,6 +25,6 @@ Trigger when the user mentions **IMPORT INTO**, **upload CSV**, **upload Parquet
 
 ## Notes
 
-- Use this skill for direct data movement into Exasol.
+- Use this skill only for direct data movement into Exasol.
 - Use **exasol-database** for general SQL, schema inspection, table design, and native `EXPORT` workflows outside direct import behavior.
 - Use **exasol-extension-catalog** when the user is asking for extension-based object-storage loading workflows or federated-read alternatives rather than direct `IMPORT`.
