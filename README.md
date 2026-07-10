@@ -89,6 +89,12 @@ Use Exasol EXPORT SQL plus exapump local file export workflows for moving data o
 
 See [`plugins/exasol/skills/exasol-export/SKILL.md`](plugins/exasol/skills/exasol-export/SKILL.md) for details.
 
+### Exasol Cloud Storage Extension Skill
+
+Use the Exasol Cloud Storage Extension when the task is an extension-based object-storage loading workflow rather than direct native IMPORT.
+
+See [`plugins/exasol/skills/exasol-cloud-storage-extension/SKILL.md`](plugins/exasol/skills/exasol-cloud-storage-extension/SKILL.md) for details.
+
 ### Exasol Extension Catalog Skill
 
 Choose the right Exasol tool, extension, connector, integration, or architecture pattern for deployment, data loading, exploration, AI/ML enrichment, BI/API surfaces, governance, and scale.
