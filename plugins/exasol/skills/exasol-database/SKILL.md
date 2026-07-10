@@ -66,6 +66,6 @@ Multiple routes can apply — load all that match.
 ## Related Skills
 
 This skill handles core database interaction: connecting, uploading/exporting files, SQL execution, and table design.
-For federated read-only access, adapter setup, `EXPLAIN VIRTUAL`, and virtual-schema troubleshooting, the **exasol-virtual-schemas** skill provides specialized guidance and will activate automatically when relevant.
+For federated read-only access, adapter setup, `EXPLAIN VIRTUAL`, and virtual-schema troubleshooting, the **exasol-jdbc-virtual-schemas**, **exasol-document-virtual-schemas**, and **exasol-virtual-schema-adapter-development** skills provide specialized guidance and will activate automatically when relevant.
 For BucketFS file management (upload, download, list, delete), the **exasol-bucketfs** skill provides specialized guidance and will activate automatically when relevant.
 For UDF development and Script Language Containers, the **exasol-udfs** skill provides specialized guidance and will activate automatically when relevant.
