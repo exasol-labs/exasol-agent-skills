@@ -22,8 +22,8 @@ The argument can be either:
 When invoked:
 
 1. **Classify the task before checking connections.**
-   - Database, SQL, exapump, import/export, schemas, or tables -> use **exasol-database** behavior.
-   - Import workflows such as `IMPORT INTO`, local CSV or Parquet upload, or remote file loading via connection objects -> use **exasol-import** behavior.
+   - Database, SQL, export, schemas, or tables -> use **exasol-database** behavior.
+   - Import workflows such as `IMPORT INTO`, local CSV or Parquet upload, remote file loading via connection objects, or `exapump upload` -> use **exasol-import** behavior.
    - Notebook-connector setup, `Secrets`, `scs`, secure config store values, or backend configuration keys such as `db_host_name`, `db_schema`, `storage_backend`, or `huggingface_token` -> use **exasol-ai-setup** behavior.
    - Exasol tools, extensions, connectors, integrations, migration, governance, observability, BI/API surfaces, or architecture recommendations -> use **exasol-extension-catalog** behavior.
    - BucketFS files, buckets, `bfsdefault`, model/JAR uploads, BucketFS list/download/delete -> use **exasol-bucketfs** behavior.

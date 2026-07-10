@@ -11,12 +11,12 @@ Use this skill whenever the user asks about Exasol. The user does not need to kn
 
 Choose the narrowest matching route. If multiple routes apply, load them in dependency order.
 
-1. **Exasol database, SQL, exapump, data import/export**
-   - Trigger phrases: `SQL`, `query`, `SELECT`, `CREATE TABLE`, `IMPORT`, `EXPORT`, `upload CSV`, `upload Parquet`, `exapump`, `profile`, `schema`, `table`
+1. **Exasol database, SQL, exapump, and export workflows**
+   - Trigger phrases: `SQL`, `query`, `SELECT`, `CREATE TABLE`, `EXPORT`, `profile`, `schema`, `table`
    - Activate: **exasol-database**
 
 2. **Import workflows**
-   - Trigger phrases: `IMPORT INTO`, `upload CSV`, `upload Parquet`, `local file load`, `S3 import`, `Azure Blob import`, `GCS import`, `CREATE CONNECTION`, `Parquet import`
+   - Trigger phrases: `IMPORT INTO`, `upload CSV`, `upload Parquet`, `local file load`, `S3 import`, `Azure Blob import`, `GCS import`, `CREATE CONNECTION`, `Parquet import`, `exapump upload`
    - Activate: **exasol-import**
 
 3. **Notebook-connector AI setup**
