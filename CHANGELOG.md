@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.17.0
+
+- Add exasol-import skill for native Exasol import workflows
+
 ## v0.15.0
 
 - Add exasol-transformers skill for notebook-connector Transformers Extension workflows
