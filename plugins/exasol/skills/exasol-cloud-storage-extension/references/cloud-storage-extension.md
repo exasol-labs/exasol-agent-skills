@@ -30,6 +30,16 @@ Use it when:
 
 Do not route simple native `IMPORT` cases here if Exasol `IMPORT` already fits the request more directly.
 
+## Example Requests
+
+Typical requests that belong in this skill:
+
+```text
+load Parquet files from object storage through Cloud Storage Extension
+read ORC files from a bucket with the Cloud Storage Extension path
+use the extension-based file reader instead of native IMPORT
+```
+
 ## Practical Routing Rules
 
 - If the user says `IMPORT INTO`, `CREATE CONNECTION`, `upload CSV`, or `upload Parquet`, switch back to **exasol-import**
