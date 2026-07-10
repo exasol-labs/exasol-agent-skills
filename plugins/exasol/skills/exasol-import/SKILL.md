@@ -12,7 +12,7 @@ Trigger when the user mentions **IMPORT INTO**, **upload CSV**, **upload Parquet
 ## Routing Algorithm
 
 1. **Local files on the user machine**
-   - Trigger phrases: `upload csv`, `upload parquet`, `from local`, `into local`
+   - Trigger phrases: `upload csv`, `upload parquet`, `from local`
    - Load: `references/import.md`
 
 2. **Remote or cloud files reachable by Exasol**
