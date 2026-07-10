@@ -1,8 +1,8 @@
-# Virtual Schema Workflows
+# Document Virtual Schema Workflows
 
 ## What Virtual Schemas Are For
 
-Virtual schemas expose external systems as read-only virtual tables inside Exasol.
+Document-file virtual schemas expose object or file storage as read-only virtual tables inside Exasol.
 
 Use them when:
 
@@ -24,28 +24,24 @@ Typical setup flow:
 Example pattern:
 
 ```sql
-CREATE OR REPLACE JAVA ADAPTER SCRIPT adapter_schema.jdbc_adapter AS
+CREATE OR REPLACE JAVA ADAPTER SCRIPT adapter_schema.doc_adapter AS
   %scriptclass com.exasol.adapter.RequestDispatcher;
-  %jar /buckets/bfsdefault/default/virtual-schema-dist.jar;
-  %jar /buckets/bfsdefault/default/source-driver.jar;
+  %jar /buckets/bfsdefault/default/document-virtual-schema-dist.jar;
 /
 
-CREATE OR REPLACE CONNECTION src_conn
-TO 'jdbc:postgresql://host:5432/mydb'
+CREATE OR REPLACE CONNECTION doc_conn
+TO 'https://my-bucket.s3.eu-west-1.amazonaws.com'
 USER 'user' IDENTIFIED BY 'password';
 
-CREATE VIRTUAL SCHEMA src_vs
-USING adapter_schema.jdbc_adapter
-WITH CONNECTION_NAME = 'SRC_CONN'
-     SCHEMA_NAME = 'public';
+CREATE VIRTUAL SCHEMA doc_vs
+USING adapter_schema.doc_adapter
+WITH CONNECTION_NAME = 'DOC_CONN';
 ```
 
 ## Adapter Family Selection
 
 Choose the narrowest maintained adapter family that fits the source:
 
-- dedicated SQL-dialect adapters when Exasol already maintains one for that source
-- **generic JDBC** when the source is JDBC-accessible but there is no better dedicated maintained adapter for the workflow
 - **document-file virtual schemas** when the source is object or file storage rather than a JDBC database
 
 Document-file adapter families called out in current Exasol references include:
@@ -56,7 +52,7 @@ Document-file adapter families called out in current Exasol references include:
 - Azure Blob Storage document files virtual schema
 - Azure Data Lake Storage Gen2 document files virtual schema
 
-Do not try to document every maintained dialect in equal depth inside this skill. Choose the dedicated maintained adapter when one already fits the source, otherwise fall back to generic JDBC when that source model is appropriate.
+Choose the maintained document-file adapter family that matches the storage system instead of forcing a JDBC-oriented workflow onto object storage.
 
 ## Refresh and Metadata Operations
 
@@ -83,29 +79,18 @@ If the exact refresh scope options matter for a specific adapter, check that ada
 Start with the workflow below:
 
 1. Validate the connection object and source reachability first
-2. Check that the correct adapter JAR and source driver JAR are available to the adapter script
+2. Check that the correct adapter JAR is available to the adapter script
 3. Run `EXPLAIN VIRTUAL` on a representative query to inspect the actual pushdown
 4. If metadata is stale, run the appropriate refresh workflow
-5. If the problem is adapter-side, move to adapter logs or remote debugging
+5. If the problem is adapter-side, switch to **exasol-virtual-schema-adapter-development**
 
 `EXPLAIN VIRTUAL` is the first SQL-level debugging tool when the question is "what is Exasol pushing down?" or "why is this query not behaving as expected?".
 
 It shows the effective pushdown query without executing the remote workload itself.
 
-## Remote Debugging
-
-Remote debugging is an adapter-development workflow, not a normal query workflow.
-
-Use it when:
-
-- the adapter logic itself is failing
-- pushdown generation or property handling needs adapter-side inspection
-- SQL-level checks such as `EXPLAIN VIRTUAL` are not enough
-
-When the user asks for remote debugging, stay aligned with the adapter repository's documented debugger setup instead of inventing a custom procedure.
-
 ## Practical Rules
 
 - If the user wants to query external data in place, stay in this skill
-- If the user wants to physically load data into Exasol, switch to **exasol-import-export** or **exasol-data-loading**
-- If the user is deciding among available maintained source adapters, prefer the dedicated maintained adapter before falling back to generic JDBC
+- If the user wants to physically load data into Exasol, switch to **exasol-import** or **exasol-cloud-storage-extension**
+- If the source is a JDBC database rather than object or file storage, switch to **exasol-jdbc-virtual-schemas**
+- If the user is deciding among available maintained document-file adapters, choose the storage-family-specific adapter that fits the source
