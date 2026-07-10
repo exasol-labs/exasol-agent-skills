@@ -2,6 +2,7 @@
 
 ## v0.19.0
 
+- Add exasol-cloud-storage-extension skill for Cloud Storage Extension loading workflows
 - Add exasol-export skill for native Exasol export workflows
 - Remove the obsolete combined import/export database reference after splitting import and export into dedicated skills
 - Remove remaining import/export workflow details from exasol-database references
