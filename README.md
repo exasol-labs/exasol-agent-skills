@@ -77,11 +77,11 @@ Work with Exasol databases — run queries, load and export data, handle cloud s
 
 See [`plugins/exasol/skills/exasol-database/SKILL.md`](plugins/exasol/skills/exasol-database/SKILL.md) for details.
 
-### Exasol Virtual Schemas Skill
+### Exasol Virtual Schema Adapter Development Skill
 
-Use Exasol virtual schemas for federated read-only access to external systems and document-file adapters, including refresh, debugging, and adapter-development workflows.
+Build, install, validate, and debug custom Exasol virtual schema adapters, including generic JDBC adapter development and remote-debugging workflows.
 
-See [`plugins/exasol/skills/exasol-virtual-schemas/SKILL.md`](plugins/exasol/skills/exasol-virtual-schemas/SKILL.md) for details.
+See [`plugins/exasol/skills/exasol-virtual-schema-adapter-development/SKILL.md`](plugins/exasol/skills/exasol-virtual-schema-adapter-development/SKILL.md) for details.
 
 ### Exasol Extension Catalog Skill
 

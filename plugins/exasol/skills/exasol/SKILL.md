@@ -15,9 +15,9 @@ Choose the narrowest matching route. If multiple routes apply, load them in depe
    - Trigger phrases: `SQL`, `query`, `SELECT`, `CREATE TABLE`, `IMPORT`, `EXPORT`, `upload CSV`, `upload Parquet`, `exapump`, `profile`, `schema`, `table`
    - Activate: **exasol-database**
 
-2. **Virtual schema workflows**
-   - Trigger phrases: `virtual schema`, `adapter script`, `EXPLAIN VIRTUAL`, `ALTER VIRTUAL SCHEMA`, `generic JDBC`, `document files virtual schema`, `custom adapter`
-   - Activate: **exasol-virtual-schemas**
+2. **Virtual schema adapter development workflows**
+   - Trigger phrases: `custom adapter`, `virtual-schema-common-jdbc`, `new SQL dialect adapter`, `remote debugging for virtual schemas`, `adapter JAR packaging`
+   - Activate: **exasol-virtual-schema-adapter-development**
 
 3. **Notebook-connector AI setup**
    - Trigger phrases: `Secrets`, `scs`, `secure config store`, `notebook-connector setup`, `db_host_name`, `db_schema`, `storage_backend`, `huggingface_token`

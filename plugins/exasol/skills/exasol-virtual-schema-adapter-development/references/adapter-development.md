@@ -1,4 +1,4 @@
-# Adapter Development and Setup
+# Adapter Development and Debugging
 
 ## When to Build a Custom Adapter
 
@@ -36,6 +36,25 @@ Keep the build and install workflow practical:
 6. create the virtual schema or refresh the existing one
 7. validate pushdown and metadata behavior
 
+Typical installation pattern after the build:
+
+```sql
+CREATE OR REPLACE JAVA ADAPTER SCRIPT adapter_schema.jdbc_adapter AS
+  %scriptclass com.exasol.adapter.RequestDispatcher;
+  %jar /buckets/bfsdefault/default/virtual-schema-dist.jar;
+  %jar /buckets/bfsdefault/default/source-driver.jar;
+/
+
+CREATE OR REPLACE CONNECTION src_conn
+TO 'jdbc:postgresql://host:5432/mydb'
+USER 'user' IDENTIFIED BY 'password';
+
+CREATE VIRTUAL SCHEMA src_vs
+USING adapter_schema.jdbc_adapter
+WITH CONNECTION_NAME = 'SRC_CONN'
+     SCHEMA_NAME = 'public';
+```
+
 ## Security and Boundaries
 
 - keep the adapter JAR, driver JARs, and connection-object configuration separate from real secrets in local helper files
@@ -52,6 +71,22 @@ Use this order:
 4. metadata refresh checks
 5. remote debugging only if the adapter code path still needs inspection
 
+`EXPLAIN VIRTUAL` is the first SQL-level debugging tool when the question is "what is Exasol pushing down?" or "why is this adapter-generated query not behaving as expected?".
+
+It shows the effective pushdown query without executing the remote workload itself.
+
+## Remote Debugging
+
+Remote debugging is an adapter-development workflow, not a normal query workflow.
+
+Use it when:
+
+- the adapter logic itself is failing
+- pushdown generation or property handling needs adapter-side inspection
+- SQL-level checks such as `EXPLAIN VIRTUAL` are not enough
+
+When the user asks for remote debugging, stay aligned with the adapter repository's documented debugger setup instead of inventing a custom procedure.
+
 ## Dialect and Scope Decisions
 
 Keep the adapter as narrow as the source requires:
@@ -61,3 +96,9 @@ Keep the adapter as narrow as the source requires:
 - document-file adapter family if the source is file or object storage instead of a JDBC database
 
 Avoid redesigning the broader adapter ecosystem when the user only needs one working source path.
+
+## Practical Rules
+
+- If the user only needs to create or query an existing JDBC virtual schema, switch to **exasol-jdbc-virtual-schemas**
+- If the user only needs to create or query an existing document-file virtual schema, switch to **exasol-document-virtual-schemas**
+- If the user needs to physically load data into Exasol instead of federating it, switch to **exasol-import** or **exasol-cloud-storage-extension**
