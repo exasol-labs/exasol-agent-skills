@@ -66,7 +66,8 @@ Choose the narrowest matching category and load only the matching reference file
 
 ## Related Skills
 
-- Use **exasol-database** for direct SQL, exapump, import/export, table design, query profiling, and Virtual Schema implementation details after choosing the relevant tool family.
+- Use **exasol-database** for direct SQL, exapump, table design, and query profiling after choosing the relevant tool family.
+- Use **exasol-import** and **exasol-export** for direct native `IMPORT` / `EXPORT`, local CSV or Parquet movement, connection objects, and native Parquet loading behavior.
 - Use **exasol-bucketfs** for BucketFS file upload, download, list, and delete workflows.
 - Use **exasol-udfs** for UDF and Script Language Container implementation details.
 - Use **exasol-ai-setup** and **exasol-notebook-connections** for notebook-connector configuration and Python connection helpers.
