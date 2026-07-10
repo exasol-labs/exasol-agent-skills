@@ -25,12 +25,19 @@ When invoked:
    - Database, SQL, exapump, import/export, schemas, or tables -> use **exasol-database** behavior.
    - Virtual schema adapter-development workflows such as custom adapter build, `virtual-schema-common-jdbc`, adapter JAR deployment, or remote debugging -> use **exasol-virtual-schema-adapter-development** behavior.
    - Notebook-connector setup, `Secrets`, `scs`, secure config store values, or backend configuration keys such as `db_host_name`, `db_schema`, `storage_backend`, or `huggingface_token` -> use **exasol-ai-setup** behavior.
-   - Transformers Extension workflows such as `initialize_te_extension`, `deploy_scripts`, `TE UDF` usage, or Transformers model workflows in Exasol -> use **exasol-transformers** behavior.
    - Exasol tools, extensions, connectors, integrations, migration, governance, observability, BI/API surfaces, or architecture recommendations -> use **exasol-extension-catalog** behavior.
    - BucketFS files, buckets, `bfsdefault`, model/JAR uploads, BucketFS list/download/delete -> use **exasol-bucketfs** behavior.
-   - Notebook-connector Python helper calls such as `open_pyexasol_connection`, `open_sqlalchemy_connection`, `open_ibis_connection`, `open_bucketfs_bucket`, `open_bucketfs_location`, or `get_backend` -> use **exasol-notebook-connections** behavior.
+   - Notebook Connector local Docker database workflows such as `bring_itde_up`, `restart_itde`, `get_itde_status`, or `take_itde_down` -> use **exasol-itde** behavior.
+   - Notebook Connector Python helper calls such as `open_pyexasol_connection`, `open_sqlalchemy_connection`, `open_ibis_connection`, `open_bucketfs_bucket`, `open_bucketfs_location`, or `get_backend` -> use **exasol-notebook-connections** behavior.
+   - Text AI Extension workflows such as `deploy_license`, `initialize_text_ai_extension`, `Extraction`, `NamedEntityExtractor`, `PipelineExtractor`, `BranchExtractor`, `StandardExtractor`, `TopicClassifierExtractor`, feature extraction, or zero-shot classification -> use **exasol-text-ai** behavior.
+   - Transformers Extension workflows such as `initialize_te_extension`, `deploy_scripts`, `TE UDF` usage, or Transformers model workflows in Exasol -> use **exasol-transformers** behavior.
    - UDFs, `CREATE SCRIPT`, `ExaIterator`, Python/Java/Lua/R scripts, Script Language Containers, or `exaslct` -> use **exasol-udfs** behavior.
    - Exasol Personal, AWS setup, first Exasol deployment, or new database setup -> use **exasol-setup-personal** behavior.
+
+   If a request matches the broad `extension` wording and also contains
+   `Text AI Extension`, `TXAIE`, `deploy_license`, `initialize_text_ai_extension`,
+   or extraction-class entrypoints, prefer **exasol-text-ai** over
+   **exasol-extension-catalog**.
 
 2. **Do not ask the user to choose a sub-skill.**
    Infer the route from the task. If the task is ambiguous, ask one concrete question about the desired outcome.
@@ -58,13 +65,12 @@ When invoked:
    - Delete with `exapump bucketfs rm`, but always confirm before deleting.
    - `/bucketfs` remains a compatibility shortcut, but `/exasol bucketfs ...` is the preferred user-facing form.
 
-6. **For notebook-connector helper routes:**
-   - Use the notebook-connector connection helper skill and its runnable Python templates.
-   - Resolve notebook-connector setup prerequisites before generating helper calls.
+6. **For Notebook Connector setup routes:**
+   - Use the Notebook Connector setup skill and validate prerequisites before generating downstream AI helper or extension calls.
 
-7. **For notebook-connector setup routes:**
-   - Use the notebook-connector AI setup skill and its setup-validation flow.
-   - Resolve secure config store values before routing users into dependent notebook-connector workflows.
+7. **For Notebook Connector helper routes:**
+   - Use the Notebook Connector connection helper skill and its runnable Python templates for helper-level access.
+   - Resolve Notebook Connector setup prerequisites before generating helper calls.
 
 8. **For UDF and SLC routes:**
    - Use Exasol UDF and Script Language Container guidance.

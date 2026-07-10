@@ -4,6 +4,11 @@
 
 - Add exasol-virtual-schema-adapter-development skill for custom virtual schema adapter build and debugging workflows
 
+## v0.16.0
+
+- Add exasol-text-ai skill for notebook-connector Text AI Extension workflows
+- Route notebook-connector Text AI tasks through the unified Exasol router
+
 ## v0.15.0
 
 - Add exasol-transformers skill for notebook-connector Transformers Extension workflows
