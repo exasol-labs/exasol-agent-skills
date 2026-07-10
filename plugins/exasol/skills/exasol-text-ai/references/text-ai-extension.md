@@ -298,7 +298,8 @@ SELECT * FROM "MY_SCHEMA".TOPIC_CLASSIFIER_VIEW LIMIT 5;
 ```sql
 DESC "MY_SCHEMA".NAMED_ENTITY_VIEW;
 SELECT TEXT_DOC_ID, ENTITY, ENTITY_TYPE, ENTITY_SCORE
-FROM "MY_SCHEMA".NAMED_ENTITY_VIEW;
+FROM "MY_SCHEMA".NAMED_ENTITY_VIEW
+LIMIT 5;
 ```
 
 ```sql
@@ -323,6 +324,8 @@ with open_pyexasol_connection(my_secrets, compression=True) as conn:
             ROW_COUNT,
             LOG_TIMESTAMP
         FROM "MY_SCHEMA".TXAIE_AUDIT_LOG
+        ORDER BY LOG_TIMESTAMP DESC
+        LIMIT 100
         """
     )
 ```
@@ -341,8 +344,8 @@ additional Python wrappers.
 
 Common analytics patterns are:
 
-- join the source-document view with `TOPICS_VIEW` to derive downstream
-  classification flags
+- when the workflow used `StandardExtractor`, join the source-document view
+  with `TOPICS_VIEW` to derive downstream classification flags
 - join the source-document view with `NAMED_ENTITY_VIEW` to aggregate extracted
   entities
 - filter `CO_OCCURRENCE` when the workflow came from `StandardExtractor` and
