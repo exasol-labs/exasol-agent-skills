@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.19.0
+
+- Add exasol-export skill for native Exasol export workflows
+
 ## v0.17.0
 
 - Add exasol-import skill for native Exasol import workflows
