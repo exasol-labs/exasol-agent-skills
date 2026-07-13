@@ -21,6 +21,10 @@ If the required DB or BucketFS values are still missing in the secure config
 store, switch to **exasol-ai-setup** first and complete its setup-validation
 flow before returning here.
 
+Before running the Text AI flow, make sure the schema named by `db_schema`
+already exists in Exasol. Notebook-connector reads that value from `Secrets`,
+but it does not create the schema automatically.
+
 Current notebook-connector behavior to preserve in this skill:
 
 - `deploy_license(...)` can use the bundled community license when no custom
@@ -76,6 +80,21 @@ initialize_text_ai_extension(my_secrets)
 1. upload the TXAIE Script Language Container to BucketFS
 2. install the default Hugging Face models into BucketFS
 3. deploy the TXAIE scripts into the configured schema
+
+On a first run, this step can take time because notebook-connector downloads
+the language container and the default models before uploading them to
+BucketFS.
+
+If the user is working against a local ITDE deployment, make sure the stored
+DB and BucketFS host values are reachable from the notebook process before
+starting initialization.
+
+If the configured schema does not exist yet, create the schema stored in
+`db_schema` first:
+
+```sql
+CREATE SCHEMA IF NOT EXISTS <db_schema>;
+```
 
 When `install_models=True`, notebook-connector installs these default models
 through `install_model(...)`:
@@ -174,7 +193,7 @@ src_extractor = SourceTableExtractor(
             db_schema=NameSelector(pattern="MY_SCHEMA"),
             tables=[
                 TableSource(
-                    table=NameSelector(pattern="CUSTOMER_SUPPORT_TICKETS_VIEW"),
+                    table=NameSelector(pattern="CUSTOMER_SUPPORT_TICKETS"),
                     columns=[NameSelector(pattern="TICKET_DESCRIPTION")],
                     keys=[NameSelector(pattern="TICKET_ID")],
                 )
@@ -224,7 +243,7 @@ src_extractor = SourceTableExtractor(
             db_schema=NameSelector(pattern="MY_SCHEMA"),
             tables=[
                 TableSource(
-                    table=NameSelector(pattern="CUSTOMER_SUPPORT_TICKETS_VIEW"),
+                    table=NameSelector(pattern="CUSTOMER_SUPPORT_TICKETS"),
                     columns=[NameSelector(pattern="TICKET_DESCRIPTION")],
                     keys=[NameSelector(pattern="TICKET_ID")],
                 )
