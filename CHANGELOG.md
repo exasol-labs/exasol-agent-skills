@@ -7,6 +7,7 @@
 
 - Extend exasol-text-ai with notebook-aligned result querying, analytics patterns, and corrected extraction examples
 
+
 ## v0.16.0
 
 - Add exasol-text-ai skill for notebook-connector Text AI Extension workflows
