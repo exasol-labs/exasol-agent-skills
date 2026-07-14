@@ -43,15 +43,18 @@ After the connection is established, determine the task type and load **only** t
    - Load: `references/analytics-qualify.md`
    - Load: `references/exasol-grammar-functions.md` for exact analytic-function and `OVER (…)` window-clause syntax
 
-6. **BucketFS file management** (upload/download/list/delete files in BucketFS, bfsdefault, bucket paths):
+6. **Virtual Schemas** (external data sources, adapter scripts):
+   - Load: `references/virtual-schemas.md`
+
+7. **BucketFS file management** (upload/download/list/delete files in BucketFS, bfsdefault, bucket paths):
    - Activate the **exasol-bucketfs** skill for guidance
 
-7. **UDF development** (CREATE SCRIPT, ExaIterator, SCALAR/SET, Script Language Containers, SLC, exaslct):
+8. **UDF development** (CREATE SCRIPT, ExaIterator, SCALAR/SET, Script Language Containers, SLC, exaslct):
    - Activate the **exasol-udfs** skill for guidance
 
 Multiple routes can apply — load all that match.
 
-8. **Before writing any SQL** (applies to routes 1–7):
+9. **Before writing any SQL** (applies to routes 1–6):
    - **Ingest `references/exasol-reserved-keywords.md` before designing queries** — load the reserved-word list (pinned to Exasol 2026.1.0) up front so you quote reserved identifiers from the start rather than discovering them through errors
    - **Always double-quote every identifier** (column names, table names, schema names) in SELECT, FROM, WHERE, GROUP BY, ORDER BY, and JOIN clauses — without exception
    - This preserves mixed-case names and prevents reserved-keyword errors in a single rule
