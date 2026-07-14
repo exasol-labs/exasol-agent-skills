@@ -32,6 +32,7 @@ After the connection is established, determine the task type and load **only** t
 
 2. **Native EXPORT and remote file export workflows**:
    - Load: `references/import-export.md`
+   - Use only the native `EXPORT` guidance from that reference. If the task is about native `IMPORT` or local file movement into Exasol, activate **exasol-import** instead.
 
 3. **Table design** (DISTRIBUTE BY, PARTITION BY, CREATE TABLE layout):
    - Load: `references/table-design.md`

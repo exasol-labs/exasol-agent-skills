@@ -4,10 +4,10 @@
 
 Choose the narrowest matching workflow:
 
-- Local CSV or Parquet files on the user's machine: use `exapump upload`
+- Local CSV or Parquet files on the user's machine: use `exapump upload`; this upload path is for CSV and Parquet only
 - Local FBV files on the user's machine: use native `IMPORT INTO "MY_SCHEMA"."MY_TABLE" FROM LOCAL FBV FILE '/path/to/data.fbv'` through an EXAplus or JDBC-style client connection
 - Remote CSV or FBV files already reachable by Exasol over FTP/SFTP, HTTP/HTTPS, S3, Azure Blob Storage, or GCS: use native `IMPORT`
-- S3 Parquet files: use native `IMPORT INTO <table> FROM PARQUET AT <connection> FILE <path>`
+- S3 Parquet files: use native `IMPORT INTO "MY_SCHEMA"."MY_TABLE" FROM PARQUET AT s3_conn FILE 'data/file.parquet'`
 - Read-only access to external systems without copying data: use **exasol-extension-catalog** to choose the right Virtual Schema path
 - Extension-based object-storage file readers: use **exasol-extension-catalog** to route to the Cloud Storage Extension material
 
@@ -77,7 +77,7 @@ Supported native paths covered here:
 - FBV from LOCAL, FTP/SFTP, HTTP/HTTPS, S3, Azure, and GCS
 - Parquet from S3
 
-`FROM LOCAL <FORMAT> FILE <path>` works only through EXAplus or JDBC-style client connections, not from UDF scripts or Lua scripts. For local files on the user's machine, prefer `exapump upload` instead of asking the user to manage JDBC-local paths manually.
+`FROM LOCAL <FORMAT> FILE '<path>'` works only through EXAplus or JDBC-style client connections, not from UDF scripts or Lua scripts. For local CSV or Parquet files on the user's machine, prefer `exapump upload` instead of asking the user to manage JDBC-local paths manually.
 
 ### CSV Example
 
@@ -107,13 +107,14 @@ Important Parquet behavior:
 
 ## Local File Workflows With exapump
 
-Use `exapump` when the file lives on the user's machine and the user wants a terminal workflow.
+Use `exapump upload` for local CSV or Parquet files when the file lives on the user's machine and the user wants a terminal workflow.
 
 Typical pattern:
 
 - `exapump upload <file> --table <schema.table>`
+- With a non-default profile: `exapump upload --profile <name> <file> --table <schema.table>`
 
-Use `exapump upload --dry-run` first when the user wants to preview inferred schema or mappings before the actual load.
+Use `exapump upload <file> --table <schema.table> --dry-run` first when the user wants to preview inferred schema or mappings before the actual load. With a non-default profile, keep `--profile <name>` after `upload`.
 
 ## Error Handling
 

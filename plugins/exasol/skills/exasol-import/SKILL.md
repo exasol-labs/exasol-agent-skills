@@ -12,11 +12,11 @@ This skill covers only workflows that move data into Exasol.
 Ensure a working `exapump` profile before giving terminal workflows that use
 `exapump upload`:
 
-1. If the user mentions a specific profile name, test it with `exapump sql --profile <name> "SELECT 1"`.
+1. If the user mentions a specific profile name, test it with `exapump sql --profile <name> "SELECT 1"`; always place `--profile` after the subcommand.
 2. Otherwise, test the default profile with `exapump sql "SELECT 1"`.
 3. If the check fails, run `exapump profile list`.
-4. If profiles exist, ask which one to use and retry with `exapump sql --profile <name> "SELECT 1"`.
-5. If a non-default profile is selected, include the same `--profile <name>` on subsequent `exapump` commands such as `exapump upload`.
+4. If profiles exist, ask which one to use and retry with `exapump sql --profile <name> "SELECT 1"`; keep `--profile` after the subcommand.
+5. If a non-default profile is selected, include the same `--profile <name>` after the subcommand on subsequent `exapump` commands, such as `exapump upload --profile <name> <file> --table <schema.table>`.
 6. If no profiles exist, tell the user to run `exapump profile add default` and retry.
 7. Never read or reference the exapump configuration file.
 

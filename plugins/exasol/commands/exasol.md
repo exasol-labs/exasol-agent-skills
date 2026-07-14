@@ -45,11 +45,11 @@ When invoked:
 3. **For any route that will run `exapump` commands:**
    - Check connectivity with `exapump sql "SELECT 1"`.
    - If it fails, run `exapump profile list`.
-   - If profiles exist, ask which profile to use and retry with `exapump sql --profile <name> "SELECT 1"`.
+   - If profiles exist, ask which profile to use and retry with `exapump sql --profile <name> "SELECT 1"`; always place `--profile` after the subcommand.
    - If no profiles exist, tell the user to run `exapump profile add default`.
-   - Apply this check before database SQL work and before `exapump upload` or `exapump export`.
+   - Apply this check before database SQL work and before `exapump upload` or `exapump export`; if a non-default profile is selected, keep using `--profile <name>` after the subcommand.
    - If the task is an import or upload workflow, follow **exasol-import** behavior first.
-   - Use direct `exapump sql` execution for `IMPORT` only when that guidance resolves to an executable remote-file `IMPORT` statement rather than a local-file workflow such as `exapump upload` or `IMPORT ... FROM LOCAL`.
+   - Use direct `exapump sql` execution for `IMPORT` only when that guidance resolves to an executable remote-file `IMPORT` statement rather than a local-file workflow such as `exapump upload` or `IMPORT INTO "MY_SCHEMA"."MY_TABLE" FROM LOCAL CSV FILE '/path/to/data.csv'`.
    - If the argument is another SQL query (starts with SELECT, CREATE, DROP, INSERT, UPDATE, DELETE, MERGE, EXPORT, ALTER, GRANT, etc.), execute it via `exapump sql "<query>"`.
    - For exports, use `exapump export` with the appropriate format.
 
