@@ -39,5 +39,4 @@ Trigger when the user mentions **EXPORT**, **EXPORT INTO**, **export table**, **
 ## Notes
 
 - Use this skill for direct data movement out of Exasol.
-- Use **exasol-database** for general SQL, schema inspection, and table design outside the import/export workflow itself.
 - Use **exasol-import** when the user wants to load data into Exasol instead of writing it out.
