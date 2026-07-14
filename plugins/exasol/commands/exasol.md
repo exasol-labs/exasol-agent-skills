@@ -100,7 +100,7 @@ When invoked:
 /exasol SELECT COUNT(*) FROM my_schema.my_table
 /exasol CREATE TABLE analytics.events (id DECIMAL(18,0), event_name VARCHAR(200), created_at TIMESTAMP)
 /exasol upload sales_data.csv to analytics.sales
-/exasol export the users table to parquet with zstd compression
+/exasol export the users table to CSV in S3
 /exasol list BucketFS files under models/
 /exasol upload model.pkl to BucketFS at models/model.pkl
 /exasol which Exasol connector should I use for Databricks?

@@ -1,11 +1,11 @@
 ---
 name: exasol-database
-description: Exasol database interaction via exapump CLI and Exasol SQL. Covers SQL queries, schema inspection, table design, query profiling, analytics, native EXPORT, and Exasol-specific SQL behavior outside the dedicated import skill and other specialized skills.
+description: Exasol database interaction via exapump CLI and Exasol SQL. Covers SQL queries, schema inspection, table design, query profiling, analytics, and Exasol-specific SQL behavior outside the dedicated data-movement skills.
 ---
 
 # Exasol Database Skill
 
-Trigger when the user asks for **Exasol database interaction**, **exapump**, **Exasol SQL**, **EXA_** system views, schemas, tables, native `EXPORT`, or query execution outside the dedicated import skill and other specialized skills.
+Trigger when the user asks for **Exasol database interaction**, **exapump**, **Exasol SQL**, **EXA_** system views, schemas, tables, or query execution outside the dedicated import/export skills.
 
 ## Step 0: Establish Connection
 
@@ -66,6 +66,6 @@ Multiple routes can apply — load all that match.
 ## Related Skills
 
 This skill handles core database interaction: connecting, SQL execution, schema inspection, and table design.
-For direct native `IMPORT`, native `EXPORT`, and local file movement, the **exasol-import** and **exasol-export** skills provide specialized guidance and will activate automatically when relevant.
+For direct native `IMPORT`, native `EXPORT`, and local file movement, the dedicated import/export skills provide specialized guidance and will activate automatically when relevant.
 For BucketFS file management (upload, download, list, delete), the **exasol-bucketfs** skill provides specialized guidance and will activate automatically when relevant.
 For UDF development and Script Language Containers, the **exasol-udfs** skill provides specialized guidance and will activate automatically when relevant.
