@@ -47,7 +47,7 @@ TO 'https://storage.googleapis.com/my-bucket'
 USER '' IDENTIFIED BY 'GCS_ACCESS_KEY=<access-key>;GCS_SECRET_KEY=<secret-key>';
 ```
 
-Use `SESSION TOKEN` when the source relies on short-lived AWS credentials.
+Use `SESSION TOKEN` when the target relies on short-lived AWS credentials.
 When the token or secret changes, refresh the existing object with
 `ALTER CONNECTION` before running the next export:
 
