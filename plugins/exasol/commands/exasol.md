@@ -47,7 +47,7 @@ When invoked:
    - If it fails, run `exapump profile list`.
    - If profiles exist, ask which profile to use and retry with `exapump sql --profile <name> "SELECT 1"`.
    - If no profiles exist, tell the user to run `exapump profile add default`.
-   - If the argument is a SQL query (starts with SELECT, CREATE, DROP, INSERT, UPDATE, DELETE, MERGE, IMPORT, EXPORT, ALTER, GRANT, etc.), execute it via `exapump sql "<query>"`.
+   - If the argument is a SQL query (starts with SELECT, CREATE, DROP, INSERT, UPDATE, DELETE, MERGE, EXPORT, ALTER, GRANT, etc.), execute it via `exapump sql "<query>"`.
    - For exports, use `exapump export` with the appropriate format.
    - If the task is an import or upload workflow, follow **exasol-import** behavior instead of handling it through the database route.
 
