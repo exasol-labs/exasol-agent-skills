@@ -6,7 +6,7 @@ Choose the narrowest matching workflow:
 
 - Local CSV or Parquet files on the user's machine: use `exapump export`
 - Remote CSV or FBV targets reachable by Exasol: use native `EXPORT`
-- For the matching data-movement-into-Exasol workflow, use **exasol-import**
+- For the matching data-movement-into-Exasol workflow, use **exasol-import** for native `IMPORT`, local upload workflows, Parquet import, reject handling, and staging-based loading.
 
 ## Connection Objects
 
@@ -90,4 +90,4 @@ Typical pattern:
 
 ## Adjacent Routing
 
-- If the user wants to load data into Exasol instead of writing it out, switch to **exasol-import**
+- If the user wants to load data into Exasol instead of writing it out, switch to **exasol-import** for native `IMPORT`, local upload workflows, Parquet import, reject handling, and staging-based loading.

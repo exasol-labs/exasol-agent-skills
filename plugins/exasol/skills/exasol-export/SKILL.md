@@ -39,4 +39,4 @@ Trigger when the user mentions **EXPORT**, **EXPORT INTO**, **export table**, **
 ## Notes
 
 - Use this skill for direct data movement out of Exasol.
-- Use **exasol-import** when the user wants to load data into Exasol instead of writing it out.
+- Use **exasol-import** for native `IMPORT`, local upload workflows, Parquet import, reject handling, and staging-based loading into Exasol.
