@@ -26,5 +26,5 @@ Trigger when the user mentions **IMPORT**, **IMPORT INTO**, **upload CSV**, **up
 ## Notes
 
 - Use this skill only for direct data movement into Exasol.
-- Use **exasol-database** for general SQL, schema inspection, table design, and native `EXPORT` workflows outside direct import behavior.
+- Use **exasol-database** for general SQL, schema inspection, table design, and native `EXPORT` workflows.
 - Use **exasol-extension-catalog** when the user is asking for extension-based object-storage loading workflows or federated-read alternatives rather than direct `IMPORT`.

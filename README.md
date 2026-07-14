@@ -79,7 +79,7 @@ See [`plugins/exasol/skills/exasol-database/SKILL.md`](plugins/exasol/skills/exa
 
 ### Exasol Import Skill
 
-Use Exasol IMPORT SQL plus exapump local file upload workflows for moving data into Exasol.
+Use Exasol IMPORT SQL plus exapump local file upload workflows for moving data into Exasol. For native EXPORT workflows, continue using the Exasol Database skill.
 
 See [`plugins/exasol/skills/exasol-import/SKILL.md`](plugins/exasol/skills/exasol-import/SKILL.md) for details.
 

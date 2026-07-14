@@ -5,8 +5,8 @@
 Choose the narrowest matching workflow:
 
 - Local CSV or Parquet files on the user's machine: use `exapump upload`
-- Remote CSV or FBV files reachable by Exasol: use native `IMPORT`
-- S3 Parquet files: use native `IMPORT INTO <table> FROM PARQUET AT <connection>`
+- Remote CSV or FBV files already reachable by Exasol over FTP/SFTP, HTTP/HTTPS, S3, Azure Blob Storage, or GCS: use native `IMPORT`
+- S3 Parquet files: use native `IMPORT INTO <table> FROM PARQUET AT <connection> FILE <path>`
 - Read-only access to external systems without copying data: use **exasol-extension-catalog** to choose the right Virtual Schema path
 - Extension-based object-storage file readers: use **exasol-extension-catalog** to route to the Cloud Storage Extension material
 
@@ -22,8 +22,8 @@ USER 'username' IDENTIFIED BY 'password';
 
 Typical patterns:
 
-- S3 long-lived access key in `USER` and secret key in `IDENTIFIED BY`
-- S3 temporary access key in `USER`, secret key in `IDENTIFIED BY`, and `SESSION TOKEN` for expiring credentials
+- S3 long-lived access key and secret key as named values in `IDENTIFIED BY`, with an empty `USER`
+- S3 temporary access key and secret key as named values in `IDENTIFIED BY`, with `SESSION TOKEN` for expiring credentials
 - Azure SAS token in `IDENTIFIED BY`
 - GCS access key and secret key in `IDENTIFIED BY`
 - Prefer `ALTER CONNECTION` when a credential changes and existing grants should stay intact
@@ -33,13 +33,11 @@ Examples:
 ```sql
 CREATE OR REPLACE CONNECTION s3_conn
 TO 'https://my-bucket.s3.eu-west-1.amazonaws.com'
-USER 'AKIA...'
-IDENTIFIED BY 'secret...';
+USER '' IDENTIFIED BY 'S3_ACCESS_KEY=AKIA...;S3_SECRET_KEY=secret...';
 
 CREATE OR REPLACE CONNECTION s3_temp_conn
 TO 'https://my-bucket.s3.eu-west-1.amazonaws.com'
-USER 'ASIA...'
-IDENTIFIED BY 'secret...'
+USER '' IDENTIFIED BY 'S3_ACCESS_KEY=ASIA...;S3_SECRET_KEY=secret...'
 SESSION TOKEN 'FwoGZXIvYXdz...';
 
 CREATE OR REPLACE CONNECTION azure_conn
@@ -58,8 +56,7 @@ When the token or secret changes, refresh the existing object with
 ```sql
 ALTER CONNECTION s3_temp_conn
 TO 'https://my-bucket.s3.eu-west-1.amazonaws.com'
-USER 'ASIA...'
-IDENTIFIED BY 'new_secret...'
+USER '' IDENTIFIED BY 'S3_ACCESS_KEY=ASIA...;S3_SECRET_KEY=new_secret...'
 SESSION TOKEN 'new_token...';
 ```
 
