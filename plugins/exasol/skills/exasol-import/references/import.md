@@ -83,7 +83,7 @@ Supported native paths covered here:
 
 ```sql
 IMPORT INTO "MY_SCHEMA"."MY_TABLE"
-FROM CSV AT "S3_CONN"
+FROM CSV AT s3_conn
 FILE 'data/orders.csv'
 COLUMN SEPARATOR = ','
 SKIP = 1
@@ -94,7 +94,7 @@ REJECT LIMIT 0;
 
 ```sql
 IMPORT INTO "MY_SCHEMA"."MY_TABLE"
-FROM PARQUET AT "S3_CONN"
+FROM PARQUET AT s3_conn
 FILE 'data/*.parquet';
 ```
 
@@ -133,7 +133,7 @@ When the target table is business-critical, prefer staging first and merge later
 CREATE TABLE "STAGING"."ORDERS_STG" (LIKE "PRODUCTION"."ORDERS" INCLUDING DEFAULTS);
 
 IMPORT INTO "STAGING"."ORDERS_STG"
-FROM CSV AT "S3_CONN"
+FROM CSV AT s3_conn
 FILE 'daily/orders_*.csv'
 COLUMN SEPARATOR = ','
 SKIP = 1
