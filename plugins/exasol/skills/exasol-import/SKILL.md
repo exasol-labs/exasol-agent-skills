@@ -16,8 +16,9 @@ Ensure a working `exapump` profile before giving terminal workflows that use
 2. Otherwise, test the default profile with `exapump sql "SELECT 1"`.
 3. If the check fails, run `exapump profile list`.
 4. If profiles exist, ask which one to use and retry with `exapump sql --profile <name> "SELECT 1"`.
-5. If no profiles exist, tell the user to run `exapump profile add default` and retry.
-6. Never read or reference the exapump configuration file.
+5. If a non-default profile is selected, include the same `--profile <name>` on subsequent `exapump` commands such as `exapump upload`.
+6. If no profiles exist, tell the user to run `exapump profile add default` and retry.
+7. Never read or reference the exapump configuration file.
 
 Trigger when the user mentions **IMPORT**, **IMPORT INTO**, **upload CSV**, **upload Parquet**, **local file load**, **exapump upload**, **S3 import**, **Azure Blob import**, **GCS import**, **CREATE CONNECTION**, or **Parquet import**.
 
