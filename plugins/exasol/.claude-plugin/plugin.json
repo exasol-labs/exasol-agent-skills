@@ -1,7 +1,7 @@
 {
   "name": "exasol",
   "description": "Unified Exasol assistance for SQL, exapump, data loading, BucketFS, notebook-connector AI workflows, UDFs, extensions, integrations, Script Language Containers, and Exasol Personal setup.",
-  "version": "0.16.0",
+  "version": "0.16.1",
   "author": {
     "name": "exasol-labs"
   }
