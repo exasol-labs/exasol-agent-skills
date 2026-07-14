@@ -28,7 +28,7 @@ DISTRIBUTE BY `entity_id` means all rows for entity 42 are always on the same no
 
 ### BucketFS is read-only inside a UDF sandbox
 
-`/buckets/<service>/<bucket>/...` is mounted **read-only** inside a UDF's execution sandbox — `open(path, 'rb')` (loading a model) works fine, but `open(path, 'wb')` (saving one) fails with `OSError: [Errno 30] Read-only file system`. **Writing from inside a UDF requires an HTTPS PUT to the BucketFS service**, not a filesystem write. Store the endpoint and write credentials in a `CREATE CONNECTION` object rather than hardcoding them in script text:
+`/buckets/<service>/<bucket>/...` is mounted **read-only** inside a UDF's execution sandbox — `open(path, 'rb')` (loading a model) works fine, but `open(path, 'wb')` (saving one) fails with `OSError: [Errno 30] Read-only file system`. **Writing from inside a UDF requires talking to the BucketFS HTTP service**, not a filesystem write. Use the official `exasol-bucketfs` Python package (`pip install exasol-bucketfs` in the SLC) rather than hand-rolling HTTP calls — it handles the upload protocol, retries, and TLS for you. Store the endpoint and write credentials in a `CREATE CONNECTION` object rather than hardcoding them in script text:
 
 ```sql
 CREATE OR REPLACE CONNECTION bucketfs_write
@@ -38,14 +38,13 @@ CREATE OR REPLACE CONNECTION bucketfs_write
 ```
 
 ```python
-import json, requests
+import json
+from exasol.bucketfs import Service
 
 def save_model(bucket_path, obj):
     conn = exa.get_connection('BUCKETFS_WRITE')
-    url = conn.address.rstrip('/') + '/default/' + bucket_path
-    resp = requests.put(url, data=json.dumps(obj).encode('utf-8'),
-                         auth=(conn.user, conn.password), verify=False, timeout=30)
-    resp.raise_for_status()
+    bucketfs = Service(conn.address, {'default': {'username': conn.user, 'password': conn.password}})
+    bucketfs['default'].upload(bucket_path, json.dumps(obj).encode('utf-8'))
 ```
 
 Every "write a model to BucketFS from inside a UDF" example below uses this helper instead of `open(path, 'wb')`. Reads are unaffected — `open('/buckets/.../model.pkl', 'rb')` for loading stays exactly as shown throughout this doc and in `model-lifecycle.md`. Uploading from **outside** a UDF (via `exapump bucketfs cp`, see **exasol-bucketfs**) is a separate, already-correct path since it talks to the BucketFS HTTP API directly rather than going through a UDF's mounted filesystem.
@@ -132,7 +131,8 @@ CREATE OR REPLACE PYTHON3 SET SCRIPT ml.train_entity_model(
     entity_id DECIMAL(18,0), f1 DOUBLE, f2 DOUBLE, label DOUBLE
 )
 EMITS (entity_id DECIMAL(18,0), model_path VARCHAR(500), final_loss DOUBLE) AS
-import pickle, io, numpy as np, requests
+import pickle, io, numpy as np
+from exasol.bucketfs import Service
 from sklearn.linear_model import SGDRegressor
 
 CHUNK = 5000
@@ -141,10 +141,8 @@ CONVERGE_DELTA = 1e-4
 
 def save_model_bytes(bucket_path, data):
     conn = exa.get_connection('BUCKETFS_WRITE')
-    url = conn.address.rstrip('/') + '/default/' + bucket_path
-    resp = requests.put(url, data=data, auth=(conn.user, conn.password),
-                         verify=False, timeout=30)
-    resp.raise_for_status()
+    bucketfs = Service(conn.address, {'default': {'username': conn.user, 'password': conn.password}})
+    bucketfs['default'].upload(bucket_path, data)
 
 def run(ctx):
     entity = None
@@ -209,7 +207,7 @@ def run(ctx):
     model.fit(X, y)
 ```
 
-**BucketFS replication caveat**: A model written via the HTTPS PUT above is immediately available on the node that served the write but replicates to other nodes' `/buckets/...` mounts asynchronously. For inference queries that run immediately after training, add a brief pause or run inference with `DISTRIBUTE BY entity_id` to guarantee the reading node is the same as the writing node.
+**BucketFS replication caveat**: A model written via the upload above is immediately available on the node that served the write but replicates to other nodes' `/buckets/...` mounts asynchronously. For inference queries that run immediately after training, add a brief pause, polling or run inference with `DISTRIBUTE BY entity_id` to guarantee the reading node is the same as the writing node.
 
 ---
 
@@ -235,6 +233,8 @@ FROM ml.training_data;
 ## 5. Batch Inference
 
 Two-pass pattern: identify the entity on the first chunk, load the model, reset, then stream all chunks for prediction.
+
+`_model_cache` is a module-level dict, so it persists across every group a given UDF instance happens to serve — and instances are reused for multiple groups **within one query** (not between separate query executions, which always get fresh instances with an empty cache). Adding `ORDER BY entity_id` alongside the `GROUP BY` gives the query engine a stable, sorted order to hand groups to instances in, which improves the cache's practical hit rate when an instance is reused across nearby entities instead of an arbitrary interleaving.
 
 ```sql
 CREATE OR REPLACE PYTHON3 SET SCRIPT ml.batch_predict(
@@ -285,7 +285,8 @@ def run(ctx):
 
 SELECT ml.batch_predict(entity_id, "f1", "f2")
 FROM ml.inference_data
-GROUP BY entity_id;
+GROUP BY entity_id
+ORDER BY entity_id;
 ```
 
 ---
@@ -311,17 +312,16 @@ CREATE OR REPLACE PYTHON3 SET SCRIPT ml.train_sub_model(
     partition_id DECIMAL(18,0), f1 DOUBLE, f2 DOUBLE, label DOUBLE
 )
 EMITS (partition_id DECIMAL(18,0), model_path VARCHAR(500)) AS
-import pickle, requests
+import pickle
+from exasol.bucketfs import Service
 from sklearn.ensemble import RandomForestClassifier
 
 CHUNK = 5000
 
 def save_model_bytes(bucket_path, data):
     conn = exa.get_connection('BUCKETFS_WRITE')
-    url = conn.address.rstrip('/') + '/default/' + bucket_path
-    resp = requests.put(url, data=data, auth=(conn.user, conn.password),
-                         verify=False, timeout=30)
-    resp.raise_for_status()
+    bucketfs = Service(conn.address, {'default': {'username': conn.user, 'password': conn.password}})
+    bucketfs['default'].upload(bucket_path, data)
 
 def run(ctx):
     X_parts, y_parts = [], []
@@ -363,17 +363,16 @@ CREATE OR REPLACE PYTHON3 SET SCRIPT ml.combine_ensemble(
     partition_id DECIMAL(18,0), model_path VARCHAR(500)
 )
 EMITS (model_path VARCHAR(500), n_estimators DECIMAL(10,0)) AS
-import pickle, requests
+import pickle
+from exasol.bucketfs import Service
 
 BUCKET = '/buckets/bfsdefault/default'
 CHUNK = 100
 
 def save_model_bytes(bucket_path, data):
     conn = exa.get_connection('BUCKETFS_WRITE')
-    url = conn.address.rstrip('/') + '/default/' + bucket_path
-    resp = requests.put(url, data=data, auth=(conn.user, conn.password),
-                         verify=False, timeout=30)
-    resp.raise_for_status()
+    bucketfs = Service(conn.address, {'default': {'username': conn.user, 'password': conn.password}})
+    bucketfs['default'].upload(bucket_path, data)
 
 def run(ctx):
     all_estimators = []
@@ -545,7 +544,7 @@ def run(ctx):
 /
 ```
 
-**Optimization**: batch multiple HP configs per group with `MOD(group_key, N)` to amortize UDF startup cost when the grid is large.
+**Optimization**: batch multiple HP configs per group with `MOD(group_key, N)` when the grid is large. UDF instances are already reused across groups within the same query (see the `_model_cache` note in Section 5), so this isn't primarily about avoiding per-group process startup — it mainly cuts down the total number of groups (and thus `run()` invocations and data shuffling) the query has to schedule. That reuse is scoped to a single query: a fresh `EXECUTE`/`SELECT` always gets new instances.
 
 ---
 
@@ -705,21 +704,16 @@ query("CREATE OR REPLACE TABLE ml.freq_2 AS "
 
 ### Fallback: External Python Driver
 
-For complex orchestration or existing Python training pipelines. Calls `exapump sql` in a loop with the same logical structure as the Lua approach:
+For complex orchestration or existing Python training pipelines. Use `pyexasol` — the Python DB driver — rather than shelling out to `exapump`: `exapump` is a CLI built for one-off SQL/import/export operations, not for a tight per-iteration loop from Python (no persistent connection, spawns a new process and re-authenticates every call). `pyexasol` holds one connection open across the whole loop and gives you a real cursor to fetch results from:
 
 ```python
-import subprocess
+import pyexasol
 
-def run_sql(query):
-    result = subprocess.run(
-        ['exapump', 'sql', '--profile', 'default', query],
-        capture_output=True, text=True, check=True
-    )
-    return result.stdout
+conn = pyexasol.connect(dsn='<host>:8563', user='<user>', password='<password>')
 
 for iteration in range(max_iter):
-    run_sql(f"INSERT INTO ml.gradients SELECT compute_gradients(..., {iteration}) FROM ml.features GROUP BY partition_key")
-    loss = float(run_sql("SELECT loss FROM ml.params ORDER BY iter DESC LIMIT 1"))
+    conn.execute(f"INSERT INTO ml.gradients SELECT compute_gradients(..., {iteration}) FROM ml.features GROUP BY partition_key")
+    loss = conn.execute("SELECT loss FROM ml.params ORDER BY iter DESC LIMIT 1").fetchone()[0]
     if loss < 0.001:
         break
 ```

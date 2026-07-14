@@ -8,7 +8,7 @@ CREATE OR REPLACE LUA SCRIPT my_schema.my_orchestrator() AS
   output(res[1][1])  -- first row, first column
 /
 
-EXECUTE SCRIPT my_schema.my_orchestrator();
+EXECUTE SCRIPT my_schema.my_orchestrator() WITH OUTPUT;
 ```
 
 ## `query` and `pquery`
@@ -50,7 +50,7 @@ CREATE OR REPLACE LUA SCRIPT ml.my_script(
 EXECUTE SCRIPT ml.my_script('ml.features', 20, 0.001);
 ```
 
-`output()` messages are returned as a result set by default. To always return a result table of all `output()` calls (and discard the script's return value), use `WITH OUTPUT`:
+`output()` messages are **discarded by default** — without `WITH OUTPUT`, the client only ever sees the script's own return value (a table or rowcount, as declared by the script), never the `output()` log. To see the `output()` messages instead, execute with `WITH OUTPUT`, which discards the script's own return value and always returns a result table of every `output()` call:
 
 ```sql
 EXECUTE SCRIPT ml.my_script('ml.features', 20, 0.001) WITH OUTPUT;
