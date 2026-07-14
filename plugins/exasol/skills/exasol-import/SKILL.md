@@ -15,7 +15,7 @@ Ensure a working `exapump` profile before giving terminal workflows that use
 1. If the user mentions a specific profile name, test it with `exapump sql --profile <name> "SELECT 1"`.
 2. Otherwise, test the default profile with `exapump sql "SELECT 1"`.
 3. If the check fails, run `exapump profile list`.
-4. If profiles exist, ask which one to use and retry the connectivity check.
+4. If profiles exist, ask which one to use and retry with `exapump sql --profile <name> "SELECT 1"`.
 5. If no profiles exist, tell the user to run `exapump profile add default` and retry.
 6. Never read or reference the exapump configuration file.
 
