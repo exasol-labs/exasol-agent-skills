@@ -73,7 +73,7 @@ See [`plugins/exasol/skills/exasol/SKILL.md`](plugins/exasol/skills/exasol/SKILL
 
 ### Exasol Database Skill
 
-Work with Exasol databases — run queries, load and export data, handle cloud sources, and get help with Exasol-specific SQL quirks.
+Work with Exasol databases — run queries, export data, handle cloud sources, and get help with Exasol-specific SQL quirks outside the dedicated import skill.
 
 See [`plugins/exasol/skills/exasol-database/SKILL.md`](plugins/exasol/skills/exasol-database/SKILL.md) for details.
 

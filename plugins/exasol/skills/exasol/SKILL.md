@@ -12,7 +12,7 @@ Use this skill whenever the user asks about Exasol. The user does not need to kn
 Choose the narrowest matching route. If multiple routes apply, load them in dependency order.
 
 1. **Exasol database, query, exapump, and export workflows**
-   - Trigger phrases: `query`, `SELECT`, `INSERT`, `UPDATE`, `DELETE`, `MERGE`, `CREATE TABLE`, `ALTER TABLE`, `DROP TABLE`, `EXPORT`, `profile`
+   - Trigger phrases: `query`, `SELECT`, `INSERT`, `UPDATE`, `DELETE`, `MERGE`, `CREATE TABLE`, `ALTER TABLE`, `DROP TABLE`, `EXPORT`, `profile`, `exapump sql`, `exapump export`, `exapump profile`
    - Activate: **exasol-database**
 
 2. **Import workflows**

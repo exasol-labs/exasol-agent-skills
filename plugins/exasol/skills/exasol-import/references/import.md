@@ -4,7 +4,8 @@
 
 Choose the narrowest matching workflow:
 
-- Local CSV, FBV or Parquet files on the user's machine: use `exapump upload`
+- Local CSV or Parquet files on the user's machine: use `exapump upload`
+- Local FBV files on the user's machine: use native `IMPORT ... FROM LOCAL` through a JDBC-style client connection
 - Remote CSV or FBV files already reachable by Exasol over FTP/SFTP, HTTP/HTTPS, S3, Azure Blob Storage, or GCS: use native `IMPORT`
 - S3 Parquet files: use native `IMPORT INTO <table> FROM PARQUET AT <connection> FILE <path>`
 - Read-only access to external systems without copying data: use **exasol-extension-catalog** to choose the right Virtual Schema path
