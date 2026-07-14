@@ -63,11 +63,11 @@ SESSION TOKEN 'new_token...';
 
 ## Security and Boundaries
 
-- use connection objects instead of placing secrets in ad hoc local files
-- do not paste real customer credentials into prompts, checked-in SQL files, or shell history examples
-- keep the connection object scoped to the workflow instead of reusing over-privileged credentials by default
-- do not suggest bypassing normal database privileges or connection-object controls
-- use sample placeholders in examples, not real keys, tokens, bucket names, or customer data
+- Use connection objects instead of placing secrets in ad hoc local files
+- Do not paste real customer credentials into prompts, checked-in SQL files, or shell history examples
+- Keep the connection object scoped to the workflow instead of reusing over-privileged credentials by default
+- Do not suggest bypassing normal database privileges or connection-object controls
+- Use sample placeholders in examples, not real keys, tokens, bucket names, or customer data
 
 ## Native IMPORT
 

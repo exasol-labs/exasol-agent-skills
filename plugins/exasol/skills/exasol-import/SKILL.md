@@ -7,12 +7,12 @@ description: "Use Exasol IMPORT SQL plus exapump local file upload workflows for
 
 This skill covers only workflows that move data into Exasol.
 
-Trigger when the user mentions **IMPORT**, **IMPORT INTO**, **upload CSV**, **upload Parquet**, **local file load**, **S3 import**, **Azure Blob import**, **GCS import**, **CREATE CONNECTION**, or **Parquet import**.
+Trigger when the user mentions **IMPORT**, **IMPORT INTO**, **upload CSV**, **upload Parquet**, **local file load**, **exapump upload**, **S3 import**, **Azure Blob import**, **GCS import**, **CREATE CONNECTION**, or **Parquet import**.
 
 ## Routing Algorithm
 
 1. **Local files on the user machine**
-   - Trigger phrases: `upload csv`, `upload parquet`, `from local`
+   - Trigger phrases: `upload csv`, `upload parquet`, `exapump upload`, `from local`
    - Load: `references/import.md`
 
 2. **Remote or cloud files reachable by Exasol**
