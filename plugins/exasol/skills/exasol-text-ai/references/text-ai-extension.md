@@ -289,8 +289,9 @@ also produce and query:
 - `CO_OCCURRENCE` for rows that combine topic, named-entity, and keyword hits
   found in the same document span. It also carries positional-relation data
   that lets downstream queries reason about whether one hit is contained in
-  another or how far apart two hits are by character or token distance, which
-  makes it useful for correlation and co-mention analysis
+  another, whether one mention appears before or after another, and how far
+  apart two hits are by character or token distance, which makes it useful
+  for correlation and co-mention analysis
 
 Typical inspection flow from the notebooks:
 
