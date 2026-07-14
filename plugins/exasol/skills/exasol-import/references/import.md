@@ -17,8 +17,8 @@ Use Exasol connection objects for remote credentials instead of embedding secret
 
 ```sql
 CREATE OR REPLACE CONNECTION my_conn
-TO 'connection-url'
-USER 'username' IDENTIFIED BY 'password';
+TO '<connection-url>'
+USER '<username>' IDENTIFIED BY '<password>';
 ```
 
 Typical patterns:
@@ -34,20 +34,20 @@ Examples:
 ```sql
 CREATE OR REPLACE CONNECTION s3_conn
 TO 'https://my-bucket.s3.eu-west-1.amazonaws.com'
-USER '' IDENTIFIED BY 'S3_ACCESS_KEY=AKIA...;S3_SECRET_KEY=secret...';
+USER '' IDENTIFIED BY 'S3_ACCESS_KEY=<access-key>;S3_SECRET_KEY=<secret-key>';
 
 CREATE OR REPLACE CONNECTION s3_temp_conn
 TO 'https://my-bucket.s3.eu-west-1.amazonaws.com'
-USER '' IDENTIFIED BY 'S3_ACCESS_KEY=ASIA...;S3_SECRET_KEY=secret...'
-SESSION TOKEN 'FwoGZXIvYXdz...';
+USER '' IDENTIFIED BY 'S3_ACCESS_KEY=<temporary-access-key>;S3_SECRET_KEY=<secret-key>'
+SESSION TOKEN '<session-token>';
 
 CREATE OR REPLACE CONNECTION azure_conn
 TO 'https://myaccount.blob.core.windows.net/mycontainer'
-USER '' IDENTIFIED BY 'AZURE_SAS_TOKEN=...';
+USER '' IDENTIFIED BY 'AZURE_SAS_TOKEN=<sas-token>';
 
 CREATE OR REPLACE CONNECTION gcs_conn
 TO 'https://storage.googleapis.com/my-bucket'
-USER '' IDENTIFIED BY 'GCS_ACCESS_KEY=...;GCS_SECRET_KEY=...';
+USER '' IDENTIFIED BY 'GCS_ACCESS_KEY=<access-key>;GCS_SECRET_KEY=<secret-key>';
 ```
 
 Use `SESSION TOKEN` when the source relies on short-lived AWS credentials.
@@ -57,8 +57,8 @@ When the token or secret changes, refresh the existing object with
 ```sql
 ALTER CONNECTION s3_temp_conn
 TO 'https://my-bucket.s3.eu-west-1.amazonaws.com'
-USER '' IDENTIFIED BY 'S3_ACCESS_KEY=ASIA...;S3_SECRET_KEY=new_secret...'
-SESSION TOKEN 'new_token...';
+USER '' IDENTIFIED BY 'S3_ACCESS_KEY=<temporary-access-key>;S3_SECRET_KEY=<secret-key>'
+SESSION TOKEN '<session-token>';
 ```
 
 ## Security and Boundaries

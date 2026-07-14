@@ -16,12 +16,16 @@ other import-specific phrases, prefer **exasol-import** over the broader
 database route even if the wording also contains generic terms such as `SQL`
 or `query`.
 
+When a request mentions `CREATE CONNECTION` without clear import or object-store
+loading intent, or mentions it together with `EXPORT`, prefer
+**exasol-database**.
+
 1. **Exasol database, query, exapump, and export workflows**
-   - Trigger phrases: `query`, `SQL`, `Exasol SQL`, `SELECT`, `INSERT`, `UPDATE`, `DELETE`, `MERGE`, `CREATE TABLE`, `ALTER TABLE`, `DROP TABLE`, `EXPORT`, `profile`, `exapump sql`, `exapump export`, `exapump profile`
+   - Trigger phrases: `query`, `SQL`, `Exasol SQL`, `SELECT`, `INSERT`, `UPDATE`, `DELETE`, `MERGE`, `CREATE TABLE`, `ALTER TABLE`, `DROP TABLE`, `EXPORT`, `CREATE CONNECTION`, `connection object`, `profile`, `exapump sql`, `exapump export`, `exapump profile`
    - Activate: **exasol-database**
 
 2. **Import workflows**
-   - Trigger phrases: `IMPORT`, `IMPORT INTO`, `upload CSV`, `upload Parquet`, `local file load`, `S3 import`, `Azure Blob import`, `GCS import`, `CREATE CONNECTION`, `Parquet import`, `exapump upload`
+   - Trigger phrases: `IMPORT`, `IMPORT INTO`, `upload CSV`, `upload Parquet`, `local file load`, `S3 import`, `Azure Blob import`, `GCS import`, `CREATE CONNECTION` with import or object-store loading intent, `Parquet import`, `exapump upload`
    - Activate: **exasol-import**
 
 3. **Notebook-connector AI setup**

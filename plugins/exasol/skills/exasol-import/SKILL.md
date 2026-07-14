@@ -20,7 +20,7 @@ Ensure a working `exapump` profile before giving terminal workflows that use
 6. If no profiles exist, tell the user to run `exapump profile add default` and retry.
 7. Never read or reference the exapump configuration file.
 
-Trigger when the user mentions **IMPORT**, **IMPORT INTO**, **upload CSV**, **upload Parquet**, **local file load**, **exapump upload**, **S3 import**, **Azure Blob import**, **GCS import**, **CREATE CONNECTION**, or **Parquet import**.
+Trigger when the user mentions **IMPORT**, **IMPORT INTO**, **upload CSV**, **upload Parquet**, **local file load**, **exapump upload**, **S3 import**, **Azure Blob import**, **GCS import**, **Parquet import**, or **CREATE CONNECTION** together with import or object-store loading intent.
 
 ## Routing Algorithm
 
@@ -29,7 +29,7 @@ Trigger when the user mentions **IMPORT**, **IMPORT INTO**, **upload CSV**, **up
    - Load: `references/import.md`
 
 2. **Remote or cloud files reachable by Exasol**
-   - Trigger phrases: `IMPORT`, `IMPORT INTO`, `S3`, `Azure Blob`, `GCS`, `FTP`, `HTTP`, `CREATE CONNECTION`
+   - Trigger phrases: `IMPORT`, `IMPORT INTO`, `S3`, `Azure Blob`, `GCS`, `FTP`, `HTTP`, `CREATE CONNECTION` with import or object-store loading intent
    - Load: `references/import.md`
 
 3. **Parquet-specific behavior**
@@ -39,5 +39,6 @@ Trigger when the user mentions **IMPORT**, **IMPORT INTO**, **upload CSV**, **up
 ## Notes
 
 - Use this skill only for direct data movement into Exasol.
+- Use **exasol-database** for `CREATE CONNECTION` questions that are general or tied to native `EXPORT`.
 - Use **exasol-database** for general SQL, schema inspection, table design, and native `EXPORT` workflows.
 - Use **exasol-extension-catalog** when the user is asking for extension-based object-storage loading workflows or federated-read alternatives rather than direct `IMPORT`.
