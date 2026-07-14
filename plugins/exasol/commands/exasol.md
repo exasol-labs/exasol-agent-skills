@@ -42,11 +42,12 @@ When invoked:
 2. **Do not ask the user to choose a sub-skill.**
    Infer the route from the task. If the task is ambiguous, ask one concrete question about the desired outcome.
 
-3. **For database or SQL routes:**
+3. **For any route that will run `exapump` commands:**
    - Check connectivity with `exapump sql "SELECT 1"`.
    - If it fails, run `exapump profile list`.
    - If profiles exist, ask which profile to use and retry with `exapump sql --profile <name> "SELECT 1"`.
    - If no profiles exist, tell the user to run `exapump profile add default`.
+   - Apply this check before database SQL work and before `exapump upload` or `exapump export`.
    - If the argument is a SQL query (starts with SELECT, CREATE, DROP, INSERT, UPDATE, DELETE, MERGE, EXPORT, ALTER, GRANT, etc.), execute it via `exapump sql "<query>"`.
    - For exports, use `exapump export` with the appropriate format.
    - If the task is an import or upload workflow, follow **exasol-import** behavior instead of handling it through the database route.

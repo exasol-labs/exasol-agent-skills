@@ -7,6 +7,18 @@ description: "Use Exasol IMPORT SQL plus exapump local file upload workflows for
 
 This skill covers only workflows that move data into Exasol.
 
+## Step 0: Establish Connection
+
+Ensure a working `exapump` profile before giving terminal workflows that use
+`exapump upload`:
+
+1. If the user mentions a specific profile name, test it with `exapump sql --profile <name> "SELECT 1"`.
+2. Otherwise, test the default profile with `exapump sql "SELECT 1"`.
+3. If the check fails, run `exapump profile list`.
+4. If profiles exist, ask which one to use and retry the connectivity check.
+5. If no profiles exist, tell the user to run `exapump profile add default` and retry.
+6. Never read or reference the exapump configuration file.
+
 Trigger when the user mentions **IMPORT**, **IMPORT INTO**, **upload CSV**, **upload Parquet**, **local file load**, **exapump upload**, **S3 import**, **Azure Blob import**, **GCS import**, **CREATE CONNECTION**, or **Parquet import**.
 
 ## Routing Algorithm
