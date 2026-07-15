@@ -42,7 +42,7 @@ The access key goes in `USER`, the secret in `IDENTIFIED BY`. The endpoint is th
 
 **S3 (AWS) — temporary credentials with SESSION TOKEN:**
 ```sql
-CREATE OR REPLACE CONNECTION s3_conn
+CREATE OR REPLACE CONNECTION s3_temp_conn
 TO 'https://my-bucket.s3.eu-west-1.amazonaws.com'
 USER 'ASIA...' IDENTIFIED BY 'secret...'
 SESSION TOKEN 'FwoGZXIvYXdz...';
@@ -58,7 +58,7 @@ USER 'access_key' IDENTIFIED BY 'secret_key';
 
 -- Local S3-compatible storage that should bypass the database's -etlProxy:
 CREATE OR REPLACE CONNECTION s3_local_conn
-TO 's3://my-bucket;EndPoint=localhost:9000;UseProxy=0'
+TO 's3://my-bucket;EndPoint=http://localhost:9000;UseProxy=0'
 USER 'access_key' IDENTIFIED BY 'secret_key';
 ```
 
@@ -83,7 +83,7 @@ USER '' IDENTIFIED BY 'GCS_ACCESS_KEY=GOOG...;GCS_SECRET_KEY=secret...';
 For rotating long-lived keys or refreshing an expiring `SESSION TOKEN`, use `ALTER CONNECTION` instead of dropping and recreating — existing grants on the connection are preserved:
 
 ```sql
-ALTER CONNECTION s3_conn
+ALTER CONNECTION s3_temp_conn
 TO 'https://my-bucket.s3.eu-west-1.amazonaws.com'
 USER 'ASIA...' IDENTIFIED BY 'new_secret...'
 SESSION TOKEN 'new_token...';
