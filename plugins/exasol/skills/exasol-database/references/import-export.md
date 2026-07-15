@@ -31,12 +31,38 @@ DROP CONNECTION my_conn;
 
 ### Cloud Connection Strings
 
-**S3:**
+**S3 (AWS) — long-lived access key:**
 ```sql
 CREATE OR REPLACE CONNECTION s3_conn
 TO 'https://my-bucket.s3.eu-west-1.amazonaws.com'
-USER '' IDENTIFIED BY 'S3_ACCESS_KEY=AKIA...;S3_SECRET_KEY=secret...';
+USER 'AKIA...' IDENTIFIED BY 'secret...';
 ```
+
+The access key goes in `USER`, the secret in `IDENTIFIED BY`. The endpoint is the bucket's regional endpoint; omit the region for the global endpoint.
+
+**S3 (AWS) — temporary credentials with SESSION TOKEN:**
+```sql
+CREATE OR REPLACE CONNECTION s3_temp_conn
+TO 'https://my-bucket.s3.eu-west-1.amazonaws.com'
+USER 'ASIA...' IDENTIFIED BY 'secret...'
+SESSION TOKEN 'FwoGZXIvYXdz...';
+```
+
+Use `SESSION TOKEN` for short-lived AWS credentials — typically issued by AWS STS via `AssumeRole`, `AssumeRoleWithWebIdentity`, IAM Identity Center / SSO, or EC2/EKS instance-role providers. Temporary keys start with `ASIA` (not `AKIA`) and expire, so the connection must be refreshed before expiry — see `ALTER CONNECTION` below.
+
+**S3-compatible storage (MinIO, Ceph, etc.) — Parquet import only:**
+```sql
+CREATE OR REPLACE CONNECTION s3_compat_conn
+TO 's3://my-bucket;EndPoint=https://minio.example.com:9000'
+USER 'access_key' IDENTIFIED BY 'secret_key';
+
+-- Local S3-compatible storage that should bypass the database's -etlProxy:
+CREATE OR REPLACE CONNECTION s3_local_conn
+TO 's3://my-bucket;EndPoint=http://localhost:9000;UseProxy=0'
+USER 'access_key' IDENTIFIED BY 'secret_key';
+```
+
+Exasol supports S3-compatible storage other than AWS **for Parquet import only** — the `EndPoint=` / `UseProxy=0` connection strings above apply to Parquet import workflows, not to CSV/FBV import. Set `UseProxy=0` to bypass a proxy configured via the database's `-etlProxy` parameter.
 
 **Azure Blob Storage:**
 ```sql
@@ -50,6 +76,17 @@ USER '' IDENTIFIED BY 'AZURE_SAS_TOKEN=sv=2021-06-08&ss=b&srt=co...';
 CREATE OR REPLACE CONNECTION gcs_conn
 TO 'https://storage.googleapis.com/my-bucket'
 USER '' IDENTIFIED BY 'GCS_ACCESS_KEY=GOOG...;GCS_SECRET_KEY=secret...';
+```
+
+### Refreshing Credentials (ALTER CONNECTION)
+
+For rotating long-lived keys or refreshing an expiring `SESSION TOKEN`, use `ALTER CONNECTION` instead of dropping and recreating — existing grants on the connection are preserved:
+
+```sql
+ALTER CONNECTION s3_temp_conn
+TO 'https://my-bucket.s3.eu-west-1.amazonaws.com'
+USER 'ASIA...' IDENTIFIED BY 'new_secret...'
+SESSION TOKEN 'new_token...';
 ```
 
 ### TLS Certificate Verification
