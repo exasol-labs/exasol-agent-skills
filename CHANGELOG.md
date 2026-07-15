@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.17.0
+
+- Add exasol-import skill for native Exasol import workflows
+
+## v0.16.1
+
+- Extend exasol-text-ai with notebook-aligned result querying, analytics patterns, and corrected extraction examples
+
 ## v0.16.0
 
 - Add exasol-text-ai skill for notebook-connector Text AI Extension workflows

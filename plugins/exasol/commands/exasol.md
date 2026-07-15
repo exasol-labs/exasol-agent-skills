@@ -22,7 +22,9 @@ The argument can be either:
 When invoked:
 
 1. **Classify the task before checking connections.**
-   - Database, SQL, exapump, import/export, schemas, or tables -> use **exasol-database** behavior.
+   - Database, general SQL outside direct `IMPORT`, export, schemas, tables, or general `CREATE CONNECTION` questions -> use **exasol-database** behavior.
+   - Import workflows such as `IMPORT` or `IMPORT INTO`, local CSV or Parquet upload, remote file loading via connection objects, `CREATE CONNECTION` for import/object-store loading, or `exapump upload` -> use **exasol-import** behavior.
+   - If `CREATE CONNECTION` appears with `EXPORT` or without import/load intent, prefer **exasol-database** behavior.
    - Notebook-connector setup, `Secrets`, `scs`, secure config store values, or backend configuration keys such as `db_host_name`, `db_schema`, `storage_backend`, or `huggingface_token` -> use **exasol-ai-setup** behavior.
    - Exasol tools, extensions, connectors, integrations, migration, governance, observability, BI/API surfaces, or architecture recommendations -> use **exasol-extension-catalog** behavior.
    - BucketFS files, buckets, `bfsdefault`, model/JAR uploads, BucketFS list/download/delete -> use **exasol-bucketfs** behavior.
@@ -42,13 +44,15 @@ When invoked:
 2. **Do not ask the user to choose a sub-skill.**
    Infer the route from the task. If the task is ambiguous, ask one concrete question about the desired outcome.
 
-3. **For database or SQL routes:**
+3. **For any route that will run `exapump` commands:**
    - Check connectivity with `exapump sql "SELECT 1"`.
    - If it fails, run `exapump profile list`.
-   - If profiles exist, ask which profile to use and retry with `exapump sql --profile <name> "SELECT 1"`.
+   - If profiles exist, ask which profile to use and retry with `exapump sql --profile <name> "SELECT 1"`; always place `--profile` after the subcommand.
    - If no profiles exist, tell the user to run `exapump profile add default`.
-   - If the argument is a SQL query (starts with SELECT, CREATE, DROP, INSERT, UPDATE, DELETE, MERGE, IMPORT, EXPORT, ALTER, GRANT, etc.), execute it via `exapump sql "<query>"`.
-   - For uploads, use `exapump upload` with `--dry-run` first to preview schema.
+   - Apply this check before database SQL work and before `exapump upload` or `exapump export`; if a non-default profile is selected, keep using `--profile <name>` after the subcommand.
+   - If the task is an import or upload workflow, follow **exasol-import** behavior first.
+   - Use direct `exapump sql` execution for `IMPORT` only when that guidance resolves to an executable remote-file `IMPORT` statement rather than a local-file workflow such as `exapump upload` or `IMPORT INTO "MY_SCHEMA"."MY_TABLE" FROM LOCAL CSV FILE '/path/to/data.csv'`.
+   - If the argument is another SQL query (starts with SELECT, CREATE, DROP, INSERT, UPDATE, DELETE, MERGE, EXPORT, ALTER, GRANT, etc.), execute it via `exapump sql "<query>"`.
    - For exports, use `exapump export` with the appropriate format.
 
 4. **For extension catalog routes:**
