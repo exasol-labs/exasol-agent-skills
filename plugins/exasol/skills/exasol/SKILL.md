@@ -69,7 +69,7 @@ When a user mentions `Text AI Extension`, `TXAIE`, `deploy_license`,
     - Trigger phrases: `set up Exasol`, `Exasol Personal`, `deploy Exasol`, `install Exasol on AWS`, `new Exasol database`
     - Activate: **exasol-setup-personal**
 
-11. **Distributed ML, machine learning, data mining, iterative HPC**
+12. **Distributed ML, machine learning, data mining, iterative HPC**
    - Trigger phrases: `distributed ML`, `machine learning`, `train model`, `batch inference`,
      `prediction`, `feature engineering`, `hyperparameter`, `PyTorch`, `TensorFlow`,
      `scikit-learn`, `RAPIDS`, `GPU model`, `model deployment`, `distributed training`,

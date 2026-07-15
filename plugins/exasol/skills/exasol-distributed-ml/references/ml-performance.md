@@ -169,11 +169,11 @@ For Lua-orchestrated loops, minimize SQL round-trips per iteration:
 
 ```lua
 -- Good: one distributed query covers all partitions
-sql("INSERT INTO ml.gradients SELECT compute_gradients(...) FROM ml.features GROUP BY partition_key")
+query("INSERT INTO ml.gradients SELECT compute_gradients(...) FROM ml.features GROUP BY partition_key")
 
 -- Bad: loop over partitions one by one
 for p = 0, num_partitions - 1 do
-    sql("INSERT INTO ml.gradients SELECT compute_gradients(...) FROM ml.features WHERE partition_key = " .. p)
+    query("INSERT INTO ml.gradients SELECT compute_gradients(...) FROM ml.features WHERE partition_key = " .. p)
 end
 ```
 

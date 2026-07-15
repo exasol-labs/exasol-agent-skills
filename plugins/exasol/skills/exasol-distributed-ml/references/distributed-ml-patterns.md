@@ -15,16 +15,19 @@ The canonical Exasol ML stack has three layers:
 3. **BucketFS** — stores models and artifacts; every node reads from the same path `/buckets/bfsdefault/default/...`.
 
 ```sql
+-- "f1"/"f2"/"f3" are quoted because every example below references them
+-- case-sensitively in lowercase; entity_id/label are always referenced
+-- unquoted and rely on Exasol's default uppercase folding.
 CREATE TABLE ml.training_data (
     entity_id  DECIMAL(18,0) NOT NULL,
     feature_ts TIMESTAMP,
-    f1 DOUBLE, f2 DOUBLE, f3 DOUBLE,
+    "f1" DOUBLE, "f2" DOUBLE, "f3" DOUBLE,
     label      DOUBLE,
     DISTRIBUTE BY entity_id
 );
 ```
 
-DISTRIBUTE BY `entity_id` means all rows for entity 42 are always on the same node — no shuffle needed for per-entity training or inference.
+DISTRIBUTE BY `entity_id` means every row for a given entity lands on the same node — no shuffle needed for per-entity training or inference.
 
 ### BucketFS is read-only inside a UDF sandbox
 
@@ -65,11 +68,13 @@ SELECT
     AVG("f2") AS f2_mean, STDDEV_POP("f2") AS f2_std
 FROM ml.training_data;
 
--- Pass 2: join stats and apply normalization via a SET script
+-- Pass 2: join stats and apply normalization via a SET script.
+-- COALESCE(..., 0) covers the zero-variance case (all values identical),
+-- where NULLIF(std, 0) would otherwise turn the division into NULL.
 SELECT ml.normalize_features(
     t.entity_id,
-    (t."f1" - s.f1_mean) / NULLIF(s.f1_std, 0),
-    (t."f2" - s.f2_mean) / NULLIF(s.f2_std, 0),
+    COALESCE((t."f1" - s.f1_mean) / NULLIF(s.f1_std, 0), 0),
+    COALESCE((t."f2" - s.f2_mean) / NULLIF(s.f2_std, 0), 0),
     t.label
 )
 FROM ml.training_data t
@@ -300,9 +305,9 @@ For algorithms like Random Forest and Bagging where the final model is a combina
 
 ```sql
 CREATE TABLE ml.sub_models AS
-SELECT ml.train_sub_model("partition_id", "f1", "f2", "label")
+SELECT ml.train_sub_model("partition_id", "f1", "f2", label)
 FROM (
-    SELECT MOD(ROWNUM, 16) AS "partition_id", "f1", "f2", "label"
+    SELECT MOD(ROWNUM, 16) AS "partition_id", "f1", "f2", label
     FROM ml.training_data
 ) t
 GROUP BY "partition_id";
@@ -312,7 +317,7 @@ GROUP BY "partition_id";
 CREATE OR REPLACE PYTHON3 SET SCRIPT ml.train_sub_model(
     partition_id DECIMAL(18,0), f1 DOUBLE, f2 DOUBLE, label DOUBLE
 )
-EMITS (partition_id DECIMAL(18,0), model_path VARCHAR(500)) AS
+EMITS ("partition_id" DECIMAL(18,0), "model_path" VARCHAR(500)) AS
 import pickle
 from exasol.bucketfs import Service
 from sklearn.ensemble import RandomForestClassifier
@@ -354,16 +359,18 @@ def run(ctx):
 ### Phase 2 (Reduce): Combine sub-models into final ensemble
 
 ```sql
-SELECT ml.combine_ensemble("partition_id", "model_path")
+SELECT ml.combine_ensemble("partition_id", "model_path", 'models/ensemble/final.pkl')
 FROM ml.sub_models
 GROUP BY 'x';
 ```
 
+`output_path` is an explicit parameter rather than a hardcoded path — every invocation of this script writes to whatever path its caller passes, so the same script can be reused for both a single combine and the per-group intermediate combines below without their writes colliding.
+
 ```sql
 CREATE OR REPLACE PYTHON3 SET SCRIPT ml.combine_ensemble(
-    partition_id DECIMAL(18,0), model_path VARCHAR(500)
+    partition_id DECIMAL(18,0), model_path VARCHAR(500), output_path VARCHAR(500)
 )
-EMITS (model_path VARCHAR(500), n_estimators DECIMAL(10,0)) AS
+EMITS ("model_path" VARCHAR(500), "n_estimators" DECIMAL(10,0)) AS
 import pickle
 from exasol.bucketfs import Service
 
@@ -377,11 +384,14 @@ def save_model_bytes(bucket_path, data):
 
 def run(ctx):
     all_estimators = []
+    bucket_path = None
     while True:
         df = ctx.get_dataframe(num_rows=CHUNK)
         if df is None:
             break
-        df.columns = ['partition_id', 'model_path']
+        df.columns = ['partition_id', 'model_path', 'output_path']
+        if bucket_path is None:
+            bucket_path = df['output_path'].iloc[0]
         for path in df['model_path']:
             with open(f'{BUCKET}/{path}', 'rb') as f:
                 sub_model = pickle.load(f)
@@ -394,7 +404,6 @@ def run(ctx):
     combined.estimators_ = all_estimators
     combined.n_estimators = len(all_estimators)
 
-    bucket_path = 'models/ensemble/final.pkl'
     save_model_bytes(bucket_path, pickle.dumps(combined))
     ctx.emit(bucket_path, len(all_estimators))
 /
@@ -402,17 +411,23 @@ def run(ctx):
 
 ### Multi-Phase Reduce (for large numbers of sub-models)
 
-When combining thousands of sub-models at once would exhaust single-node memory, reduce in rounds:
+When combining thousands of sub-models at once would exhaust single-node memory, reduce in rounds. Each of the 8 intermediate groups must write to its own path — passing the same hardcoded path to all 8 would let each group's write overwrite the last:
 
 ```sql
--- Intermediate combine: groups of 8 → 8 merged models
+-- Intermediate combine: groups of 8 → 8 merged models, each to a distinct path
 CREATE TABLE ml.partial_models AS
-SELECT ml.combine_ensemble("partition_id", "model_path")
+SELECT ml.combine_ensemble(
+    "partition_id", "model_path",
+    'models/ensemble/partial_' || MOD("partition_id", 8) || '.pkl'
+)
 FROM ml.sub_models
 GROUP BY MOD("partition_id", 8);
 
--- Final combine: 8 → 1
-SELECT ml.combine_ensemble("partition_id", "model_path")
+-- Final combine: 8 → 1. ml.partial_models only carries (model_path, n_estimators) —
+-- synthesize a partition_id via ROW_NUMBER() so combine_ensemble's signature stays the same.
+SELECT ml.combine_ensemble(
+    ROW_NUMBER() OVER (ORDER BY "model_path"), "model_path", 'models/ensemble/final.pkl'
+)
 FROM ml.partial_models
 GROUP BY 'x';
 ```
@@ -437,7 +452,7 @@ CREATE OR REPLACE PYTHON3 SET SCRIPT ml.local_fp_growth(
     partition_id DECIMAL(18,0), txn_id DECIMAL(18,0),
     item VARCHAR(200), min_support DOUBLE
 )
-EMITS (itemset VARCHAR(2000), local_support DOUBLE) AS
+EMITS ("itemset" VARCHAR(2000), "local_support" DOUBLE) AS
 import json
 CHUNK = 10000
 
@@ -495,17 +510,17 @@ Cross-join a parameter grid with training data; each group runs one cross-valida
 -- Build parameter grid
 CREATE TABLE ml.hp_grid AS
 SELECT
-    ROW_NUMBER() OVER (ORDER BY n_est, max_d) AS group_key,
-    n_est, max_d
+    ROW_NUMBER() OVER (ORDER BY "n_est", "max_d") AS "group_key",
+    "n_est", "max_d"
 FROM (
-    SELECT 50 AS n_est, 3 AS max_d UNION ALL
+    SELECT 50 AS "n_est", 3 AS "max_d" UNION ALL
     SELECT 100, 3 UNION ALL
     SELECT 100, 5 UNION ALL
     SELECT 200, 5
 ) p;
 
 -- Run grid search: one group per HP combination
-SELECT ml.hp_search("group_key", "n_est", "max_d", "f1", "f2", "label")
+SELECT ml.hp_search("group_key", "n_est", "max_d", "f1", "f2", label)
 FROM ml.hp_grid g
 CROSS JOIN ml.training_data t
 GROUP BY g."group_key";
@@ -559,6 +574,8 @@ Orchestrate iterations entirely in-database. See **exasol-udfs** `references/lua
 
 **Prerequisite:** `source_table` should be `DISTRIBUTE BY "id"` — see **exasol-database** `references/table-design.md`. Both the assignment step's per-point nearest-centroid lookup and the update step's join back to `source_table` key off `"id"`, so distributing on it keeps each point's row on the node that computes its own assignment.
 
+The assignment step's nearest-centroid lookup is a `CROSS JOIN` between points and centroids, filtered down with `QUALIFY ROW_NUMBER() = 1` — it fans out to `points × k` rows before filtering. That's fine for the small-`k` case this section targets; for very large `k`, the fan-out becomes the dominant cost.
+
 The update step's `GROUP BY a.centroid_id` only ever emits a row for centroid IDs that have at least one assigned point — there is no "empty group" row, not even with `NULL` aggregates. If a centroid attracts zero points in some iteration, its row disappears from `ml.centroids` entirely and the cluster count silently drops below `k` for every remaining iteration unless something detects and fixes it. The fix: snapshot centroids before the update, diff old vs. new IDs to find anything missing, and reseed each missing centroid at the point currently farthest from its own (surviving) centroid — the standard remedy for the k-means empty-cluster problem, expressible with two `ROW_NUMBER()` rankings joined rank-to-rank (no UDF, no cross-join fan-out).
 
 ```sql
@@ -588,17 +605,21 @@ for iter = 1, max_iter do
   -- its points below.
   query("CREATE OR REPLACE TABLE ml.centroids_prev AS SELECT * FROM ml.centroids")
 
-  -- Assignment: each point gets the nearest centroid (distributed scan)
+  -- Assignment: each point gets the nearest centroid (distributed scan).
+  -- Correlated subqueries in Exasol only support equality correlation, so
+  -- a per-point ORDER BY ... LIMIT 1 lookup against centroids can't be
+  -- expressed that way — CROSS JOIN + QUALIFY ROW_NUMBER() does the same
+  -- nearest-neighbor selection without relying on subquery correlation.
   query([[
     CREATE OR REPLACE TABLE ml.assignments AS
-    SELECT
-      p."id",
-      (SELECT c.centroid_id
-       FROM ml.centroids_prev c
-       ORDER BY (p."f1" - c."f1") * (p."f1" - c."f1")
-              + (p."f2" - c."f2") * (p."f2" - c."f2")
-       LIMIT 1) AS centroid_id
-    FROM ]] .. source_table .. [[ p]])
+    SELECT p."id", c.centroid_id
+    FROM ]] .. source_table .. [[ p
+    CROSS JOIN ml.centroids_prev c
+    QUALIFY ROW_NUMBER() OVER (
+      PARTITION BY p."id"
+      ORDER BY (p."f1" - c."f1") * (p."f1" - c."f1")
+             + (p."f2" - c."f2") * (p."f2" - c."f2")
+    ) = 1]])
 
   -- Update: recompute centroids as group means (distributed aggregation).
   -- A centroid_id with zero assigned points has no row here at all.
@@ -753,9 +774,12 @@ def run(ctx):
     fit = model.fit()
     forecasts = fit.forecast(steps=10)
 
+    # DateOffset has no `periods` kwarg (that belongs to pd.date_range) — infer
+    # the actual sampling interval from the series instead of assuming one.
+    step = df['ts'].iloc[-1] - df['ts'].iloc[-2] if len(df) >= 2 else pd.Timedelta(days=1)
     last_ts = df['ts'].iloc[-1]
     for i, fc in enumerate(forecasts):
-        forecast_ts = pd.Timestamp(last_ts) + pd.DateOffset(periods=i+1)
+        forecast_ts = pd.Timestamp(last_ts) + step * (i + 1)
         ctx.emit(entity, forecast_ts, float(fc))
 /
 
