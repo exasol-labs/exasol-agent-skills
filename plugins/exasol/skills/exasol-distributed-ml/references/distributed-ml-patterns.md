@@ -234,7 +234,9 @@ FROM ml.training_data;
 
 Two-pass pattern: identify the entity on the first chunk, load the model, reset, then stream all chunks for prediction.
 
-`_model_cache` is a module-level dict, so it persists across every group a given UDF instance happens to serve — and instances are reused for multiple groups **within one query** (not between separate query executions, which always get fresh instances with an empty cache). Adding `ORDER BY entity_id` alongside the `GROUP BY` gives the query engine a stable, sorted order to hand groups to instances in, which improves the cache's practical hit rate when an instance is reused across nearby entities instead of an arbitrary interleaving.
+`_model_cache` is a module-level dict, so it persists across every group a given UDF instance happens to serve — instances are reused for multiple groups **within one query** (not between separate query executions, which always get fresh instances with an empty cache).
+
+Exasol UDFs have their own `ORDER BY` clause that controls the row order a group's `run()` receives — it's specified **inside the function call's argument list** in the `SELECT`, e.g. `ml.batch_predict(entity_id, "f1", "f2" ORDER BY entity_id)`, not as a trailing clause of the outer query (a plain trailing `ORDER BY` only sorts the final emitted rows and has no effect on how the UDF processes its input). For `batch_predict` as written here — `GROUP BY entity_id`, one entity per group — that UDF-level `ORDER BY entity_id` would be a no-op, since every row in a group already shares the same `entity_id`. It matters once multiple entities are batched into a single group, e.g. with the `MOD(...)`-bucketing optimization from Section 7: there, `ORDER BY entity_id` inside the function call ensures each entity's rows arrive as one contiguous run instead of interleaved, so `_model_cache` swaps models once per entity instead of thrashing.
 
 ```sql
 CREATE OR REPLACE PYTHON3 SET SCRIPT ml.batch_predict(
@@ -285,8 +287,7 @@ def run(ctx):
 
 SELECT ml.batch_predict(entity_id, "f1", "f2")
 FROM ml.inference_data
-GROUP BY entity_id
-ORDER BY entity_id;
+GROUP BY entity_id;
 ```
 
 ---
@@ -745,7 +746,7 @@ def run(ctx):
             entity = int(df['entity_id'].iloc[0])
         parts.append(df)
 
-    df = pd.concat(parts).sort_values('ts')
+    df = pd.concat(parts)
     series = df['value'].values
 
     model = ARIMA(series, order=(2, 1, 2))
@@ -758,11 +759,13 @@ def run(ctx):
         ctx.emit(entity, forecast_ts, float(fc))
 /
 
--- ORDER BY within groups is respected
-SELECT ml.forecast_entity(entity_id, feature_ts, value)
+-- ORDER BY inside the function call controls the row order run() receives —
+-- rows for each entity group arrive sorted by feature_ts, so no sort_values('ts')
+-- is needed in Python. A trailing ORDER BY on the outer query would NOT do this;
+-- it only sorts the already-emitted result set.
+SELECT ml.forecast_entity(entity_id, feature_ts, value ORDER BY feature_ts)
 FROM ml.timeseries
-GROUP BY entity_id
-ORDER BY feature_ts;
+GROUP BY entity_id;
 ```
 
 ---

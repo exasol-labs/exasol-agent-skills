@@ -225,7 +225,27 @@ Note: UDF instances currently cannot communicate with each other, so there's no 
 
 ## GPU Memory Management
 
-GPU memory is shared across all concurrent UDF instances on the same node — if a single query spawns many instances of a GPU UDF call, they all get access to every accelerator on the node and compete for memory.
+GPUs are a managed, **exclusively-reserved** resource in Exasol — independent of the general resource manager and its consumer groups. In each select/sub-select statement, only a **single UDF call** is allowed exclusive use of all available GPUs; the reservation is made per UDF call.
+
+- **Across concurrent queries**: if multiple queries, each containing one GPU-accelerated UDF call, run at the same time, Exasol automatically **serializes** them — each waits until the GPUs are freed by the others. You don't need to manually run them in separate sessions to avoid contention; that serialization already happens.
+- **Within a single query**: using more than one GPU-accelerated UDF call in the same select/sub-select is **not safely supported** — it's undefined which call actually gets the GPUs; the rest either fail or silently fall back to CPU, depending on their `perInstanceRequiredAcceleratorDevices` value (`GpuNvidia` fails, `GpuNvidia|None` falls back).
+
+Recommendations from the docs:
+
+- **Use only one GPU-accelerated UDF call per query** — avoids the undefined multi-UDF contention above entirely.
+- **Use UDF instance limiting** to control how many instances of *that one* UDF call share the reserved GPUs among themselves, with `perNodeAndCallInstanceLimit` alongside `perInstanceRequiredAcceleratorDevices`. For example, to force all of one UDF call's work onto a single instance so it has the node's GPUs to itself:
+  ```sql
+  --/
+  CREATE OR REPLACE PYTHON_GPU SCALAR SCRIPT ml.gpu_example()
+  RETURNS VARCHAR(20) AS
+  %perNodeAndCallInstanceLimit 1;
+  %perInstanceRequiredAcceleratorDevices GpuNvidia;
+  ...
+  /
+  ```
+- **Use query timeouts** (`QUERY_TIMEOUT` — system level via `ALTER SYSTEM`, session level via `ALTER SESSION`, or consumer-group level via the resource manager) on queries with GPU-accelerated UDFs, so a runaway query can't hold the exclusive GPU reservation indefinitely and block every other GPU query behind it.
+
+Independently of the reservation model above, free GPU memory within a single instance as work completes:
 
 ```python
 def run(ctx):
@@ -239,17 +259,3 @@ def run(ctx):
         except Exception:
             pass
 ```
-
-To control how many instances share the available accelerators, set `perNodeAndCallInstanceLimit` alongside `perInstanceRequiredAcceleratorDevices`. For example, to force all work for one UDF call onto a single instance so it has the node's GPUs to itself:
-
-```sql
---/
-CREATE OR REPLACE PYTHON_GPU SCALAR SCRIPT ml.gpu_example()
-RETURNS VARCHAR(20) AS
-%perNodeAndCallInstanceLimit 1;
-%perInstanceRequiredAcceleratorDevices GpuNvidia;
-...
-/
-```
-
-Avoid launching many parallel GPU queries on the same node beyond what this limit accounts for.
