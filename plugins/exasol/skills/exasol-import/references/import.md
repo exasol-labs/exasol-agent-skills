@@ -23,8 +23,9 @@ USER '<username>' IDENTIFIED BY '<password>';
 
 Typical patterns:
 
-- S3 long-lived access key and secret key as named values in `IDENTIFIED BY`, with an empty `USER`
-- S3 temporary access key and secret key as named values in `IDENTIFIED BY`, with `SESSION TOKEN` for expiring credentials
+- S3 (AWS) long-lived credentials: access key in `USER`, secret key in `IDENTIFIED BY`
+- S3 (AWS) temporary credentials: access key in `USER`, secret key in `IDENTIFIED BY`, plus a `SESSION TOKEN` clause for expiring credentials (temporary keys start with `ASIA`, not `AKIA`)
+- S3-compatible storage (MinIO, Ceph, etc.): `s3://bucket;EndPoint=...` connection string — Parquet import only
 - Azure SAS token in `IDENTIFIED BY`
 - GCS access key and secret key in `IDENTIFIED BY`
 - Prefer `ALTER CONNECTION` when a credential changes and existing grants should stay intact
@@ -34,12 +35,17 @@ Examples:
 ```sql
 CREATE OR REPLACE CONNECTION s3_conn
 TO 'https://my-bucket.s3.eu-west-1.amazonaws.com'
-USER '' IDENTIFIED BY 'S3_ACCESS_KEY=<access-key>;S3_SECRET_KEY=<secret-key>';
+USER '<access-key>' IDENTIFIED BY '<secret-key>';
 
 CREATE OR REPLACE CONNECTION s3_temp_conn
 TO 'https://my-bucket.s3.eu-west-1.amazonaws.com'
-USER '' IDENTIFIED BY 'S3_ACCESS_KEY=<temporary-access-key>;S3_SECRET_KEY=<secret-key>'
+USER '<temporary-access-key>' IDENTIFIED BY '<secret-key>'
 SESSION TOKEN '<session-token>';
+
+-- S3-compatible storage (MinIO, Ceph, etc.) — Parquet import only:
+CREATE OR REPLACE CONNECTION s3_compat_conn
+TO 's3://my-bucket;EndPoint=https://minio.example.com:9000'
+USER '<access-key>' IDENTIFIED BY '<secret-key>';
 
 CREATE OR REPLACE CONNECTION azure_conn
 TO 'https://myaccount.blob.core.windows.net/mycontainer'
@@ -57,7 +63,7 @@ When the token or secret changes, refresh the existing object with
 ```sql
 ALTER CONNECTION s3_temp_conn
 TO 'https://my-bucket.s3.eu-west-1.amazonaws.com'
-USER '' IDENTIFIED BY 'S3_ACCESS_KEY=<temporary-access-key>;S3_SECRET_KEY=<secret-key>'
+USER '<temporary-access-key>' IDENTIFIED BY '<secret-key>'
 SESSION TOKEN '<session-token>';
 ```
 

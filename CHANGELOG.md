@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.18.1
+
+- Correct S3 connection syntax in import/export references to current Exasol docs (access key in `USER`, secret in `IDENTIFIED BY`); document the `SESSION TOKEN` clause for temporary AWS credentials, `ALTER CONNECTION` credential rotation, and S3-compatible storage endpoints (MinIO/Ceph, Parquet import only)
+
 ## v0.17.0
 
 - Add exasol-import skill for native Exasol import workflows
