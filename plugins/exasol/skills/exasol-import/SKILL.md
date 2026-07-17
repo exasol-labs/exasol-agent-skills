@@ -29,7 +29,7 @@ Trigger when the user mentions **IMPORT**, **IMPORT INTO**, **upload CSV**, **up
    - Load: `references/import.md`
 
 2. **Remote or cloud files reachable by Exasol**
-   - Trigger phrases: `IMPORT`, `IMPORT INTO`, `S3`, `Azure Blob`, `GCS`, `FTP`, `HTTP`, `CREATE CONNECTION` with import or object-store loading intent
+   - Trigger phrases: `IMPORT`, `IMPORT INTO`, `S3`, `Azure Blob`, `GCS`, `FTP`, `SFTP`, `HTTP`, `HTTPS`, `CREATE CONNECTION` with import or object-store loading intent
    - Load: `references/import.md`
 
 3. **Parquet-specific behavior**
@@ -39,6 +39,6 @@ Trigger when the user mentions **IMPORT**, **IMPORT INTO**, **upload CSV**, **up
 ## Notes
 
 - Use this skill only for direct data movement into Exasol.
-- Use **exasol-database** for `CREATE CONNECTION` questions that are general or tied to native `EXPORT`.
-- Use **exasol-database** for general SQL, schema inspection, table design, and native `EXPORT` workflows.
+- Use **exasol-export** for native `EXPORT`, local export workflows, and `CREATE CONNECTION` questions tied to export target setup.
+- Use **exasol-database** for general `CREATE CONNECTION` questions, SQL, schema inspection, and table design.
 - Use **exasol-extension-catalog** when the user is asking for extension-based object-storage loading workflows or federated-read alternatives rather than direct `IMPORT`.

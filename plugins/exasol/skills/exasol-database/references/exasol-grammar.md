@@ -1,11 +1,15 @@
-# Exasol SQL Statement Grammar (DQL / DML / DDL / DCL / ETL)
+# Exasol SQL Statement Grammar (DQL / DML / DDL / DCL / DAL)
 
-> **Source of truth.** The *complete* supported Exasol SQL **statement** grammar
-> in EBNF, vendored verbatim from
+> **Source of truth.** The supported Exasol SQL **statement** grammar used by
+> the database skill, in EBNF, derived from
 > [`exasol/sql-syntax-diagrams`](https://github.com/exasol/sql-syntax-diagrams) — the same source
 > the syntax-diagram images on docs.exasol.com are generated from (via
 > `Ebnf2ps`). Prefer these rules over inferring syntax from examples: they
-> define **every** legal clause, its ordering, and its repetition.
+> define legal clauses, their ordering, and their repetition.
+>
+> Native `IMPORT` and `EXPORT` workflow grammar is intentionally excluded from
+> this database-skill reference. Use **exasol-import** and **exasol-export** for
+> those workflows.
 >
 > **Companion file:** built-in **functions**, operators, **predicates**,
 > **literals**, and **data types** live in
@@ -18,7 +22,7 @@
 >
 > - **DB version:** branch `master` (`master` = major version 8, incl. 2025; `R7.1` = 7.1)
 > - **Source commit:** `27ab185403619f8f1e37dfeb9b3cd6287a60047b`
-> - **Regenerate:** re-vendor the `diagrams/*.bnf` files from [`exasol/sql-syntax-diagrams`](https://github.com/exasol/sql-syntax-diagrams) at the branch above. Do not hand-edit.
+> - **Regenerate:** re-vendor the `diagrams/*.bnf` files from [`exasol/sql-syntax-diagrams`](https://github.com/exasol/sql-syntax-diagrams) at the branch above, then keep direct import/export workflow syntax out of this database reference.
 
 ## Statements in this file
 
@@ -27,7 +31,6 @@
 - Data definition (CREATE / ALTER / DROP — DDL)
 - Access control (GRANT / REVOKE / roles / privileges — DCL)
 - Sessions, transactions & administration (DAL)
-- Bulk load & unload (IMPORT / EXPORT — ETL)
 - Miscellaneous (COMMIT/ROLLBACK, EXECUTE SCRIPT, KILL, ALTER SESSION/SYSTEM, indexes, zonemaps, consumer groups, RENAME, …)
 
 ## How to read this notation
@@ -81,7 +84,7 @@ literals, `sonstige` = miscellaneous) — cosmetic; the terminals are the real S
         = ["DISTINCT" | "ALL"] ((expr [["AS"] column_alias] | ((table | view) "." "*") | "*") / ",") ;
 
   from_item
-        = (((["TABLE"] table | view | ( "(" (subquery | subimport | values_table | value_range_table) ")" ) ) [["AS"] table_alias ["(" column_alias / "," ")"]]) | (join_clause | "(" join_clause ")")) ;
+        = (((["TABLE"] table | view | ( "(" (subquery | values_table | value_range_table) ")" ) ) [["AS"] table_alias ["(" column_alias / "," ")"]]) | (join_clause | "(" join_clause ")")) ;
 
   connect_by_clause
         = ("CONNECT" "BY" ["NOCYCLE"] (condition / "AND") ["START" "WITH" condition]) | ("START" "WITH" condition "CONNECT" "BY" ["NOCYCLE"] (condition / "AND"));
@@ -115,9 +118,6 @@ literals, `sonstige` = miscellaneous) — cosmetic; the terminals are the real S
 
   inner_outer_clause
         = ((["INNER"]) | (("LEFT" | "RIGHT") ["OUTER"]) | ("FULL" "OUTER")) "JOIN" from_item (("ON" condition) | ("USING" "(" column / "," ")"));
-
-  subimport
-        = "IMPORT" ["INTO" "(" import_columns ")"] "FROM" (dbms_src | file_src | script_src) [error_clause] ;
 
   values_table
         = "VALUES"  ( "(" expr / "," ")" ) / "," ;
@@ -590,161 +590,6 @@ select_with_invalid_foreign_key3
 	= "REFERENCING" ref_table ["(" ref_column / "," ")"]
         ;
 
-```
-
----
-
-## Bulk load & unload (IMPORT / EXPORT — ETL)
-
-<sub>source: `diagrams/etl.bnf`</sub>
-
-```ebnf
-import_1
-  = "IMPORT" ["INTO" ((table ["(" (column / ",") ")"]) | "(" import_columns ")")];
-
-import_2
-  = "FROM" ( ((dbms_src | file_src) [error_clause]) | script_src);
-
-import_columns
-  = (column datatype | ("LIKE" (table | view) ["(" (column [["AS"] alias]) / "," ")"])) / ",";
-
-import_like_clause
-  = "LIKE" (table | view) ["(" (column [["AS"] alias]) / "," ")"];
-
-
-values_clause
-  = "VALUES" "(" val_list ")";
-
-dbms_src_1
-  = ("EXA" | "ORA" | ("JDBC" ["DRIVER" "=" string])) connection_def;
-
-dbms_src_2
-  = ("TABLE" table ["(" column / "," ")"]) | ("STATEMENT" stmt_string)+ ;
-
-file_src_1
-  = ((("CSV" | "FBV" | "PARQUET") ((connection_def | cloud_connection_def) ("FILE" string)+ )+)  ) | ( "LOCAL" ["SECURE"] ("CSV" | "FBV") ("FILE" string)+ );
-
-file_src_2
-  = [ (csv_cols | fbv_cols | parquet_metadata_specification)] [file_opts] [cert_verification];
-
-connection_def
-  = "AT" (connection | string) [ user_identification ] [ cert_verification ] [ session_token ];
-
-cloud_connection_def_1
-  = "AT" "CLOUD" ("NONE" | "AZURE" "BLOBSTORAGE" | "AWS" "S3") (connection | string);
-
-cloud_connection_def_2
-  = [ user_identification ] [ blobstorage_authentication ];
-
-user_identification = [ "USER" user ] [ "IDENTIFIED" "BY" password ];
-
-blobstorage_authentication = [ "CLIENT ID" client_id ] [ "TENANT ID" tenant_id ] [ "SAS TOKEN" sas_token ];
-
-cert_verification = [("IGNORE CERTIFICATE" | "VERIFY CERTIFICATE")] ["PUBLIC KEY" string];
-
-session_token = "SESSION TOKEN" string;
-
-file_import_options
-  = ( ("ENCODING" "=" string) 
-     | ("SKIP" "=" int) 
-     | ("TRIM" | "LTRIM" | "RTRIM")
-     | ("NULL" "=" string) 
-     | ("ROW" "SEPARATOR" "=" string)
-     | ("COLUMN" "SEPARATOR" "=" string)
-     | ("COLUMN" "DELIMITER" "=" string)
-     | ("ROW" "SIZE" "=" int))+
-;
-
-csv_import_cols
-  = "(" (col_nr ["FORMAT" "=" string] | from_col_nr ".." to_col_nr) / "," ")";
-
-fbv_import_cols
-  = "("
-    (
-      (
-            ("SIZE" "=" bytes) 
-          | ("START" "=" int) 
-          | ("FORMAT" "=" string) 
-          | ("ALIGN"   "=" align) 
-          | ("PADDING" "=" string)
-      )+
-    ) / ","
-    ")";
-
-parquet_metadata_specification
-  = "WITH" (
-             ("SOURCE ROW NUMBER" "=" column) 
-           | ("SOURCE FILE HASH_SHA256" "=" column)
-           | ("SOURCE COLUMN NAMES" "=" "(" (string / ",") ")" )
-)+;
-
-error_clause_1
-  = ["ERRORS" "INTO" error_dst ["(" expr ")"] ["REPLACE" | "TRUNCATE"]] [reject_clause];
-
-error_clause_2
-  = "REJECT" "LIMIT" (int | "UNLIMITED" ) ["ERRORS"];
-
-error_dst
-  = ("CSV" (connection_def | cloud_connection_def) "FILE" string) | ("LOCAL" ["SECURE"] "CSV" "FILE" string) | (table) ;
-
-script_src
-  = "SCRIPT" script [connection_def] [ "WITH" (property "=" value)+ ];
-
-
-
-
-export_1
-  = "EXPORT" ((table ["(" col_list ")"]) | "(" query ")");
-
-export_2
-  = "INTO" (((dbms_dst | file_dst) [ error_clause ]) | (script_dst));
-
-file_dst_1
-  = ((("CSV" | "FBV") ((connection_def | cloud_connection_def) ("FILE" string)+)+) | ("LOCAL" ["SECURE"] ("CSV" | "FBV")) ("FILE" string)+);
-
-file_dst_2
-  = [ (csv_cols | fbv_cols)] [file_opts] [cert_verification];
-
-file_export_opts
-  = ( "REPLACE" 
-     | "TRUNCATE" 
-     | ("ENCODING" "=" string) 
-     | ("NULL" "=" string) 
-     | ("BOOLEAN" "=" string) 
-     | ("ROW" "SEPARATOR" "=" string)
-     | ("COLUMN" "SEPARATOR" "=" string)
-     | ("COLUMN" "DELIMITER" ["=" string])
-     | ("DELIMIT" "=" ("ALWAYS" | "NEVER" | "AUTO"))
-     | ("WITH" "COLUMN" "NAMES")
-     )+
-;
-
-dbms_dst_1
-  = ("EXA" | "ORA" | ("JDBC" ["DRIVER" "=" string])) connection_def ;
-
-dbms_dst_2
-  = ("TABLE" table [ "(" column / "," ")" ] [ ("REPLACE" | "TRUNCATE" | "CREATED" "BY" string)+ ]) | ("STATEMENT" stmt_string) ;
-
-csv_export_cols
-  = "(" (col_nr ["FORMAT" "=" string] ["DELIMIT" "=" ("ALWAYS" | "NEVER" | "AUTO")] | from_col_nr ".." to_col_nr) / "," ")";
-
-fbv_export_cols
-  = "(" 
-    [
-      (
-          ("SIZE" "=" bytes) 
-        | ("FORMAT" "=" string) 
-        | ("ALIGN"   "=" align) 
-        | ("PADDING" "=" string)
-      )+
-    ] / ","
-    ")";
-
-error_clause
-  = "REJECT" "LIMIT" (int | "UNLIMITED" ) ["ERRORS"];
-
-script_dst
-  = "SCRIPT" script [connection_def] [ "WITH" (property "=" value)+ ];
 ```
 
 ---

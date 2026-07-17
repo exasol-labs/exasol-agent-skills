@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.19.0
+
+- Add exasol-export skill for native Exasol export workflows
+- Remove the obsolete combined import/export database reference after splitting import and export into dedicated skills
+- Remove remaining import/export workflow details from exasol-database references
+
+## v0.18.0
+
+- Add exasol-distributed-ml skill for distributed ML, GPU acceleration, model lifecycle, and performance workflows
+
 ## v0.17.0
 
 - Add exasol-import skill for native Exasol import workflows

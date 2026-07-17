@@ -25,7 +25,9 @@ Typical patterns:
 
 - S3 long-lived access key and secret key as named values in `IDENTIFIED BY`, with an empty `USER`
 - S3 temporary access key and secret key as named values in `IDENTIFIED BY`, with `SESSION TOKEN` for expiring credentials
-- Azure SAS token in `IDENTIFIED BY`
+- Azure account key in `IDENTIFIED BY`
+- Azure SAS token in `SAS TOKEN` for Exasol 2026.1 or later
+- Azure Microsoft Entra ID in `IDENTIFIED BY`, `CLIENT ID`, and `TENANT ID` for Exasol 2026.1 or later
 - GCS access key and secret key in `IDENTIFIED BY`
 - Prefer `ALTER CONNECTION` when a credential changes and existing grants should stay intact
 
@@ -38,12 +40,22 @@ USER '' IDENTIFIED BY 'S3_ACCESS_KEY=<access-key>;S3_SECRET_KEY=<secret-key>';
 
 CREATE OR REPLACE CONNECTION s3_temp_conn
 TO 'https://my-bucket.s3.eu-west-1.amazonaws.com'
-USER '' IDENTIFIED BY 'S3_ACCESS_KEY=<temporary-access-key>;S3_SECRET_KEY=<secret-key>'
+USER '' IDENTIFIED BY 'S3_ACCESS_KEY=<temporary-access-key>;S3_SECRET_KEY=<temporary-secret-key>'
 SESSION TOKEN '<session-token>';
 
-CREATE OR REPLACE CONNECTION azure_conn
-TO 'https://myaccount.blob.core.windows.net/mycontainer'
-USER '' IDENTIFIED BY 'AZURE_SAS_TOKEN=<sas-token>';
+CREATE OR REPLACE CONNECTION azure_key_conn
+TO 'DefaultEndpointsProtocol=https;EndpointSuffix=core.windows.net'
+USER '<account-name>' IDENTIFIED BY '<account-key>';
+
+CREATE OR REPLACE CONNECTION azure_sas_conn
+TO 'DefaultEndpointsProtocol=https;EndpointSuffix=core.windows.net'
+USER '<account-name>' SAS TOKEN '<sas-token>';
+
+CREATE OR REPLACE CONNECTION azure_entra_conn
+TO 'DefaultEndpointsProtocol=https;EndpointSuffix=core.windows.net'
+USER '<account-name>' IDENTIFIED BY '<client-secret>'
+CLIENT ID '<client-id>'
+TENANT ID '<tenant-id>';
 
 CREATE OR REPLACE CONNECTION gcs_conn
 TO 'https://storage.googleapis.com/my-bucket'
@@ -57,9 +69,13 @@ When the token or secret changes, refresh the existing object with
 ```sql
 ALTER CONNECTION s3_temp_conn
 TO 'https://my-bucket.s3.eu-west-1.amazonaws.com'
-USER '' IDENTIFIED BY 'S3_ACCESS_KEY=<temporary-access-key>;S3_SECRET_KEY=<secret-key>'
+USER '' IDENTIFIED BY 'S3_ACCESS_KEY=<temporary-access-key>;S3_SECRET_KEY=<temporary-secret-key>'
 SESSION TOKEN '<session-token>';
 ```
+
+For Azure Blob import sources, use the Azure connection object with
+`AT CLOUD AZURE BLOBSTORAGE <connection>` and a file path in
+`'<container>/<blob>'` form.
 
 ## Security and Boundaries
 
@@ -153,5 +169,5 @@ WHEN NOT MATCHED THEN INSERT VALUES (
 ## Adjacent Routing
 
 - If the user needs an extension-based object-storage loading workflow rather than direct `IMPORT`, switch to **exasol-extension-catalog**
-- If the user wants to write data out of Exasol, switch to **exasol-database** for native `EXPORT`
+- If the user wants to write data out of Exasol, switch to **exasol-export** for native `EXPORT` or local export workflows
 - If the user wants federated read-only access instead of copying data, switch to **exasol-extension-catalog**
