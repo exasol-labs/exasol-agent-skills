@@ -11,11 +11,11 @@ Pick the narrowest supported loading path:
 
 ## Security and Boundaries
 
-- keep credentials in the connector or connection mechanism that the workflow already expects
-- do not move secrets into ad hoc local artifacts just to make the agent workflow easier
-- do not suggest bypassing normal source-system permissions, connection boundaries, or Exasol privileges
-- use placeholders in examples instead of real customer endpoints, keys, tokens, or datasets
-- keep the distinction clear between database-side SQL, external source systems, and supporting infrastructure
+- Keep credentials in the connector or connection mechanism that the workflow already expects
+- Do not move secrets into ad hoc local artifacts just to make the agent workflow easier
+- Do not suggest bypassing normal source-system permissions, connection boundaries, or Exasol privileges
+- Use placeholders in examples instead of real customer endpoints, keys, tokens, or datasets
+- Keep the distinction clear between database-side SQL, external source systems, and supporting infrastructure
 
 ## Cloud Storage Extension
 
@@ -23,9 +23,9 @@ Use Cloud Storage Extension when the user wants an extension-based path for obje
 
 Use it when:
 
-- the workflow is already built around the extension
-- the user is loading object-storage files through an extension-based read path
-- the user needs supported file-reader behavior for formats such as Parquet, Avro, ORC, or CSV in that extension family
+- The workflow is already built around the extension
+- The user is loading object-storage files through an extension-based read path
+- The user needs supported file-reader behavior for formats such as Parquet, Avro, ORC, or CSV in that extension family
 
 Do not route simple native `IMPORT` cases here if Exasol `IMPORT` already fits the request more directly.
 

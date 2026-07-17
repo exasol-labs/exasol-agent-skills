@@ -5,12 +5,12 @@ description: "Use Exasol Cloud Storage Extension workflows for loading object-st
 
 # Exasol Cloud Storage Extension Skill
 
-Trigger when the user mentions **Cloud Storage Extension**, **load from object storage**, **read parquet from bucket**, **Avro**, **ORC**, or **extension-based file reader**.
+Trigger when the user mentions **Cloud Storage Extension**, **extension-based object-storage loading**, **extension-based Parquet reader**, **Avro**, **ORC**, or **extension-based file reader**.
 
 ## Routing Algorithm
 
 1. **Object storage and file-reader extension workflows**
-   - Trigger phrases: `Cloud Storage Extension`, `object storage`, `ORC`, `Avro`, `read parquet from bucket`
+   - Trigger phrases: `Cloud Storage Extension`, `extension-based object-storage loading`, `extension-based Parquet reader`, `ORC`, `Avro`
    - Load: `references/cloud-storage-extension.md`
 
 ## Notes
