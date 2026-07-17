@@ -5,7 +5,7 @@
 Choose the narrowest matching workflow:
 
 - Local CSV or Parquet files on the user's machine: use `exapump export`
-- Remote CSV or FBV targets reachable by Exasol: use native `EXPORT`
+- Remote CSV or FBV targets reachable by Exasol through supported targets such as S3, Azure Blob Storage, GCS, FTP/SFTP, HTTP/HTTPS, or database/JDBC targets: use native `EXPORT`
 - For the matching data-movement-into-Exasol workflow, use **exasol-import** for native `IMPORT`, local upload workflows, Parquet import, reject handling, and staging-based loading.
 
 ## Connection Objects
@@ -68,7 +68,8 @@ SESSION TOKEN '<session-token>';
 
 ## Native EXPORT
 
-Use native `EXPORT` when Exasol should write the result to a remote target or to a local JDBC-style target.
+Use native `EXPORT` when Exasol should write the result to a remote target or to a JDBC/EXAplus-style local target.
+Native `EXPORT` covers CSV and FBV file formats. For local Parquet files on the user's machine, use `exapump export`.
 
 ```sql
 EXPORT "MY_SCHEMA"."MY_TABLE"
@@ -77,7 +78,14 @@ FILE 'exports/orders.csv'
 WITH COLUMN NAMES;
 ```
 
-For local exports on the user's machine, `exapump export` is usually the simpler path.
+For JDBC/EXAplus local files, the native form is `INTO LOCAL <CSV|FBV> FILE '<path>'`.
+For terminal local exports on the user's machine, `exapump export` is usually the simpler path.
+
+```sql
+EXPORT "MY_SCHEMA"."MY_TABLE"
+INTO LOCAL CSV FILE '/path/to/orders.csv'
+WITH COLUMN NAMES;
+```
 
 ## Local File Workflows With exapump
 
@@ -86,7 +94,10 @@ Use `exapump export` when the file lives on the user's machine and the user want
 Typical pattern:
 
 - `exapump export --table <schema.table> --output <file> --format <csv|parquet>`
+- `exapump export --query "SELECT * FROM <schema.table>" --output <file> --format <csv|parquet>`
 - With a non-default profile: `exapump export --profile <name> --table <schema.table> --output <file> --format <csv|parquet>`
+- For Parquet compression, add `--compression <snappy|gzip|lz4|zstd|none>`
+- For split output files, add `--max-rows-per-file <n>` or `--max-file-size <size>`
 
 ## Adjacent Routing
 

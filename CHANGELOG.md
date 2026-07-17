@@ -3,6 +3,7 @@
 ## v0.19.0
 
 - Add exasol-export skill for native Exasol export workflows
+- Remove the obsolete combined import/export database reference after splitting import and export into dedicated skills
 
 ## v0.17.0
 

@@ -153,5 +153,5 @@ WHEN NOT MATCHED THEN INSERT VALUES (
 ## Adjacent Routing
 
 - If the user needs an extension-based object-storage loading workflow rather than direct `IMPORT`, switch to **exasol-extension-catalog**
-- If the user wants to write data out of Exasol, switch to **exasol-database** for native `EXPORT`
+- If the user wants to write data out of Exasol, switch to **exasol-export** for native `EXPORT` or local export workflows
 - If the user wants federated read-only access instead of copying data, switch to **exasol-extension-catalog**

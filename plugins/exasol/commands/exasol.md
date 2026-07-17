@@ -25,7 +25,9 @@ When invoked:
    - Database, general SQL outside direct `IMPORT` or `EXPORT`, schemas, tables, or general `CREATE CONNECTION` questions -> use **exasol-database** behavior.
    - Import workflows such as `IMPORT` or `IMPORT INTO`, local CSV or Parquet upload, remote file loading via connection objects, `CREATE CONNECTION` for import/object-store loading, or `exapump upload` -> use **exasol-import** behavior.
    - Export workflows such as `EXPORT`, `EXPORT INTO`, local CSV or Parquet export, remote file export via connection objects, or `exapump export` -> use **exasol-export** behavior.
-   - If `CREATE CONNECTION` appears with `IMPORT` or object-store loading intent, prefer **exasol-import** behavior. If it appears with `EXPORT` or without import/load intent, prefer **exasol-export** for export setup or **exasol-database** for general connection-object questions.
+   - If `CREATE CONNECTION` appears with `IMPORT` or object-store loading intent, prefer **exasol-import** behavior.
+   - If `CREATE CONNECTION` appears with `EXPORT` or export-target setup intent, prefer **exasol-export** behavior.
+   - If `CREATE CONNECTION` appears without clear import, load, or export intent, prefer **exasol-database** behavior.
    - Notebook-connector setup, `Secrets`, `scs`, secure config store values, or backend configuration keys such as `db_host_name`, `db_schema`, `storage_backend`, or `huggingface_token` -> use **exasol-ai-setup** behavior.
    - Exasol tools, extensions, connectors, integrations, migration, governance, observability, BI/API surfaces, or architecture recommendations -> use **exasol-extension-catalog** behavior.
    - BucketFS files, buckets, `bfsdefault`, model/JAR uploads, BucketFS list/download/delete -> use **exasol-bucketfs** behavior.

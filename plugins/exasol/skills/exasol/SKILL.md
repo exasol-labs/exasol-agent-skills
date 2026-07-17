@@ -31,7 +31,7 @@ object-store file movement intent, prefer **exasol-database**.
    - Activate: **exasol-import**
 
 3. **Export workflows**
-   - Trigger phrases: `EXPORT`, `EXPORT INTO`, `export table`, `export local file`, `export CSV`, `export Parquet`, `export to S3`, `export to Azure Blob`, `export to GCS`, `CREATE CONNECTION` with export target setup intent, `exapump export`
+   - Trigger phrases: `EXPORT`, `EXPORT INTO`, `export table`, `export local file`, `export CSV`, `export Parquet`, `export to S3`, `export to Azure Blob`, `export to GCS`, `export to FTP`, `export to SFTP`, `export to HTTP`, `export to HTTPS`, `CREATE CONNECTION` with export target setup intent, `exapump export`
    - Activate: **exasol-export**
 
 4. **Notebook-connector AI setup**
