@@ -1,6 +1,7 @@
-# exapump CLI Reference
+# exapump Database CLI Reference
 
-> Single-binary CLI for CSV/Parquet ingest and SQL execution against Exasol.
+> Database-skill reference for exapump profile, SQL, and interactive commands.
+> Use **exasol-import** and **exasol-export** for local file movement workflows.
 
 ## Installation
 
@@ -26,43 +27,6 @@ exapump profile add default
 # List saved profiles
 exapump profile list
 ```
-
----
-
-## upload
-
-Upload local CSV or Parquet files to an Exasol table. Auto-creates the table if it doesn't exist.
-
-```
-exapump upload [OPTIONS] --table <TABLE> <FILES>...
-```
-
-### Arguments
-
-| Argument | Required | Description |
-|----------|----------|-------------|
-| `<FILES>...` | Yes | One or more files to upload (CSV or Parquet) |
-
-### Options
-
-| Option | Default | Description |
-|--------|---------|-------------|
-| `-t, --table <TABLE>` | (required) | Target table name (e.g., `schema.table`) |
-| `--dry-run` | off | Preview inferred schema without loading data |
-| `--delimiter <CHAR>` | `,` | CSV field delimiter |
-| `--no-header` | off | Treat the first row as data, not a header |
-| `--quote <CHAR>` | `"` | CSV quoting character |
-| `--escape <CHAR>` | (none) | CSV escape character |
-| `--null-value <STR>` | `""` (empty string) | String to interpret as NULL |
-| `--profile <NAME>` | (none) | Use a saved connection profile instead of the default |
-
-### Example
-
-```bash
-exapump upload data.csv --table my_schema.my_table --dry-run
-```
-
----
 
 ## sql
 
@@ -90,63 +54,6 @@ exapump sql [OPTIONS] [SQL]
 ```bash
 exapump sql "SELECT * FROM my_table LIMIT 10"
 ```
-
----
-
-## export
-
-Export an Exasol table or query result to a local file. Supports CSV and Parquet output with optional file splitting.
-
-```
-exapump export [OPTIONS] --output <OUTPUT> --format <FORMAT>
-```
-
-### Source (one required)
-
-| Option | Description |
-|--------|-------------|
-| `-t, --table <TABLE>` | Table to export (e.g., `schema.table`) |
-| `-q, --query <QUERY>` | SQL query to export results from |
-
-### Output Options
-
-| Option | Default | Description |
-|--------|---------|-------------|
-| `-o, --output <OUTPUT>` | (required) | Output file path |
-| `-f, --format <FORMAT>` | (required) | Export format: `csv`, `parquet` |
-| `--profile <NAME>` | (none) | Use a saved connection profile instead of the default |
-
-### CSV Options
-
-| Option | Default | Description |
-|--------|---------|-------------|
-| `--delimiter <CHAR>` | `,` | CSV field delimiter |
-| `--quote <CHAR>` | `"` | CSV quoting character |
-| `--no-header` | off | Exclude header row from output |
-| `--null-value <STR>` | `""` (empty string) | String to represent NULL values |
-
-### Parquet Options
-
-| Option | Default | Description |
-|--------|---------|-------------|
-| `--compression <CODEC>` | (none) | Compression codec: `snappy`, `gzip`, `lz4`, `zstd`, `none` |
-
-### File Splitting Options
-
-| Option | Description |
-|--------|-------------|
-| `--max-rows-per-file <N>` | Maximum rows per output file |
-| `--max-file-size <SIZE>` | Maximum file size per output file (e.g., `500KB`, `1MB`, `2GB`) |
-
-When splitting is enabled, output files are numbered automatically (e.g., `data_000.csv`, `data_001.csv`).
-
-### Example
-
-```bash
-exapump export --table my_schema.my_table --output data.parquet --format parquet --compression zstd
-```
-
----
 
 ## interactive
 

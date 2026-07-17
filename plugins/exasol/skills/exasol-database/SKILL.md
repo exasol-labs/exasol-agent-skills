@@ -26,7 +26,7 @@ After the connection is established, determine the task type and load **only** t
 1. **SQL execution** (queries, DDL, DML, schema inspection):
    - Load: `references/exapump-reference.md` (CLI usage)
    - Load: `references/exasol-sql.md` (core SQL behavior)
-   - Load: `references/exasol-grammar.md` for the **exact statement syntax** (SELECT/DQL, DDL, DML, DCL, IMPORT/EXPORT, session & admin) — the EBNF the docs.exasol.com syntax diagrams are generated from. Consult it before inventing syntax or when unsure a clause exists. **Read only the section you need** — it is large.
+   - Load: `references/exasol-grammar.md` for the **exact statement syntax** (SELECT/DQL, DDL, DML, DCL, session & admin) — the EBNF the docs.exasol.com syntax diagrams are generated from. Consult it before inventing syntax or when unsure a clause exists. **Read only the section you need** — it is large.
    - Load: `references/exasol-grammar-functions.md` for **built-in function, operator, predicate, literal, and data-type syntax** (e.g. the exact argument order of a function). Same EBNF source, split out so statement lookups don't pull in the full function catalog.
    - Load: `references/exasol-reserved-keywords.md` and **ingest the full list before designing queries** — every reserved word (pinned to Exasol 2026.1.0) must be double-quoted when used as an identifier. On a keyword-related syntax error, re-query the running DB as described in **Before writing any SQL** in case the file has drifted from the DB version.
 
