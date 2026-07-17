@@ -23,7 +23,9 @@ Typical patterns:
 
 - S3 long-lived access key and secret key as named values in `IDENTIFIED BY`, with an empty `USER`
 - S3 temporary access key and secret key as named values in `IDENTIFIED BY`, with `SESSION TOKEN` for expiring credentials
-- Azure SAS token in `IDENTIFIED BY`
+- Azure account key in `IDENTIFIED BY`
+- Azure SAS token in `SAS TOKEN` for Exasol 2026.1 or later
+- Azure Microsoft Entra ID in `IDENTIFIED BY`, `CLIENT ID`, and `TENANT ID` for Exasol 2026.1 or later
 - GCS access key and secret key in `IDENTIFIED BY`
 - Prefer `ALTER CONNECTION` when a credential changes and existing grants should stay intact
 
@@ -39,9 +41,19 @@ TO 'https://my-bucket.s3.eu-west-1.amazonaws.com'
 USER '' IDENTIFIED BY 'S3_ACCESS_KEY=<temporary-access-key>;S3_SECRET_KEY=<temporary-secret-key>'
 SESSION TOKEN '<session-token>';
 
-CREATE OR REPLACE CONNECTION azure_conn
-TO 'https://myaccount.blob.core.windows.net/mycontainer'
-USER '' IDENTIFIED BY 'AZURE_SAS_TOKEN=<sas-token>';
+CREATE OR REPLACE CONNECTION azure_key_conn
+TO 'DefaultEndpointsProtocol=https;EndpointSuffix=core.windows.net'
+USER '<account-name>' IDENTIFIED BY '<account-key>';
+
+CREATE OR REPLACE CONNECTION azure_sas_conn
+TO 'DefaultEndpointsProtocol=https;EndpointSuffix=core.windows.net'
+USER '<account-name>' SAS TOKEN '<sas-token>';
+
+CREATE OR REPLACE CONNECTION azure_entra_conn
+TO 'DefaultEndpointsProtocol=https;EndpointSuffix=core.windows.net'
+USER '<account-name>' IDENTIFIED BY '<client-secret>'
+CLIENT ID '<client-id>'
+TENANT ID '<tenant-id>';
 
 CREATE OR REPLACE CONNECTION gcs_conn
 TO 'https://storage.googleapis.com/my-bucket'
@@ -58,6 +70,10 @@ TO 'https://my-bucket.s3.eu-west-1.amazonaws.com'
 USER '' IDENTIFIED BY 'S3_ACCESS_KEY=<temporary-access-key>;S3_SECRET_KEY=<temporary-secret-key>'
 SESSION TOKEN '<session-token>';
 ```
+
+For Azure Blob export targets, use the Azure connection object with
+`AT CLOUD AZURE BLOBSTORAGE <connection>` and a file path in
+`'<container>/<blob>'` form.
 
 ## Security and Boundaries
 
@@ -86,6 +102,24 @@ For terminal local exports on the user's machine, `exapump export` is usually th
 EXPORT "MY_SCHEMA"."MY_TABLE"
 INTO LOCAL CSV FILE '/path/to/orders.csv'
 WITH COLUMN NAMES;
+```
+
+## Export Reject Handling
+
+Native `EXPORT` file and database destinations support `REJECT LIMIT` to
+control how many invalid source rows are tolerated before the statement fails.
+
+- Omit the clause or use `REJECT LIMIT 0` to fail on the first invalid row
+- Use `REJECT LIMIT <n>` to allow at most `<n>` invalid rows
+- Use `REJECT LIMIT UNLIMITED` only when the workflow intentionally tolerates all row-level export rejects
+- Do not add an `ERRORS INTO` destination for export rejects; that reject-table pattern belongs to `IMPORT`
+
+```sql
+EXPORT "MY_SCHEMA"."MY_TABLE"
+INTO CSV AT s3_conn
+FILE 'exports/orders.csv'
+WITH COLUMN NAMES
+REJECT LIMIT 5;
 ```
 
 ## Local File Workflows With exapump

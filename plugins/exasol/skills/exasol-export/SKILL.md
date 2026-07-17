@@ -1,6 +1,6 @@
 ---
 name: exasol-export
-description: "Use Exasol EXPORT SQL plus exapump local file export workflows for moving data out of Exasol. Covers native CSV/FBV export, local CSV/Parquet exports with exapump, connection objects, and export credential patterns."
+description: "Use Exasol EXPORT SQL plus exapump local file export workflows for moving data out of Exasol. Covers native CSV/FBV export, local CSV/Parquet exports with exapump, connection objects, reject limits, and export credential patterns."
 ---
 
 # Exasol Export Skill
@@ -20,7 +20,7 @@ Ensure a working `exapump` profile before giving terminal workflows that use
 6. If no profiles exist, tell the user to run `exapump profile add default` and retry.
 7. Never read or reference the exapump configuration file.
 
-Trigger when the user mentions **EXPORT**, **EXPORT INTO**, **export table**, **export local file**, **exapump export**, **export CSV**, **export Parquet**, **export to S3**, **export to Azure Blob**, **export to GCS**, **export to FTP**, **export to SFTP**, **export to HTTP**, **export to HTTPS**, or **CREATE CONNECTION** together with export target setup intent.
+Trigger when the user mentions **EXPORT**, **EXPORT INTO**, **export table**, **export local file**, **exapump export**, **export CSV**, **export Parquet**, **export to S3**, **export to Azure Blob**, **export to GCS**, **export to FTP**, **export to SFTP**, **export to HTTP**, **export to HTTPS**, **REJECT LIMIT** with export intent, or **CREATE CONNECTION** together with export target setup intent.
 
 ## Routing Algorithm
 
@@ -29,7 +29,7 @@ Trigger when the user mentions **EXPORT**, **EXPORT INTO**, **export table**, **
    - Load: `references/export.md`
 
 2. **Remote or cloud files reachable by Exasol**
-   - Trigger phrases: `EXPORT`, `EXPORT INTO`, `S3`, `Azure Blob`, `GCS`, `FTP`, `SFTP`, `HTTP`, `HTTPS`, `CREATE CONNECTION` with export target setup intent
+   - Trigger phrases: `EXPORT`, `EXPORT INTO`, `S3`, `Azure Blob`, `GCS`, `FTP`, `SFTP`, `HTTP`, `HTTPS`, `REJECT LIMIT`, `CREATE CONNECTION` with export target setup intent
    - Load: `references/export.md`
 
 3. **Connection-object export setup**
