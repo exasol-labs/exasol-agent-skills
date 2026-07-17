@@ -22,7 +22,7 @@
 >
 > - **DB version:** branch `master` (`master` = major version 8, incl. 2025; `R7.1` = 7.1)
 > - **Source commit:** `27ab185403619f8f1e37dfeb9b3cd6287a60047b`
-> - **Regenerate:** re-vendor the `diagrams/*.bnf` files from [`exasol/sql-syntax-diagrams`](https://github.com/exasol/sql-syntax-diagrams) at the branch above, then keep direct import/export workflow grammar in the dedicated import/export skills.
+> - **Regenerate:** re-vendor the `diagrams/*.bnf` files from [`exasol/sql-syntax-diagrams`](https://github.com/exasol/sql-syntax-diagrams) at the branch above, then keep direct import/export workflow syntax out of this database reference.
 
 ## Statements in this file
 

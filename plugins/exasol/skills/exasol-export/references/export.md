@@ -5,7 +5,8 @@
 Choose the narrowest matching workflow:
 
 - Local CSV or Parquet files on the user's machine: use `exapump export`
-- Remote CSV or FBV targets reachable by Exasol through supported targets such as S3, Azure Blob Storage, GCS, FTP/SFTP, HTTP/HTTPS, or database/JDBC targets: use native `EXPORT`
+- Remote CSV or FBV file targets reachable by Exasol through supported targets such as S3, Azure Blob Storage, GCS, FTP/SFTP, or HTTP/HTTPS: use native `EXPORT`
+- Database or JDBC destinations reachable by Exasol: use native `EXPORT`
 - For the matching data-movement-into-Exasol workflow, use **exasol-import** for native `IMPORT`, local upload workflows, Parquet import, reject handling, and staging-based loading.
 
 ## Connection Objects
@@ -68,8 +69,8 @@ SESSION TOKEN '<session-token>';
 
 ## Native EXPORT
 
-Use native `EXPORT` when Exasol should write the result to a remote target or to a JDBC/EXAplus-style local target.
-Native `EXPORT` covers CSV and FBV file formats. For local Parquet files on the user's machine, use `exapump export`.
+Use native `EXPORT` when Exasol should write the result to a remote file target, database/JDBC destination, or JDBC/EXAplus-style local target.
+For file exports, native `EXPORT` covers CSV and FBV. For local Parquet files on the user's machine, use `exapump export`.
 
 ```sql
 EXPORT "MY_SCHEMA"."MY_TABLE"
