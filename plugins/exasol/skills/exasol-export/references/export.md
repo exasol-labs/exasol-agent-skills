@@ -36,7 +36,7 @@ USER '' IDENTIFIED BY 'S3_ACCESS_KEY=<access-key>;S3_SECRET_KEY=<secret-key>';
 
 CREATE OR REPLACE CONNECTION s3_temp_conn
 TO 'https://my-bucket.s3.eu-west-1.amazonaws.com'
-USER '' IDENTIFIED BY 'S3_ACCESS_KEY=<temporary-access-key>;S3_SECRET_KEY=<secret-key>'
+USER '' IDENTIFIED BY 'S3_ACCESS_KEY=<temporary-access-key>;S3_SECRET_KEY=<temporary-secret-key>'
 SESSION TOKEN '<session-token>';
 
 CREATE OR REPLACE CONNECTION azure_conn
@@ -55,7 +55,7 @@ When the token or secret changes, refresh the existing object with
 ```sql
 ALTER CONNECTION s3_temp_conn
 TO 'https://my-bucket.s3.eu-west-1.amazonaws.com'
-USER '' IDENTIFIED BY 'S3_ACCESS_KEY=<temporary-access-key>;S3_SECRET_KEY=<secret-key>'
+USER '' IDENTIFIED BY 'S3_ACCESS_KEY=<temporary-access-key>;S3_SECRET_KEY=<temporary-secret-key>'
 SESSION TOKEN '<session-token>';
 ```
 
