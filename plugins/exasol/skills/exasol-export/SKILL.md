@@ -36,7 +36,12 @@ Trigger when the user mentions **EXPORT**, **EXPORT INTO**, **export table**, **
    - Trigger phrases: `CREATE CONNECTION` with export target setup intent, `ALTER CONNECTION`, `temporary credentials`, `SESSION TOKEN`
    - Load: `references/export.md`
 
+4. **Script-based export target**
+   - Trigger phrases: `EXPORT INTO SCRIPT`, `export script`, `custom export script`
+   - Load: `references/export.md`
+
 ## Notes
 
 - Use this skill for direct data movement out of Exasol.
 - Use **exasol-import** for native `IMPORT`, local upload workflows, Parquet import, reject handling, and staging-based loading into Exasol.
+- Use **exasol-extension-catalog** when the user asks for connector, extension, or integration-based data transfer instead of direct native `EXPORT` or `exapump export`.

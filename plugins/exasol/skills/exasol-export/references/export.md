@@ -100,6 +100,19 @@ Typical pattern:
 - For Parquet compression, add `--compression <snappy|gzip|lz4|zstd|none>`
 - For split output files, add `--max-rows-per-file <n>` or `--max-file-size <size>`
 
+## Script-Based EXPORT
+
+Use native `EXPORT ... INTO SCRIPT` only when the user explicitly asks for a script target.
+Keep this skill focused on the export statement and route script implementation details to **exasol-udfs**.
+Add `WITH <property> = <value>` only when the target script expects properties.
+
+```sql
+EXPORT "MY_SCHEMA"."MY_TABLE"
+INTO SCRIPT "MY_SCHEMA"."MY_EXPORT_SCRIPT";
+```
+
 ## Adjacent Routing
 
 - If the user wants to load data into Exasol instead of writing it out, switch to **exasol-import** for native `IMPORT`, local upload workflows, Parquet import, reject handling, and staging-based loading.
+- If the user asks for connector, extension, or integration-based data transfer instead of direct native `EXPORT` or `exapump export`, switch to **exasol-extension-catalog**.
+- If the user needs to create or change the script used by `EXPORT ... INTO SCRIPT`, switch to **exasol-udfs** for script implementation details.
