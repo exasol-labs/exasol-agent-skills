@@ -2,7 +2,7 @@
 
 ## v0.20.0
 
-- Add exasol-cloud-storage-extension skill for Cloud Storage Extension loading workflows
+- Add exasol-cloud-storage-extension skill for Cloud Storage Extension import/export workflows
 
 ## v0.19.0
 

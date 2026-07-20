@@ -91,7 +91,7 @@ See [`plugins/exasol/skills/exasol-export/SKILL.md`](plugins/exasol/skills/exaso
 
 ### Exasol Cloud Storage Extension Skill
 
-Use the Exasol Cloud Storage Extension when the task is an extension-based object-storage loading workflow rather than direct native IMPORT.
+Use the Exasol Cloud Storage Extension when the task is an extension-based object-storage import/export workflow rather than direct native IMPORT or EXPORT.
 
 See [`plugins/exasol/skills/exasol-cloud-storage-extension/SKILL.md`](plugins/exasol/skills/exasol-cloud-storage-extension/SKILL.md) for details.
 

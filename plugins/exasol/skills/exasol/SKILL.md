@@ -31,7 +31,7 @@ object-store file movement intent, prefer **exasol-database**.
    - Activate: **exasol-import**
 
 3. **Cloud Storage Extension workflows**
-   - Trigger phrases: `Cloud Storage Extension`, `extension-based object-storage loading`, `extension-based Parquet reader`, `Avro`, `ORC`, `extension-based file reader`
+   - Trigger phrases: `Cloud Storage Extension`, `extension-based object-storage loading`, `extension-based Parquet reader`, `Avro through Cloud Storage Extension`, `ORC through Cloud Storage Extension`, `Delta through Cloud Storage Extension`, `extension-based Parquet export`, `extension-based file reader`
    - Activate: **exasol-cloud-storage-extension**
 
 4. **Export workflows**
