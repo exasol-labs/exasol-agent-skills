@@ -77,13 +77,16 @@ Cloud Storage Extension setup form and is allowed by Exasol script syntax.
 
 Minimal setup shape:
 
+The examples below assume the extension JAR was uploaded to the default BucketFS
+bucket under `jars/`, matching the repository's BucketFS examples.
+
 ```sql
 CREATE SCHEMA IF NOT EXISTS CLOUD_STORAGE_EXTENSION;
 OPEN SCHEMA CLOUD_STORAGE_EXTENSION;
 
 CREATE OR REPLACE JAVA SET SCRIPT IMPORT_PATH(...) EMITS (...) AS
   %scriptclass com.exasol.cloudetl.scriptclasses.FilesImportQueryGenerator;
-  %jar /buckets/bfsdefault/<bucket>/exasol-cloud-storage-extension-<version>.jar;
+  %jar /buckets/bfsdefault/default/jars/exasol-cloud-storage-extension-<version>.jar;
 /
 
 CREATE OR REPLACE JAVA SCALAR SCRIPT IMPORT_METADATA(...) EMITS (
@@ -93,22 +96,22 @@ CREATE OR REPLACE JAVA SCALAR SCRIPT IMPORT_METADATA(...) EMITS (
   end_index DECIMAL(36, 0)
 ) AS
   %scriptclass com.exasol.cloudetl.scriptclasses.FilesMetadataReader;
-  %jar /buckets/bfsdefault/<bucket>/exasol-cloud-storage-extension-<version>.jar;
+  %jar /buckets/bfsdefault/default/jars/exasol-cloud-storage-extension-<version>.jar;
 /
 
 CREATE OR REPLACE JAVA SET SCRIPT IMPORT_FILES(...) EMITS (...) AS
   %scriptclass com.exasol.cloudetl.scriptclasses.FilesDataImporter;
-  %jar /buckets/bfsdefault/<bucket>/exasol-cloud-storage-extension-<version>.jar;
+  %jar /buckets/bfsdefault/default/jars/exasol-cloud-storage-extension-<version>.jar;
 /
 
 CREATE OR REPLACE JAVA SET SCRIPT EXPORT_PATH(...) EMITS (...) AS
   %scriptclass com.exasol.cloudetl.scriptclasses.TableExportQueryGenerator;
-  %jar /buckets/bfsdefault/<bucket>/exasol-cloud-storage-extension-<version>.jar;
+  %jar /buckets/bfsdefault/default/jars/exasol-cloud-storage-extension-<version>.jar;
 /
 
 CREATE OR REPLACE JAVA SET SCRIPT EXPORT_TABLE(...) EMITS (ROWS_AFFECTED INT) AS
   %scriptclass com.exasol.cloudetl.scriptclasses.TableDataExporter;
-  %jar /buckets/bfsdefault/<bucket>/exasol-cloud-storage-extension-<version>.jar;
+  %jar /buckets/bfsdefault/default/jars/exasol-cloud-storage-extension-<version>.jar;
 /
 ```
 
@@ -119,7 +122,7 @@ the extension statement.
 
 ```sql
 CREATE OR REPLACE CONNECTION S3_CONNECTION
-TO ''
+TO 'https://<bucket>.s3.<region>.amazonaws.com'
 USER ''
 IDENTIFIED BY 'S3_ACCESS_KEY=<aws_access_key>;S3_SECRET_KEY=<aws_secret_key>';
 ```
