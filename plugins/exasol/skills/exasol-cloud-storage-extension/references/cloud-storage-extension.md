@@ -122,7 +122,7 @@ the extension statement.
 
 ```sql
 CREATE OR REPLACE CONNECTION S3_CONNECTION
-TO 'https://<bucket>.s3.<region>.amazonaws.com'
+TO ''
 USER ''
 IDENTIFIED BY 'S3_ACCESS_KEY=<aws_access_key>;S3_SECRET_KEY=<aws_secret_key>';
 ```
