@@ -11,6 +11,11 @@ Use this skill whenever the user asks about Exasol. The user does not need to kn
 
 Choose the narrowest matching route. If multiple routes apply, load them in dependency order.
 
+When a request mentions `FROM SCRIPT CLOUD_STORAGE_EXTENSION`,
+`INTO SCRIPT CLOUD_STORAGE_EXTENSION`, `CLOUD_STORAGE_EXTENSION.IMPORT_PATH`,
+or `CLOUD_STORAGE_EXTENSION.EXPORT_PATH`, prefer
+**exasol-cloud-storage-extension** over native import or export routes.
+
 When a request mentions `IMPORT`, `IMPORT INTO`, `exapump upload`, or
 other import-specific phrases, prefer **exasol-import** over the broader
 database route even if the wording also contains generic terms such as `SQL`
@@ -31,7 +36,7 @@ object-store file movement intent, prefer **exasol-database**.
    - Activate: **exasol-import**
 
 3. **Cloud Storage Extension workflows**
-   - Trigger phrases: `Cloud Storage Extension`, `extension-based object-storage loading`, `extension-based Parquet reader`, `Avro through Cloud Storage Extension`, `ORC through Cloud Storage Extension`, `Delta through Cloud Storage Extension`, `extension-based Parquet export`, `extension-based file reader`
+   - Trigger phrases: `Cloud Storage Extension`, `FROM SCRIPT CLOUD_STORAGE_EXTENSION`, `INTO SCRIPT CLOUD_STORAGE_EXTENSION`, `CLOUD_STORAGE_EXTENSION.IMPORT_PATH`, `CLOUD_STORAGE_EXTENSION.EXPORT_PATH`, `extension-based object-storage loading`, `extension-based Parquet reader`, `Avro through Cloud Storage Extension`, `ORC through Cloud Storage Extension`, `Delta through Cloud Storage Extension`, `extension-based Parquet export`, `extension-based file reader`
    - Activate: **exasol-cloud-storage-extension**
 
 4. **Export workflows**

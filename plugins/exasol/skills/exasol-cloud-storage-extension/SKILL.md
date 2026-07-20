@@ -5,12 +5,12 @@ description: "Use Exasol Cloud Storage Extension workflows for moving structured
 
 # Exasol Cloud Storage Extension Skill
 
-Trigger when the user mentions **Cloud Storage Extension**, **extension-based object-storage loading**, **extension-based Parquet reader**, **Avro through Cloud Storage Extension**, **ORC through Cloud Storage Extension**, **Delta through Cloud Storage Extension**, **extension-based Parquet export**, or **extension-based file reader**.
+Trigger when the user mentions **Cloud Storage Extension**, **FROM SCRIPT CLOUD_STORAGE_EXTENSION**, **INTO SCRIPT CLOUD_STORAGE_EXTENSION**, **CLOUD_STORAGE_EXTENSION.IMPORT_PATH**, **CLOUD_STORAGE_EXTENSION.EXPORT_PATH**, **extension-based object-storage loading**, **extension-based Parquet reader**, **Avro through Cloud Storage Extension**, **ORC through Cloud Storage Extension**, **Delta through Cloud Storage Extension**, **extension-based Parquet export**, or **extension-based file reader**.
 
 ## Routing Algorithm
 
 1. **Object storage and file-reader extension workflows**
-   - Trigger phrases: `Cloud Storage Extension`, `extension-based object-storage loading`, `extension-based Parquet reader`, `ORC through Cloud Storage Extension`, `Avro through Cloud Storage Extension`, `Delta through Cloud Storage Extension`, `extension-based Parquet export`
+   - Trigger phrases: `Cloud Storage Extension`, `FROM SCRIPT CLOUD_STORAGE_EXTENSION`, `INTO SCRIPT CLOUD_STORAGE_EXTENSION`, `CLOUD_STORAGE_EXTENSION.IMPORT_PATH`, `CLOUD_STORAGE_EXTENSION.EXPORT_PATH`, `extension-based object-storage loading`, `extension-based Parquet reader`, `ORC through Cloud Storage Extension`, `Avro through Cloud Storage Extension`, `Delta through Cloud Storage Extension`, `extension-based Parquet export`
    - Load: `references/cloud-storage-extension.md`
 
 ## Notes

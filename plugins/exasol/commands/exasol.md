@@ -23,6 +23,7 @@ When invoked:
 
 1. **Classify the task before checking connections.**
    - Database, general SQL outside direct `IMPORT` or `EXPORT`, schemas, tables, or general `CREATE CONNECTION` questions -> use **exasol-database** behavior.
+   - SQL that contains `FROM SCRIPT CLOUD_STORAGE_EXTENSION`, `INTO SCRIPT CLOUD_STORAGE_EXTENSION`, `CLOUD_STORAGE_EXTENSION.IMPORT_PATH`, or `CLOUD_STORAGE_EXTENSION.EXPORT_PATH` -> use **exasol-cloud-storage-extension** behavior.
    - Import workflows such as `IMPORT` or `IMPORT INTO`, local CSV or Parquet upload, remote file loading via connection objects, `CREATE CONNECTION` for import/object-store loading, or `exapump upload` -> use **exasol-import** behavior.
    - Cloud Storage Extension workflows such as extension-based object-storage file loading, `Cloud Storage Extension`, Avro, ORC, or Delta through Cloud Storage Extension, extension-based Parquet readers, or extension-based Parquet export -> use **exasol-cloud-storage-extension** behavior.
    - Export workflows such as `EXPORT`, `EXPORT INTO`, local CSV or Parquet export, remote file export via connection objects, or `exapump export` -> use **exasol-export** behavior.
