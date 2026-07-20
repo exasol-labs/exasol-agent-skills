@@ -72,6 +72,9 @@ Use **exasol-bucketfs** for BucketFS upload/list/remove operations. Use
 definitions. In Exasol SaaS, the JAR may already exist in the SaaS BucketFS
 location, but the available version can differ from public documentation.
 
+Keep `IMPORT_METADATA` as `JAVA SCALAR SCRIPT ... EMITS (...)`; this is the
+Cloud Storage Extension setup form and is allowed by Exasol script syntax.
+
 Minimal setup shape:
 
 ```sql
