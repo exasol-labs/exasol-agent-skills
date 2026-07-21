@@ -5,7 +5,7 @@ description: "Use Exasol document-file virtual schemas for federated read-only a
 
 # Exasol Document Virtual Schemas Skill
 
-Trigger when the user mentions **document files virtual schema**, **S3 document files**, **BucketFS document files**, **Google Cloud Storage document files**, **Azure Blob document files**, or **Azure Data Lake Storage Gen2 document files**.
+Trigger when the user mentions **document files virtual schema**, **document-file virtual schema adapter**, **S3 document files**, **BucketFS document files**, **Google Cloud Storage document files**, **Azure Blob document files**, or **Azure Data Lake Storage Gen2 document files**.
 
 ## Routing Algorithm
 

@@ -48,11 +48,11 @@ Choose the narrowest maintained adapter family that fits the source:
 
 Document-file adapter families called out in current Exasol references include:
 
-- S3 document files virtual schema
-- BucketFS document files virtual schema
-- Google Cloud Storage document files virtual schema
-- Azure Blob Storage document files virtual schema
-- Azure Data Lake Storage Gen2 document files virtual schema
+- S3 document files
+- BucketFS document files
+- Google Cloud Storage document files
+- Azure Blob document files
+- Azure Data Lake Gen2 document files
 
 Choose the maintained document-file adapter family that matches the storage system instead of forcing a JDBC-oriented workflow onto object storage.
 
