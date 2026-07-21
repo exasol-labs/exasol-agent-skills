@@ -95,6 +95,12 @@ Use the Exasol Cloud Storage Extension when the task is an extension-based objec
 
 See [`plugins/exasol/skills/exasol-cloud-storage-extension/SKILL.md`](plugins/exasol/skills/exasol-cloud-storage-extension/SKILL.md) for details.
 
+### Exasol JDBC Virtual Schemas Skill
+
+Use Exasol JDBC-based virtual schemas for federated read-only queries against external databases without copying the source data into Exasol.
+
+See [`plugins/exasol/skills/exasol-jdbc-virtual-schemas/SKILL.md`](plugins/exasol/skills/exasol-jdbc-virtual-schemas/SKILL.md) for details.
+
 ### Exasol Extension Catalog Skill
 
 Choose the right Exasol tool, extension, connector, integration, or architecture pattern for deployment, data loading, exploration, AI/ML enrichment, BI/API surfaces, governance, and scale.
