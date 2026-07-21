@@ -12,6 +12,8 @@ Use them when:
 
 Do not use them for write-back workflows. Virtual schemas are read-only.
 
+Using virtual schemas to copy data into Exasol is technically possible but inefficient for bulk loads — prefer **exasol-import** or **exasol-cloud-storage-extension** for that use case.
+
 ## Basic Creation Pattern
 
 Typical setup flow:
@@ -30,8 +32,8 @@ CREATE OR REPLACE JAVA ADAPTER SCRIPT adapter_schema.doc_adapter AS
 /
 
 CREATE OR REPLACE CONNECTION doc_conn
-TO 'https://my-bucket.s3.eu-west-1.amazonaws.com'
-USER 'user' IDENTIFIED BY 'password';
+TO 'https://<bucket-name>.s3.<region>.amazonaws.com'
+USER '<aws-access-key-id>' IDENTIFIED BY '<aws-secret-access-key>';
 
 CREATE VIRTUAL SCHEMA doc_vs
 USING adapter_schema.doc_adapter
@@ -66,6 +68,20 @@ Use narrower refresh scope when the adapter supports it, instead of recreating t
 
 If the exact refresh scope options matter for a specific adapter, check that adapter's documented properties before issuing the statement.
 
+## Modifying Virtual Schema Properties
+
+Use `ALTER VIRTUAL SCHEMA ... SET` to update adapter properties after the virtual schema is created:
+
+```sql
+-- Change the connection used by the virtual schema
+ALTER VIRTUAL SCHEMA "DOC_VS" SET CONNECTION_NAME = '<new-connection>';
+
+-- Update any supported adapter property
+ALTER VIRTUAL SCHEMA "DOC_VS" SET <PROPERTY_NAME> = '<new-value>';
+```
+
+Check the selected adapter's README or release documentation for the full list of supported properties and their effects.
+
 ## Security and Privileges
 
 - keep credentials in Exasol connection objects instead of embedding them in the adapter script text
@@ -82,7 +98,7 @@ Start with the workflow below:
 2. Check that the correct adapter JAR is available to the adapter script
 3. Run `EXPLAIN VIRTUAL` on a representative query to inspect the actual pushdown
 4. If metadata is stale, run the appropriate refresh workflow
-5. If the problem is adapter-side, switch to **exasol-virtual-schema-adapter-development**
+5. If the problem is adapter-side, check the adapter's GitHub repository for known issues and open a support ticket if needed.
 
 `EXPLAIN VIRTUAL` is the first SQL-level debugging tool when the question is "what is Exasol pushing down?" or "why is this query not behaving as expected?".
 

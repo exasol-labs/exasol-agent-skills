@@ -26,5 +26,4 @@ Trigger when the user mentions **document files virtual schema**, **S3 document 
 - Use this skill for federated read-only access through virtual schemas.
 - Use **exasol-import** or **exasol-cloud-storage-extension** when the user wants to copy data into Exasol instead of querying it in place.
 - Use **exasol-jdbc-virtual-schemas** when the source is a JDBC database rather than object or file storage.
-- Use **exasol-virtual-schema-adapter-development** when the user needs custom adapter build or remote debugging work.
 - Use **exasol-bucketfs** if the task is specifically about uploading the adapter JAR into BucketFS.
