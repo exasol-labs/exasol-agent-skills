@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.20.0
+
+- Add exasol-cloud-storage-extension skill for Cloud Storage Extension import/export workflows
+
 ## v0.19.0
 
 - Add exasol-export skill for native Exasol export workflows

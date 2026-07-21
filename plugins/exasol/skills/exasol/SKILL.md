@@ -11,6 +11,16 @@ Use this skill whenever the user asks about Exasol. The user does not need to kn
 
 Choose the narrowest matching route. If multiple routes apply, load them in dependency order.
 
+When a request mentions `FROM SCRIPT CLOUD_STORAGE_EXTENSION`,
+`INTO SCRIPT CLOUD_STORAGE_EXTENSION`, `CLOUD_STORAGE_EXTENSION.IMPORT_PATH`,
+or `CLOUD_STORAGE_EXTENSION.EXPORT_PATH`, prefer
+**exasol-cloud-storage-extension** over native import or export routes.
+
+When a request mentions importing `Avro`, `ORC`, or `Delta` from object storage
+such as S3, Azure Blob Storage, Azure Data Lake, Google Cloud Storage, HDFS, or
+Alluxio, prefer **exasol-cloud-storage-extension** unless the user clearly asks
+for native `IMPORT`.
+
 When a request mentions `IMPORT`, `IMPORT INTO`, `exapump upload`, or
 other import-specific phrases, prefer **exasol-import** over the broader
 database route even if the wording also contains generic terms such as `SQL`
@@ -30,35 +40,39 @@ object-store file movement intent, prefer **exasol-database**.
    - Trigger phrases: `IMPORT`, `IMPORT INTO`, `upload CSV`, `upload Parquet`, `local file load`, `S3 import`, `Azure Blob import`, `GCS import`, `CREATE CONNECTION` with import or object-store loading intent, `Parquet import`, `exapump upload`
    - Activate: **exasol-import**
 
-3. **Export workflows**
+3. **Cloud Storage Extension workflows**
+   - Trigger phrases: `Cloud Storage Extension`, `FROM SCRIPT CLOUD_STORAGE_EXTENSION`, `INTO SCRIPT CLOUD_STORAGE_EXTENSION`, `CLOUD_STORAGE_EXTENSION.IMPORT_PATH`, `CLOUD_STORAGE_EXTENSION.EXPORT_PATH`, `Avro from object storage`, `ORC from object storage`, `Delta from object storage`, `ORC from S3`, `Avro from S3`, `Delta from S3`, `extension-based object-storage loading`, `extension-based Parquet reader`, `Avro through Cloud Storage Extension`, `ORC through Cloud Storage Extension`, `Delta through Cloud Storage Extension`, `extension-based Parquet export`, `extension-based file reader`
+   - Activate: **exasol-cloud-storage-extension**
+
+4. **Export workflows**
    - Trigger phrases: `EXPORT`, `EXPORT INTO`, `export table`, `export local file`, `export CSV`, `export Parquet`, `export to S3`, `export to Azure Blob`, `export to GCS`, `export to FTP`, `export to SFTP`, `export to HTTP`, `export to HTTPS`, `CREATE CONNECTION` with export target setup intent, `exapump export`
    - Activate: **exasol-export**
 
-4. **Notebook-connector AI setup**
+5. **Notebook-connector AI setup**
    - Trigger phrases: `Secrets`, `scs`, `secure config store`, `notebook-connector setup`, `db_host_name`, `db_schema`, `storage_backend`, `huggingface_token`
    - Activate: **exasol-ai-setup**
 
-5. **Transformers Extension workflows**
+6. **Transformers Extension workflows**
    - Trigger phrases: `Transformers Extension`, `TE extension`, `initialize_te_extension`, `deploy_scripts`, `TE UDF`, `PYTHON3_TE`, `Hugging Face models in Exasol`
    - Activate: **exasol-transformers**
 
-6. **Exasol tools, extensions, connectors, integrations, and architecture patterns**
+7. **Exasol tools, extensions, connectors, integrations, and architecture patterns**
    - Trigger phrases: `extension`, `connector`, `integration`, `catalog`, `tool`, `which Exasol tool`, `Virtual Schema adapter`, `MCP`, `Text-to-SQL`, `Lakehouse Turbo`, `Terraform`, `Ansible`, `Databricks`, `SAP`, `Power BI`, `Tableau`, `migration`, `governance`, `observability`, `semantic layer`, `Agent Control Plane`
    - Activate: **exasol-extension-catalog**
 
-7. **BucketFS file management**
+8. **BucketFS file management**
    - Trigger phrases: `BucketFS`, `bfsdefault`, `bucket`, `upload jar`, `upload model`, `list files`, `download from bucket`, `delete bucket file`
    - Activate: **exasol-bucketfs**
 
-8. **Notebook-connector connection helpers**
+9. **Notebook-connector connection helpers**
    - Trigger phrases: `open_pyexasol_connection`, `open_sqlalchemy_connection`, `open_ibis_connection`, `open_bucketfs_bucket`, `open_bucketfs_location`, `get_backend`, `connection helper`, `notebook-connector`
    - Activate: **exasol-notebook-connections**
 
-9. **Notebook Connector local Docker database workflows**
+10. **Notebook Connector local Docker database workflows**
    - Trigger phrases: `bring_itde_up`, `restart_itde`, `get_itde_status`, `take_itde_down`, `ITDE`
    - Activate: **exasol-itde**
 
-10. **Text AI Extension workflows**
+11. **Text AI Extension workflows**
    - Trigger phrases: `Text AI Extension`, `TXAIE`, `deploy_license`, `initialize_text_ai_extension`, `Extraction`, `NamedEntityExtractor`, `PipelineExtractor`, `BranchExtractor`, `StandardExtractor`, `TopicClassifierExtractor`, `zero-shot classification`, `feature extraction`, `PYTHON3_TXAIE`
    - Activate: **exasol-text-ai**
 
@@ -67,15 +81,15 @@ When a user mentions `Text AI Extension`, `TXAIE`, `deploy_license`,
 `NamedEntityExtractor`, prefer **exasol-text-ai** over the broader
 **exasol-extension-catalog** route.
 
-11. **UDFs and Script Language Containers**
+12. **UDFs and Script Language Containers**
    - Trigger phrases: `UDF`, `CREATE SCRIPT`, `SCALAR`, `SET script`, `ExaIterator`, `Python UDF`, `Java UDF`, `Lua UDF`, `R UDF`, `SLC`, `Script Language Container`, `exaslct`
    - Activate: **exasol-udfs**
 
-12. **Exasol Personal setup**
+13. **Exasol Personal setup**
    - Trigger phrases: `set up Exasol`, `Exasol Personal`, `deploy Exasol`, `install Exasol on AWS`, `new Exasol database`
    - Activate: **exasol-setup-personal**
 
-13. **Distributed ML, machine learning, data mining, iterative HPC**
+14. **Distributed ML, machine learning, data mining, iterative HPC**
    - Trigger phrases: `distributed ML`, `machine learning`, `train model`, `batch inference`,
      `prediction`, `feature engineering`, `hyperparameter`, `PyTorch`, `TensorFlow`,
      `scikit-learn`, `RAPIDS`, `GPU model`, `model deployment`, `distributed training`,
