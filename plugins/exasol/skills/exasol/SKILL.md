@@ -64,9 +64,10 @@ object-store file movement intent, prefer **exasol-database**.
 
 
 6. **Document-file virtual schema workflows**
-   - Trigger phrases: `document files virtual schema`, `S3 document files`, `BucketFS document files`, `Google Cloud Storage document files`, `Azure Blob document files`, `Azure Data Lake Storage Gen2 document files`, `document-file adapter`, `query object storage via virtual schema`
+   - Trigger phrases: `document files virtual schema`, `document-file virtual schema`, `S3 document files`, `BucketFS document files`, `Google Cloud Storage document files`, `Azure Blob document files`, `Azure Data Lake Storage Gen2 document files`, `document-file virtual schema adapter`, `query object storage via virtual schema`
    - Activate: **exasol-document-virtual-schemas**
-8. **Notebook-connector AI setup**
+
+7. **Notebook-connector AI setup**
    - Trigger phrases: `Secrets`, `scs`, `secure config store`, `notebook-connector setup`, `db_host_name`, `db_schema`, `storage_backend`, `huggingface_token`
    - Activate: **exasol-ai-setup**
 
@@ -107,7 +108,7 @@ When a user mentions `Text AI Extension`, `TXAIE`, `deploy_license`,
    - Trigger phrases: `set up Exasol`, `Exasol Personal`, `deploy Exasol`, `install Exasol on AWS`, `new Exasol database`
    - Activate: **exasol-setup-personal**
 
-15. **Distributed ML, machine learning, data mining, iterative HPC**
+16. **Distributed ML, machine learning, data mining, iterative HPC**
    - Trigger phrases: `distributed ML`, `machine learning`, `train model`, `batch inference`,
      `prediction`, `feature engineering`, `hyperparameter`, `PyTorch`, `TensorFlow`,
      `scikit-learn`, `RAPIDS`, `GPU model`, `model deployment`, `distributed training`,

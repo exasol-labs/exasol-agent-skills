@@ -18,7 +18,7 @@ Trigger when the user mentions **document files virtual schema**, **S3 document 
    - Load: `references/document-virtual-schemas.md`
 
 3. **Choose the right document-file adapter family**
-   - Trigger phrases: `document virtual schema`, `S3 document files`, `BucketFS document files`, `Google Cloud Storage document files`, `Azure Blob document files`, `Azure Data Lake Storage Gen2 document files`
+   - Trigger phrases: `document-file virtual schema`, `document files virtual schema`, `S3 document files`, `BucketFS document files`, `Google Cloud Storage document files`, `Azure Blob document files`, `Azure Data Lake Storage Gen2 document files`
    - Load: `references/document-virtual-schemas.md`
 
 ## Notes
