@@ -1,11 +1,11 @@
 ---
 name: exasol-database
-description: "Exasol database interaction via exapump CLI and Exasol SQL. Covers SQL queries, schema inspection, table design, query profiling, analytics, and Exasol-specific SQL behavior outside exasol-import, exasol-export, and JDBC virtual-schema workflows."
+description: "Exasol database interaction via exapump CLI and Exasol SQL. Covers SQL queries, schema inspection, table design, query profiling, analytics, and Exasol-specific SQL behavior outside exasol-import and exasol-export."
 ---
 
 # Exasol Database Skill
 
-Trigger when the user asks for **Exasol database interaction**, **exapump**, **Exasol SQL**, **EXA_** system views, schemas, tables, or query execution outside **exasol-import**, **exasol-export**, and **exasol-jdbc-virtual-schemas**.
+Trigger when the user asks for **Exasol database interaction**, **exapump**, **Exasol SQL**, **EXA_** system views, schemas, tables, or query execution outside **exasol-import** and **exasol-export**.
 
 ## Step 0: Establish Connection
 
@@ -61,7 +61,6 @@ Multiple routes can apply — load all that match.
 This skill handles core database interaction: connecting, SQL execution, schema inspection, and table design.
 For direct native `IMPORT` and local file movement into Exasol, use **exasol-import**.
 For direct native `EXPORT` and local file movement out of Exasol, use **exasol-export**.
-For JDBC/database-source virtual schemas, use **exasol-jdbc-virtual-schemas**.
-For broad extension, connector, or non-JDBC federation selection, use **exasol-extension-catalog**.
+For broad extension, connector, or federation selection, use **exasol-extension-catalog**.
 For BucketFS file management (upload, download, list, delete), the **exasol-bucketfs** skill provides specialized guidance and will activate automatically when relevant.
 For UDF development and Script Language Containers, the **exasol-udfs** skill provides specialized guidance and will activate automatically when relevant.
