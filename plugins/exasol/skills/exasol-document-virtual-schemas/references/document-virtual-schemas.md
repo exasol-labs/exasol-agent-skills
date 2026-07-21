@@ -18,27 +18,47 @@ Using virtual schemas to copy data into Exasol is technically possible but ineff
 
 Typical setup flow:
 
-1. Upload the adapter JAR and any required driver JARs to BucketFS
-2. Create the Java adapter script
-3. Create the connection object for the remote source
-4. Create the virtual schema with the adapter and connection properties
+1. Upload the adapter JAR to BucketFS
+2. Create the Java adapter scripts: the adapter script and the Java SET UDF script that loads the document data
+3. Create or upload the EDML schema mapping file, or inline the mapping in the virtual schema properties
+4. Create the connection object for the remote source using the JSON configuration expected by the selected adapter
+5. Create the virtual schema with the adapter, connection, and `MAPPING` properties
 
 Example pattern:
 
 ```sql
 CREATE OR REPLACE JAVA ADAPTER SCRIPT adapter_schema.doc_adapter AS
   %scriptclass com.exasol.adapter.RequestDispatcher;
-  %jar /buckets/bfsdefault/default/document-virtual-schema-<version>.jar;
+  %jar /buckets/bfsdefault/default/document-files-virtual-schema-dist-<version>.jar;
+/
+
+CREATE OR REPLACE JAVA SET SCRIPT adapter_schema.import_from_document_files(
+  DATA_LOADER VARCHAR(2000000),
+  SCHEMA_MAPPING_REQUEST VARCHAR(2000000),
+  CONNECTION_NAME VARCHAR(500))
+  EMITS(...) AS
+  %scriptclass com.exasol.adapter.document.UdfEntryPoint;
+  %jar /buckets/bfsdefault/default/document-files-virtual-schema-dist-<version>.jar;
 /
 
 CREATE OR REPLACE CONNECTION doc_conn
-TO 'https://<bucket-name>.s3.<region>.amazonaws.com'
-USER '<aws-access-key-id>' IDENTIFIED BY '<aws-secret-access-key>';
+TO ''
+USER ''
+IDENTIFIED BY '{
+  "awsAccessKeyId": "<aws-access-key-id>",
+  "awsSecretAccessKey": "<aws-secret-access-key>",
+  "awsRegion": "<aws-region>",
+  "s3Bucket": "<bucket-name>"
+}';
 
 CREATE VIRTUAL SCHEMA doc_vs
 USING adapter_schema.doc_adapter
-WITH CONNECTION_NAME = 'DOC_CONN';
+WITH
+  CONNECTION_NAME = 'DOC_CONN'
+  MAPPING = '/bfsdefault/default/path/to/mappings/in/bucketfs';
 ```
+
+The `MAPPING` property points to one EDML mapping file or a BucketFS folder containing mapping files. For generated or test setups, the selected adapter can also accept inline EDML JSON in `MAPPING`; prefer uploaded mapping files for hand-maintained mappings.
 
 ## Adapter Family Selection
 
@@ -49,7 +69,6 @@ Choose the narrowest maintained adapter family that fits the source:
 Document-file adapter families called out in current Exasol references include:
 
 - S3 document files
-- BucketFS document files
 - Google Cloud Storage document files
 - Azure Blob document files
 - Azure Data Lake Gen2 document files

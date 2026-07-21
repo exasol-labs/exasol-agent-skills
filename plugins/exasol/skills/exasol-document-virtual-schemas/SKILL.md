@@ -5,20 +5,20 @@ description: "Use Exasol document-file virtual schemas for federated read-only a
 
 # Exasol Document Virtual Schemas Skill
 
-Trigger when the user mentions **document virtual schema**, **document virtual schemas**, **document files virtual schema**, **document-file virtual schema adapter**, **EXPLAIN VIRTUAL** for document-file/object-storage virtual schema troubleshooting, **S3 document files**, **BucketFS document files**, **Google Cloud Storage document files**, **Azure Blob document files**, **Azure Data Lake Gen2 document files**, or **Azure Data Lake Storage Gen2 document files**.
+Trigger when the user mentions **document virtual schema**, **document virtual schemas**, **document files virtual schema**, **document-file virtual schema adapter**, **EXPLAIN VIRTUAL** for document-file/object-storage virtual schema troubleshooting, **S3 document files**, **Google Cloud Storage document files**, **Azure Blob document files**, **Azure Data Lake Gen2 document files**, or **Azure Data Lake Storage Gen2 document files**.
 
 ## Routing Algorithm
 
 1. **Create and query a virtual schema**
-   - Trigger phrases: `document files virtual schema`, `S3 document files`, `BucketFS document files`, `Google Cloud Storage document files`, `Azure Blob document files`, `Azure Data Lake Gen2 document files`, `Azure Data Lake Storage Gen2 document files`, `query object storage`
+   - Trigger phrases: `document files virtual schema`, `S3 document files`, `Google Cloud Storage document files`, `Azure Blob document files`, `Azure Data Lake Gen2 document files`, `Azure Data Lake Storage Gen2 document files`, `query object storage`
    - Load: `references/document-virtual-schemas.md`
 
 2. **Refresh, debugging, and troubleshooting**
-   - Trigger phrases: `document files virtual schema`, `S3 document files`, `BucketFS document files`, `Google Cloud Storage document files`, `Azure Blob document files`, `Azure Data Lake Gen2 document files`, `Azure Data Lake Storage Gen2 document files`, `REFRESH`, `partial refresh`, `connection validation`, `pushdown`, `EXPLAIN VIRTUAL` for document-file/object-storage virtual schema troubleshooting
+   - Trigger phrases: `document files virtual schema`, `S3 document files`, `Google Cloud Storage document files`, `Azure Blob document files`, `Azure Data Lake Gen2 document files`, `Azure Data Lake Storage Gen2 document files`, `REFRESH`, `partial refresh`, `connection validation`, `pushdown`, `EXPLAIN VIRTUAL` for document-file/object-storage virtual schema troubleshooting
    - Load: `references/document-virtual-schemas.md`
 
 3. **Choose the right document-file adapter family**
-   - Trigger phrases: `document virtual schema`, `document virtual schemas`, `document-file virtual schema`, `document files virtual schema`, `S3 document files`, `BucketFS document files`, `Google Cloud Storage document files`, `Azure Blob document files`, `Azure Data Lake Gen2 document files`, `Azure Data Lake Storage Gen2 document files`
+   - Trigger phrases: `document virtual schema`, `document virtual schemas`, `document-file virtual schema`, `document files virtual schema`, `S3 document files`, `Google Cloud Storage document files`, `Azure Blob document files`, `Azure Data Lake Gen2 document files`, `Azure Data Lake Storage Gen2 document files`
    - Load: `references/document-virtual-schemas.md`
 
 ## Notes

@@ -103,7 +103,7 @@ See [`plugins/exasol/skills/exasol-jdbc-virtual-schemas/SKILL.md`](plugins/exaso
 
 ### Exasol Document Virtual Schemas Skill
 
-Use Exasol document-file virtual schemas for federated read-only access to object and file storage (S3, BucketFS, Google Cloud Storage, Azure Blob, Azure Data Lake Storage Gen2).
+Use Exasol document-file virtual schemas for federated read-only access to object and file storage (S3, Google Cloud Storage, Azure Blob, Azure Data Lake Storage Gen2).
 
 See [`plugins/exasol/skills/exasol-document-virtual-schemas/SKILL.md`](plugins/exasol/skills/exasol-document-virtual-schemas/SKILL.md) for details.
 
