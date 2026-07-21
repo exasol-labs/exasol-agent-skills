@@ -29,9 +29,11 @@ or `query`.
 When a request mentions `EXPORT`, `EXPORT INTO`, or `exapump export`,
 prefer **exasol-export** over the broader database route.
 
-When a request mentions `document files virtual schema`, `S3 document files`,
-`BucketFS document files`, `Google Cloud Storage document files`,
-`Azure Blob document files`, or `Azure Data Lake Storage Gen2 document files`,
+When a request mentions `document virtual schema`, `document virtual schemas`,
+`document-file virtual schema`, `document files virtual schema`,
+`S3 document files`, `BucketFS document files`,
+`Google Cloud Storage document files`, `Azure Blob document files`,
+or `Azure Data Lake Storage Gen2 document files`,
 prefer **exasol-document-virtual-schemas** over the JDBC virtual schema route.
 When a request mentions `JDBC virtual schema`, `generic JDBC`, or a
 database-source virtual schema such as PostgreSQL, Oracle, MySQL, SQL Server,
