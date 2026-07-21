@@ -15,6 +15,7 @@ Version-specific notes are source-check reminders. Verify linked release notes o
 - **Use for**: federated access to external systems as virtual tables.
 - **Best when**: user wants to query external data without copying it into Exasol.
 - **Notable capabilities**: SQL access to external systems, optimizer pushdown for supported operations.
+- **Dedicated follow-up**: use `exasol-jdbc-virtual-schemas` for JDBC/database-source virtual schema setup, refresh, and troubleshooting after choosing that family.
 - **Links**:
   - https://github.com/exasol/virtual-schemas
   - https://github.com/exasol/exasol-virtual-schema

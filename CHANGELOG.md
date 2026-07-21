@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.21.0
+
+- Add exasol-jdbc-virtual-schemas skill for JDBC/database-source virtual schema workflows
+
 ## v0.20.0
 
 - Add exasol-cloud-storage-extension skill for Cloud Storage Extension import/export workflows
