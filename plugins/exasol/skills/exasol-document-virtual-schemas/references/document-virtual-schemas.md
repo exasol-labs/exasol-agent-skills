@@ -32,7 +32,7 @@ CREATE OR REPLACE JAVA ADAPTER SCRIPT adapter_schema.doc_adapter AS
   %jar /buckets/bfsdefault/default/document-files-virtual-schema-dist-<version>.jar;
 /
 
-CREATE OR REPLACE JAVA SET SCRIPT adapter_schema.import_from_document_files(
+CREATE OR REPLACE JAVA SET SCRIPT adapter_schema.IMPORT_FROM_S3_DOCUMENT_FILES(
   DATA_LOADER VARCHAR(2000000),
   SCHEMA_MAPPING_REQUEST VARCHAR(2000000),
   CONNECTION_NAME VARCHAR(500))
