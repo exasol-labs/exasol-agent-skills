@@ -20,7 +20,7 @@ Trigger when the user mentions **JDBC virtual schema**, **database-source federa
    - Load: `references/jdbc-virtual-schemas.md`
 
 3. **Choose a JDBC adapter family**
-   - Trigger phrases: `supported JDBC dialect`, `dedicated adapter`, `PostgreSQL virtual schema`, `Oracle virtual schema`, `SQL Server virtual schema`, `MySQL virtual schema`
+   - Trigger phrases: `supported JDBC dialect`, `dedicated adapter`, `PostgreSQL virtual schema`, `Oracle virtual schema`, `SQL Server virtual schema`, `MySQL virtual schema`, `DB2 virtual schema`
    - Load: `references/jdbc-virtual-schemas.md`
 
 ## Notes
