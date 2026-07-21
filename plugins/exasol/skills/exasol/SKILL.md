@@ -33,7 +33,8 @@ When a request mentions `document virtual schema`, `document virtual schemas`,
 `document-file virtual schema`, `document files virtual schema`,
 `S3 document files`, `BucketFS document files`,
 `Google Cloud Storage document files`, `Azure Blob document files`,
-or `Azure Data Lake Storage Gen2 document files`,
+`Azure Data Lake Gen2 document files`, or
+`Azure Data Lake Storage Gen2 document files`,
 prefer **exasol-document-virtual-schemas** over the JDBC virtual schema route.
 When a request mentions `JDBC virtual schema`, `generic JDBC`, or a
 database-source virtual schema such as PostgreSQL, Oracle, MySQL, SQL Server,
@@ -66,7 +67,7 @@ object-store file movement intent, prefer **exasol-database**.
 
 
 6. **Document-file virtual schema workflows**
-   - Trigger phrases: `document files virtual schema`, `document-file virtual schema`, `S3 document files`, `BucketFS document files`, `Google Cloud Storage document files`, `Azure Blob document files`, `Azure Data Lake Storage Gen2 document files`, `document-file virtual schema adapter`, `query object storage via virtual schema`
+   - Trigger phrases: `document files virtual schema`, `document-file virtual schema`, `S3 document files`, `BucketFS document files`, `Google Cloud Storage document files`, `Azure Blob document files`, `Azure Data Lake Gen2 document files`, `Azure Data Lake Storage Gen2 document files`, `document-file virtual schema adapter`, `query object storage via virtual schema`
    - Activate: **exasol-document-virtual-schemas**
 
 7. **Notebook-connector AI setup**
