@@ -2,9 +2,9 @@
 
 ## Scope
 
-JDBC-based virtual schemas expose external databases as read-only virtual tables inside Exasol. Use them when the user wants federated queries and the source data should remain outside Exasol.
+JDBC-based virtual schemas expose external databases as virtual tables inside Exasol. Use them when the user wants federated queries and the source data should remain outside Exasol.
 
-Do not use this path for write-back workflows or for copying data into Exasol. Virtual schemas are read-only from the Exasol side.
+Virtual schemas are primarily used for federated read queries. They can also be used to copy data into Exasol via `INSERT ... SELECT` from virtual tables, but this is slower than native IMPORT or the Cloud Storage Extension — prefer those for bulk loading.
 
 ## Basic Creation Pattern
 
@@ -26,20 +26,20 @@ CREATE OR REPLACE JAVA ADAPTER SCRIPT "ADAPTER_SCHEMA"."JDBC_ADAPTER" AS
 /
 
 CREATE OR REPLACE CONNECTION "SRC_CONN"
-TO 'jdbc:postgresql://<source-host>:5432/<database-name>'
+TO 'jdbc:<driver>://<source-host>:<port>/<database-name>'
 USER '<source-user>' IDENTIFIED BY '<source-password>';
 
 CREATE VIRTUAL SCHEMA "SRC_VS"
 USING "ADAPTER_SCHEMA"."JDBC_ADAPTER"
 WITH CONNECTION_NAME = 'SRC_CONN'
-     SCHEMA_NAME = 'public';
+     SCHEMA_NAME = '<source-schema>';
 ```
 
 Use the adapter-specific repository or documentation before filling in JAR names, JDBC URL shape, and supported adapter properties.
 
 ## Adapter Family Selection
 
-Prefer the narrowest maintained adapter family that fits the source. Use the generic JDBC adapter when the source is JDBC-accessible and no dedicated maintained adapter is a better match for the workflow.
+Prefer the narrowest maintained adapter family that fits the source.
 
 Examples of maintained database-source adapter families listed in the catalog include Exasol, PostgreSQL, MySQL, Oracle, SQL Server, DB2, HANA, Snowflake, Redshift, Hive, Impala, Databricks, Athena, BigQuery, and Sybase ASE.
 
@@ -82,6 +82,20 @@ ALTER VIRTUAL SCHEMA "SRC_VS" REFRESH TABLES "REMOTE_TABLE";
 
 For table filtering or adapter-specific metadata filters, use the property names documented by the selected adapter. Do not invent filter property names from another adapter.
 
+## Modifying Virtual Schema Properties
+
+Use `ALTER VIRTUAL SCHEMA ... SET` to update adapter properties after the virtual schema is created:
+
+```sql
+-- Change the connection used by the virtual schema
+ALTER VIRTUAL SCHEMA "SRC_VS" SET CONNECTION_NAME = '<new-connection>';
+
+-- Update any supported adapter property
+ALTER VIRTUAL SCHEMA "SRC_VS" SET <PROPERTY_NAME> = '<new-value>';
+```
+
+Check the selected adapter's README or release documentation for the full list of supported properties and their effects.
+
 ## Troubleshooting
 
 Check problems in this order:
@@ -103,8 +117,8 @@ Check problems in this order:
 
 ## Practical Routing Rules
 
-- If the user wants federated read-only querying of a JDBC/database source, stay in this skill.
-- If the user wants to physically copy data into Exasol, use **exasol-import** or **exasol-cloud-storage-extension** based on the file/source path.
+- If the user wants federated querying of a JDBC/database source, stay in this skill.
+- If the user wants to efficiently bulk-copy data into Exasol, use **exasol-import** or **exasol-cloud-storage-extension** based on the source/file path. Virtual schemas can also copy data via `INSERT ... SELECT` but are slower.
 - If the user wants to export data out of Exasol, use **exasol-export**.
 - If the user asks which Exasol integration family to use and the source is unclear, use **exasol-extension-catalog** first.
 - If the user only needs to upload or inspect adapter JAR files in BucketFS, use **exasol-bucketfs**.
