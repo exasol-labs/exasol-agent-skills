@@ -55,7 +55,7 @@ CREATE VIRTUAL SCHEMA doc_vs
 USING adapter_schema.doc_adapter
 WITH
   CONNECTION_NAME = 'DOC_CONN'
-  MAPPING = '/bfsdefault/default/path/to/mappings/in/bucketfs';
+  MAPPING = '/buckets/bfsdefault/default/path/to/mappings/in/bucketfs';
 ```
 
 The `MAPPING` property points to one EDML mapping file or a BucketFS folder containing mapping files. For generated or test setups, the selected adapter can also accept inline EDML JSON in `MAPPING`; prefer uploaded mapping files for hand-maintained mappings.
