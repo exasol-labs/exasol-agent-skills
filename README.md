@@ -101,6 +101,12 @@ Use Exasol JDBC-based virtual schemas for federated read-only queries against ex
 
 See [`plugins/exasol/skills/exasol-jdbc-virtual-schemas/SKILL.md`](plugins/exasol/skills/exasol-jdbc-virtual-schemas/SKILL.md) for details.
 
+### Exasol Document Virtual Schemas Skill
+
+Use Exasol document-file virtual schemas for federated read-only access to object and file storage (S3, Google Cloud Storage, Azure Blob, Azure Data Lake Storage Gen2).
+
+See [`plugins/exasol/skills/exasol-document-virtual-schemas/SKILL.md`](plugins/exasol/skills/exasol-document-virtual-schemas/SKILL.md) for details.
+
 ### Exasol Extension Catalog Skill
 
 Choose the right Exasol tool, extension, connector, integration, or architecture pattern for deployment, data loading, exploration, AI/ML enrichment, BI/API surfaces, governance, and scale.

@@ -10,7 +10,7 @@ jobs:
   validate-plugin:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Validate marketplace manifest
         run: |
           jq empty .claude-plugin/marketplace.json
@@ -45,7 +45,7 @@ jobs:
   test-installer:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Build test image
         run: docker build -f Dockerfile.test -t installer-test .
       - name: "Test: fresh install"
@@ -66,7 +66,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Extract version from tag
         id: version
         run: echo "version=${GITHUB_REF#refs/tags/}" >> "$GITHUB_OUTPUT"

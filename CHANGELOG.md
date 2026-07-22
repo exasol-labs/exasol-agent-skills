@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.22.0
+
+- Add exasol-document-virtual-schemas skill for document-file virtual schema workflows (S3, GCS, Azure object storage)
+
 ## v0.21.0
 
 - Add exasol-jdbc-virtual-schemas skill for JDBC/database-source virtual schema workflows
