@@ -5,19 +5,23 @@ description: "Build, install, validate, and debug custom Exasol virtual schema a
 
 # Exasol Virtual Schema Adapter Development Skill
 
-Trigger when the user mentions **build a custom virtual schema adapter**, **virtual-schema-common-jdbc**, **remote debugging for virtual schemas**, **new SQL dialect adapter**, **source-specific JDBC dialect**, or **adapter JAR packaging**.
+Trigger when the user mentions **build a custom virtual schema adapter**, **virtual-schema-common-jdbc**, **remote debugging for virtual schemas**, **new SQL dialect adapter**, **source-specific JDBC dialect**, **adapter properties**, **pushdown capabilities**, **type mapping**, **metadata reader**, or **adapter JAR packaging**.
 
 ## Routing Algorithm
 
 1. **Build or customize an adapter**
-   - Trigger phrases: `custom adapter`, `build virtual schema adapter`, `new SQL dialect`, `source-specific JDBC dialect`, `virtual-schema-common-jdbc`
+   - Trigger phrases: `custom adapter`, `build virtual schema adapter`, `new SQL dialect`, `source-specific JDBC dialect`, `virtual-schema-common-jdbc`, `SqlDialect`, `AdapterFactory`, `VirtualSchemaAdapter`, `metadata reader`
    - Load: `references/adapter-development.md`
 
-2. **Install or update adapter artifacts**
+2. **Design adapter behavior**
+   - Trigger phrases: `adapter properties`, `pushdown capabilities`, `type mapping`, `identifier quoting`, `literal rendering`, `function pushdown`, `custom dialect tests`, `adapter integration tests`
+   - Load: `references/adapter-development.md`
+
+3. **Install or update adapter artifacts**
    - Trigger phrases: `adapter JAR`, `driver JAR`, `BucketFS`, `JAVA ADAPTER SCRIPT`, `deploy adapter`
    - Load: `references/adapter-development.md`
 
-3. **Validate and debug adapter behavior**
+4. **Validate and debug adapter behavior**
    - Trigger phrases: `EXPLAIN VIRTUAL`, `connection validation`, `remote debugging`, `pushdown debugging`, `adapter-side issue`
    - Load: `references/adapter-development.md`
 
