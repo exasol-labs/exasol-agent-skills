@@ -15,6 +15,7 @@ Version-specific notes are source-check reminders. Verify linked release notes o
 - **Use for**: federated access to external systems as virtual tables.
 - **Best when**: user wants to query external data without copying it into Exasol.
 - **Notable capabilities**: SQL access to external systems, optimizer pushdown for supported operations.
+- **Dedicated follow-up**: use `exasol-jdbc-virtual-schemas` for JDBC/database-source virtual schema setup, refresh, and troubleshooting after choosing that family; use `exasol-document-virtual-schemas` for document-file virtual schema setup, refresh, and troubleshooting after choosing an object/file storage adapter family; use `exasol-virtual-schema-adapter-development` only when a custom adapter implementation, source-specific dialect, adapter packaging, or adapter-side debugging is required.
 - **Links**:
   - https://github.com/exasol/virtual-schemas
   - https://github.com/exasol/exasol-virtual-schema
@@ -50,8 +51,8 @@ Use specific adapter repositories when the source is known:
 
 ## Cloud Storage Extension
 
-- **Use for**: reading files from object storage.
-- **Best when**: user wants to read Parquet, Avro, ORC, CSV, or cloud object storage files.
+- **Use for**: importing structured object-storage files through extension UDFs and exporting tables as Parquet through extension UDFs.
+- **Best when**: user wants the Cloud Storage Extension path for Parquet, Avro, ORC, supported Delta import, or Parquet export. Route CSV to native import/export instead.
 - **Links**:
   - https://github.com/exasol/cloud-storage-extension
 

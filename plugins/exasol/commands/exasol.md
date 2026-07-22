@@ -22,8 +22,18 @@ The argument can be either:
 When invoked:
 
 1. **Classify the task before checking connections.**
-   - Database, SQL, exapump, import/export, schemas, or tables -> use **exasol-database** behavior.
-   - Virtual schema adapter-development workflows such as custom adapter build, `virtual-schema-common-jdbc`, adapter JAR deployment, or remote debugging -> use **exasol-virtual-schema-adapter-development** behavior.
+   - Database, general SQL outside direct `IMPORT` or `EXPORT`, schemas, tables, or general `CREATE CONNECTION` questions -> use **exasol-database** behavior.
+   - SQL that contains `FROM SCRIPT CLOUD_STORAGE_EXTENSION`, `INTO SCRIPT CLOUD_STORAGE_EXTENSION`, `CLOUD_STORAGE_EXTENSION.IMPORT_PATH`, or `CLOUD_STORAGE_EXTENSION.EXPORT_PATH` -> use **exasol-cloud-storage-extension** behavior.
+   - Avro, ORC, or Delta imports from object storage such as S3, Azure Blob Storage, Azure Data Lake, Google Cloud Storage, HDFS, or Alluxio -> use **exasol-cloud-storage-extension** behavior unless the user clearly asks for native `IMPORT`.
+   - Import workflows such as `IMPORT` or `IMPORT INTO`, local CSV or Parquet upload, remote file loading via connection objects, `CREATE CONNECTION` for import/object-store loading, or `exapump upload` -> use **exasol-import** behavior.
+   - Cloud Storage Extension workflows such as extension-based object-storage file loading, `Cloud Storage Extension`, Avro, ORC, or Delta through Cloud Storage Extension, extension-based Parquet readers, or extension-based Parquet export -> use **exasol-cloud-storage-extension** behavior.
+   - Export workflows such as `EXPORT`, `EXPORT INTO`, local CSV or Parquet export, remote file export via connection objects, or `exapump export` -> use **exasol-export** behavior.
+   - If `CREATE CONNECTION` appears with `IMPORT` or object-store loading intent, prefer **exasol-import** behavior.
+   - If `CREATE CONNECTION` appears with `EXPORT` or export-target setup intent, prefer **exasol-export** behavior.
+   - If `CREATE CONNECTION` appears without clear import, load, or export intent, prefer **exasol-database** behavior.
+   - Document-file virtual schema workflows such as `document virtual schema`, `document virtual schemas`, `document files virtual schema`, `document-file virtual schema`, `S3 document files`, `Google Cloud Storage document files`, `Azure Blob document files`, `Azure Data Lake Gen2 document files`, `Azure Data Lake Storage Gen2 document files`, or document-file virtual schema adapter decisions -> use **exasol-document-virtual-schemas** behavior.
+   - JDBC/database-source virtual schema workflows such as `JDBC virtual schema`, database-source federation, supported JDBC dialect selection, or `EXPLAIN VIRTUAL` with JDBC context -> use **exasol-jdbc-virtual-schemas** behavior.
+   - Virtual schema adapter-development workflows such as custom adapter build, source-specific JDBC dialect implementation, `virtual-schema-common-jdbc`, adapter JAR packaging, adapter JAR deployment, or remote debugging -> use **exasol-virtual-schema-adapter-development** behavior.
    - Notebook-connector setup, `Secrets`, `scs`, secure config store values, or backend configuration keys such as `db_host_name`, `db_schema`, `storage_backend`, or `huggingface_token` -> use **exasol-ai-setup** behavior.
    - Exasol tools, extensions, connectors, integrations, migration, governance, observability, BI/API surfaces, or architecture recommendations -> use **exasol-extension-catalog** behavior.
    - BucketFS files, buckets, `bfsdefault`, model/JAR uploads, BucketFS list/download/delete -> use **exasol-bucketfs** behavior.
@@ -32,6 +42,7 @@ When invoked:
    - Text AI Extension workflows such as `deploy_license`, `initialize_text_ai_extension`, `Extraction`, `NamedEntityExtractor`, `PipelineExtractor`, `BranchExtractor`, `StandardExtractor`, `TopicClassifierExtractor`, feature extraction, or zero-shot classification -> use **exasol-text-ai** behavior.
    - Transformers Extension workflows such as `initialize_te_extension`, `deploy_scripts`, `TE UDF` usage, or Transformers model workflows in Exasol -> use **exasol-transformers** behavior.
    - UDFs, `CREATE SCRIPT`, `ExaIterator`, Python/Java/Lua/R scripts, Script Language Containers, or `exaslct` -> use **exasol-udfs** behavior.
+   - Distributed ML, machine learning, training, inference, feature engineering, hyperparameter search, GPU UDFs, PyTorch/TensorFlow/RAPIDS, model lifecycle, iterative algorithms, frequent itemset mining, data mining -> use **exasol-distributed-ml** behavior.
    - Exasol Personal, AWS setup, first Exasol deployment, or new database setup -> use **exasol-setup-personal** behavior.
 
    If a request matches the broad `extension` wording and also contains
@@ -42,14 +53,17 @@ When invoked:
 2. **Do not ask the user to choose a sub-skill.**
    Infer the route from the task. If the task is ambiguous, ask one concrete question about the desired outcome.
 
-3. **For database or SQL routes:**
+3. **For any route that will run `exapump` commands:**
    - Check connectivity with `exapump sql "SELECT 1"`.
    - If it fails, run `exapump profile list`.
-   - If profiles exist, ask which profile to use and retry with `exapump sql --profile <name> "SELECT 1"`.
+   - If profiles exist, ask which profile to use and retry with `exapump sql --profile <name> "SELECT 1"`; always place `--profile` after the subcommand.
    - If no profiles exist, tell the user to run `exapump profile add default`.
-   - If the argument is a SQL query (starts with SELECT, CREATE, DROP, INSERT, UPDATE, DELETE, MERGE, IMPORT, EXPORT, ALTER, GRANT, etc.), execute it via `exapump sql "<query>"`.
-   - For uploads, use `exapump upload` with `--dry-run` first to preview schema.
-   - For exports, use `exapump export` with the appropriate format.
+   - Apply this check before database SQL work and before `exapump upload` or `exapump export`; if a non-default profile is selected, keep using `--profile <name>` after the subcommand.
+   - If the task is an import or upload workflow, follow **exasol-import** behavior first.
+   - Use direct `exapump sql` execution for `IMPORT` only when that guidance resolves to an executable remote-file `IMPORT` statement rather than a local-file workflow such as `exapump upload` or `IMPORT INTO "MY_SCHEMA"."MY_TABLE" FROM LOCAL CSV FILE '/path/to/data.csv'`.
+   - If the task is an export workflow, follow **exasol-export** behavior first.
+   - Use direct `exapump sql` execution for `EXPORT` only when that guidance resolves to an executable remote-file `EXPORT` statement rather than a local-file workflow such as `exapump export`.
+   - If the argument is another SQL query (starts with SELECT, CREATE, DROP, INSERT, UPDATE, DELETE, MERGE, ALTER, GRANT, etc.), execute it via `exapump sql "<query>"`.
 
 4. **For extension catalog routes:**
    - Classify the user objective as deploy, load, explore, enrich, surface, or scale.
@@ -93,7 +107,8 @@ When invoked:
 /exasol SELECT COUNT(*) FROM my_schema.my_table
 /exasol CREATE TABLE analytics.events (id DECIMAL(18,0), event_name VARCHAR(200), created_at TIMESTAMP)
 /exasol upload sales_data.csv to analytics.sales
-/exasol export the users table to parquet with zstd compression
+/exasol export the users table to CSV in S3
+/exasol create a PostgreSQL JDBC virtual schema
 /exasol list BucketFS files under models/
 /exasol upload model.pkl to BucketFS at models/model.pkl
 /exasol which Exasol connector should I use for Databricks?

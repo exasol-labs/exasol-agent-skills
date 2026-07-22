@@ -1,16 +1,16 @@
 ---
 name: exasol-virtual-schema-adapter-development
-description: "Build, install, validate, and debug custom Exasol virtual schema adapters. Covers generic JDBC adapter development, JAR packaging, BucketFS deployment, connection-object setup, EXPLAIN VIRTUAL validation, and remote debugging workflows."
+description: "Build, install, validate, and debug custom Exasol virtual schema adapters. Covers source-specific JDBC dialect implementation with virtual-schema-common-jdbc, JAR packaging, BucketFS deployment, adapter script setup, EXPLAIN VIRTUAL validation, and remote debugging workflows."
 ---
 
 # Exasol Virtual Schema Adapter Development Skill
 
-Trigger when the user mentions **build a custom virtual schema adapter**, **virtual-schema-common-jdbc**, **remote debugging for virtual schemas**, **new SQL dialect adapter**, or **adapter JAR packaging**.
+Trigger when the user mentions **build a custom virtual schema adapter**, **virtual-schema-common-jdbc**, **remote debugging for virtual schemas**, **new SQL dialect adapter**, **source-specific JDBC dialect**, or **adapter JAR packaging**.
 
 ## Routing Algorithm
 
 1. **Build or customize an adapter**
-   - Trigger phrases: `custom adapter`, `build virtual schema`, `new SQL dialect`, `virtual-schema-common-jdbc`, `generic JDBC adapter`
+   - Trigger phrases: `custom adapter`, `build virtual schema adapter`, `new SQL dialect`, `source-specific JDBC dialect`, `virtual-schema-common-jdbc`
    - Load: `references/adapter-development.md`
 
 2. **Install or update adapter artifacts**

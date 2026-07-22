@@ -73,13 +73,43 @@ See [`plugins/exasol/skills/exasol/SKILL.md`](plugins/exasol/skills/exasol/SKILL
 
 ### Exasol Database Skill
 
-Work with Exasol databases — run queries, load and export data, handle cloud sources, and get help with Exasol-specific SQL quirks.
+Work with Exasol databases — run queries, inspect schemas, design tables, and get help with Exasol-specific SQL quirks outside the dedicated import and export skills.
 
 See [`plugins/exasol/skills/exasol-database/SKILL.md`](plugins/exasol/skills/exasol-database/SKILL.md) for details.
 
+### Exasol Import Skill
+
+Use Exasol IMPORT SQL plus exapump local file upload workflows for moving data into Exasol. For writing data out of Exasol, use the Exasol Export skill.
+
+See [`plugins/exasol/skills/exasol-import/SKILL.md`](plugins/exasol/skills/exasol-import/SKILL.md) for details.
+
+### Exasol Export Skill
+
+Use Exasol EXPORT SQL plus exapump local file export workflows for moving data out of Exasol.
+
+See [`plugins/exasol/skills/exasol-export/SKILL.md`](plugins/exasol/skills/exasol-export/SKILL.md) for details.
+
+### Exasol Cloud Storage Extension Skill
+
+Use the Exasol Cloud Storage Extension when the task is an extension-based object-storage import/export workflow rather than direct native IMPORT or EXPORT.
+
+See [`plugins/exasol/skills/exasol-cloud-storage-extension/SKILL.md`](plugins/exasol/skills/exasol-cloud-storage-extension/SKILL.md) for details.
+
+### Exasol JDBC Virtual Schemas Skill
+
+Use Exasol JDBC-based virtual schemas for federated read-only queries against external databases without copying the source data into Exasol.
+
+See [`plugins/exasol/skills/exasol-jdbc-virtual-schemas/SKILL.md`](plugins/exasol/skills/exasol-jdbc-virtual-schemas/SKILL.md) for details.
+
+### Exasol Document Virtual Schemas Skill
+
+Use Exasol document-file virtual schemas for federated read-only access to object and file storage (S3, Google Cloud Storage, Azure Blob, Azure Data Lake Storage Gen2).
+
+See [`plugins/exasol/skills/exasol-document-virtual-schemas/SKILL.md`](plugins/exasol/skills/exasol-document-virtual-schemas/SKILL.md) for details.
+
 ### Exasol Virtual Schema Adapter Development Skill
 
-Build, install, validate, and debug custom Exasol virtual schema adapters, including generic JDBC adapter development and remote-debugging workflows.
+Build, package, validate, and debug custom Exasol virtual schema adapters when an existing JDBC or document-file virtual schema adapter is not enough.
 
 See [`plugins/exasol/skills/exasol-virtual-schema-adapter-development/SKILL.md`](plugins/exasol/skills/exasol-virtual-schema-adapter-development/SKILL.md) for details.
 

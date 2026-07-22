@@ -77,7 +77,7 @@ Use when the optimizer chooses a bad join order due to inaccurate selectivity es
 ## Refresh Column Statistics
 
 ```sql
--- After bulk loads or major data changes
+-- After major data changes
 ANALYZE TABLE my_table ESTIMATE STATISTICS;
 ANALYZE SCHEMA my_schema ESTIMATE STATISTICS;
 ```

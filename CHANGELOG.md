@@ -1,8 +1,38 @@
 # Changelog
 
-## v0.22.0
+## v0.23.0
 
 - Add exasol-virtual-schema-adapter-development skill for custom virtual schema adapter build and debugging workflows
+
+## v0.22.0
+
+- Add exasol-document-virtual-schemas skill for document-file virtual schema workflows (S3, GCS, Azure object storage)
+
+## v0.21.0
+
+- Add exasol-jdbc-virtual-schemas skill for JDBC/database-source virtual schema workflows
+
+## v0.20.0
+
+- Add exasol-cloud-storage-extension skill for Cloud Storage Extension import/export workflows
+
+## v0.19.0
+
+- Add exasol-export skill for native Exasol export workflows
+- Remove the obsolete combined import/export database reference after splitting import and export into dedicated skills
+- Remove remaining import/export workflow details from exasol-database references
+
+## v0.18.0
+
+- Add exasol-distributed-ml skill for distributed ML, GPU acceleration, model lifecycle, and performance workflows
+
+## v0.17.0
+
+- Add exasol-import skill for native Exasol import workflows
+
+## v0.16.1
+
+- Extend exasol-text-ai with notebook-aligned result querying, analytics patterns, and corrected extraction examples
 
 ## v0.16.0
 

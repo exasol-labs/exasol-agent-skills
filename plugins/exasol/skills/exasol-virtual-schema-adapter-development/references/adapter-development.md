@@ -5,16 +5,16 @@
 Build or customize an adapter only when one of these is true:
 
 - no suitable maintained adapter already exists
-- the source requires source-specific SQL dialect handling that generic JDBC does not cover well enough
+- the source requires source-specific SQL dialect handling that an existing maintained adapter does not cover well enough
 - the workflow needs adapter behavior that must be changed in code
 
 If a maintained adapter already exists, prefer using or extending that path before starting a new adapter from scratch.
 
-## Generic JDBC Starting Point
+## JDBC Adapter Development Starting Point
 
-For JDBC-accessible systems, the usual fallback model is:
+For JDBC-accessible systems that need custom adapter behavior, the usual development model is:
 
-1. start from the virtual schema framework and the common JDBC path
+1. start from the virtual schema framework and `virtual-schema-common-jdbc`
 2. implement or adapt the source-specific dialect handling
 3. package the adapter JAR
 4. upload the JAR to BucketFS
@@ -22,7 +22,7 @@ For JDBC-accessible systems, the usual fallback model is:
 6. create the connection object
 7. create the virtual schema and validate it with `EXPLAIN VIRTUAL`
 
-This is the right path when the source behaves like a JDBC database but no dedicated maintained dialect adapter already fits.
+This is the right path when the source behaves like a JDBC database but no dedicated maintained dialect adapter already fits. If the user only needs to configure an existing maintained adapter, route to **exasol-jdbc-virtual-schemas** instead.
 
 ## Build and Install Flow
 
@@ -41,13 +41,13 @@ Typical installation pattern after the build:
 ```sql
 CREATE OR REPLACE JAVA ADAPTER SCRIPT adapter_schema.jdbc_adapter AS
   %scriptclass com.exasol.adapter.RequestDispatcher;
-  %jar /buckets/bfsdefault/default/virtual-schema-dist.jar;
-  %jar /buckets/bfsdefault/default/source-driver.jar;
+  %jar /buckets/bfsdefault/default/jars/<adapter-jar-name>.jar;
+  %jar /buckets/bfsdefault/default/jars/<source-driver-jar-name>.jar;
 /
 
 CREATE OR REPLACE CONNECTION src_conn
-TO 'jdbc:postgresql://host:5432/mydb'
-USER 'user' IDENTIFIED BY 'password';
+TO 'jdbc:<source-dialect>://<source-host>:<source-port>/<source-database>'
+USER '<source-username>' IDENTIFIED BY '<source-password-secret>';
 
 CREATE VIRTUAL SCHEMA src_vs
 USING adapter_schema.jdbc_adapter
@@ -92,7 +92,7 @@ When the user asks for remote debugging, stay aligned with the adapter repositor
 Keep the adapter as narrow as the source requires:
 
 - dedicated maintained adapter if one already exists
-- generic JDBC fallback if the source is JDBC-accessible and the behavior is close enough
+- `virtual-schema-common-jdbc` based development if the source is JDBC-accessible but needs source-specific dialect behavior
 - document-file adapter family if the source is file or object storage instead of a JDBC database
 
 Avoid redesigning the broader adapter ecosystem when the user only needs one working source path.

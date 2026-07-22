@@ -8,7 +8,7 @@
 > `Ebnf2ps`).
 >
 > **Companion file:** statement-level grammar (SELECT, DDL, DML, DCL,
-> IMPORT/EXPORT, session & admin) lives in
+> session & admin) lives in
 > [`exasol-grammar.md`](exasol-grammar.md).
 >
 > ⚠ **Read only the section you need.** This reference is large — jump to the
