@@ -177,6 +177,7 @@ Run SQL or describe any Exasol task directly:
 /exasol SELECT * FROM my_table
 /exasol upload sales.csv to analytics.sales
 /exasol export users to parquet
+/exasol build a custom virtual schema adapter for a new JDBC dialect
 /exasol list BucketFS files under models/
 /exasol which connector should I use for Databricks?
 /exasol initialize the Text AI Extension for notebook-connector

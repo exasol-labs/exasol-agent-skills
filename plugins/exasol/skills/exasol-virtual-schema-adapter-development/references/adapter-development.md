@@ -36,7 +36,7 @@ Keep the build and install workflow practical:
 6. create the virtual schema or refresh the existing one
 7. validate pushdown and metadata behavior
 
-Typical installation pattern after the build:
+Schematic installation smoke-test pattern after the build:
 
 ```sql
 CREATE OR REPLACE JAVA ADAPTER SCRIPT adapter_schema.jdbc_adapter AS
@@ -58,6 +58,9 @@ WITH CONNECTION_NAME = 'SRC_CONN'
 ## Security and Boundaries
 
 - keep the adapter JAR, driver JARs, and connection-object configuration separate from real secrets in local helper files
+- use placeholders such as `<source-host>`, `<source-username>`, and `<source-password-secret>` in generated examples unless the user explicitly supplies values for immediate execution
+- do not write real hosts, usernames, passwords, tokens, customer data, connection strings, or credentials into skill files, scratch files, comments, logs, or BucketFS paths
+- never read or expose local exapump configuration files; they can contain credentials
 - use least-privilege source credentials that fit the federated read-only workflow
 - avoid expanding the scope from one required source path into a broader adapter redesign unless the user explicitly asks for that
 

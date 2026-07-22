@@ -2,7 +2,7 @@
 
 ## What This Repo Is
 
-A skills marketplace for AI coding agents (Claude Code and OpenAI Codex) that gives them expertise in Exasol databases — guided Exasol Personal setup on AWS, exapump CLI, Exasol SQL, UDFs, BucketFS, and cloud data loading.
+A skills marketplace for AI coding agents (Claude Code and OpenAI Codex) that gives them expertise in Exasol databases — guided Exasol Personal setup on AWS, exapump CLI, Exasol SQL, UDFs, BucketFS, cloud data loading, virtual schemas, and custom virtual schema adapter development.
 
 ## Architecture
 

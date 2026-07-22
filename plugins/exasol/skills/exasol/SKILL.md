@@ -42,6 +42,12 @@ or DB2, prefer **exasol-jdbc-virtual-schemas** over the broader extension
 catalog route. Do not route a bare `Virtual Schema` mention here unless the
 source is clearly JDBC/database-based.
 
+When a request mentions custom virtual schema adapter implementation,
+source-specific JDBC dialect code, `virtual-schema-common-jdbc`, adapter JAR
+packaging, adapter-side debugging, or remote debugging for a virtual schema
+adapter, prefer **exasol-virtual-schema-adapter-development** over the normal
+JDBC/document virtual schema usage routes.
+
 When a request mentions `CREATE CONNECTION` without clear import, export, or
 object-store file movement intent, prefer **exasol-database**.
 
@@ -65,36 +71,39 @@ object-store file movement intent, prefer **exasol-database**.
    - Trigger phrases: `JDBC virtual schema`, `database-source virtual schema`, `query external database through a virtual schema`, `supported JDBC dialect`, `PostgreSQL virtual schema`, `Oracle virtual schema`, `SQL Server virtual schema`, `MySQL virtual schema`, `DB2 virtual schema`, `EXPLAIN VIRTUAL` with JDBC/database-source context, `ALTER VIRTUAL SCHEMA` with JDBC/database-source context
    - Activate: **exasol-jdbc-virtual-schemas**
 
-
 6. **Document-file virtual schema workflows**
    - Trigger phrases: `document files virtual schema`, `document-file virtual schema`, `S3 document files`, `Google Cloud Storage document files`, `Azure Blob document files`, `Azure Data Lake Gen2 document files`, `Azure Data Lake Storage Gen2 document files`, `document-file virtual schema adapter`, `query object storage via virtual schema`
    - Activate: **exasol-document-virtual-schemas**
 
-7. **Notebook-connector AI setup**
+7. **Virtual schema adapter development workflows**
+   - Trigger phrases: `custom adapter`, `build virtual schema adapter`, `source-specific JDBC dialect`, `virtual-schema-common-jdbc`, `new SQL dialect adapter`, `remote debugging for virtual schemas`, `adapter JAR packaging`, `adapter-side debugging`
+   - Activate: **exasol-virtual-schema-adapter-development**
+
+8. **Notebook-connector AI setup**
    - Trigger phrases: `Secrets`, `scs`, `secure config store`, `notebook-connector setup`, `db_host_name`, `db_schema`, `storage_backend`, `huggingface_token`
    - Activate: **exasol-ai-setup**
 
-8. **Transformers Extension workflows**
+9. **Transformers Extension workflows**
    - Trigger phrases: `Transformers Extension`, `TE extension`, `initialize_te_extension`, `deploy_scripts`, `TE UDF`, `PYTHON3_TE`, `Hugging Face models in Exasol`
    - Activate: **exasol-transformers**
 
-9. **Exasol tools, extensions, connectors, integrations, and architecture patterns**
-   - Trigger phrases: `extension`, `connector`, `integration`, `catalog`, `tool`, `which Exasol tool`, `Virtual Schema adapter`, `MCP`, `Text-to-SQL`, `Lakehouse Turbo`, `Terraform`, `Ansible`, `Databricks`, `SAP`, `Power BI`, `Tableau`, `migration`, `governance`, `observability`, `semantic layer`, `Agent Control Plane`
+10. **Exasol tools, extensions, connectors, integrations, and architecture patterns**
+   - Trigger phrases: `extension`, `connector`, `integration`, `catalog`, `tool`, `which Exasol tool`, `Virtual Schema adapter selection`, `maintained virtual schema adapter`, `MCP`, `Text-to-SQL`, `Lakehouse Turbo`, `Terraform`, `Ansible`, `Databricks`, `SAP`, `Power BI`, `Tableau`, `migration`, `governance`, `observability`, `semantic layer`, `Agent Control Plane`
    - Activate: **exasol-extension-catalog**
 
-10. **BucketFS file management**
+11. **BucketFS file management**
    - Trigger phrases: `BucketFS`, `bfsdefault`, `bucket`, `upload jar`, `upload model`, `list files`, `download from bucket`, `delete bucket file`
    - Activate: **exasol-bucketfs**
 
-11. **Notebook-connector connection helpers**
+12. **Notebook-connector connection helpers**
    - Trigger phrases: `open_pyexasol_connection`, `open_sqlalchemy_connection`, `open_ibis_connection`, `open_bucketfs_bucket`, `open_bucketfs_location`, `get_backend`, `connection helper`, `notebook-connector`
    - Activate: **exasol-notebook-connections**
 
-12. **Notebook Connector local Docker database workflows**
+13. **Notebook Connector local Docker database workflows**
    - Trigger phrases: `bring_itde_up`, `restart_itde`, `get_itde_status`, `take_itde_down`, `ITDE`
    - Activate: **exasol-itde**
 
-13. **Text AI Extension workflows**
+14. **Text AI Extension workflows**
    - Trigger phrases: `Text AI Extension`, `TXAIE`, `deploy_license`, `initialize_text_ai_extension`, `Extraction`, `NamedEntityExtractor`, `PipelineExtractor`, `BranchExtractor`, `StandardExtractor`, `TopicClassifierExtractor`, `zero-shot classification`, `feature extraction`, `PYTHON3_TXAIE`
    - Activate: **exasol-text-ai**
 
@@ -103,15 +112,15 @@ When a user mentions `Text AI Extension`, `TXAIE`, `deploy_license`,
 `NamedEntityExtractor`, prefer **exasol-text-ai** over the broader
 **exasol-extension-catalog** route.
 
-14. **UDFs and Script Language Containers**
+15. **UDFs and Script Language Containers**
    - Trigger phrases: `UDF`, `CREATE SCRIPT`, `SCALAR`, `SET script`, `ExaIterator`, `Python UDF`, `Java UDF`, `Lua UDF`, `R UDF`, `SLC`, `Script Language Container`, `exaslct`
    - Activate: **exasol-udfs**
 
-15. **Exasol Personal setup**
+16. **Exasol Personal setup**
    - Trigger phrases: `set up Exasol`, `Exasol Personal`, `deploy Exasol`, `install Exasol on AWS`, `new Exasol database`
    - Activate: **exasol-setup-personal**
 
-16. **Distributed ML, machine learning, data mining, iterative HPC**
+17. **Distributed ML, machine learning, data mining, iterative HPC**
    - Trigger phrases: `distributed ML`, `machine learning`, `train model`, `batch inference`,
      `prediction`, `feature engineering`, `hyperparameter`, `PyTorch`, `TensorFlow`,
      `scikit-learn`, `RAPIDS`, `GPU model`, `model deployment`, `distributed training`,
@@ -127,11 +136,12 @@ When setup and usage both apply, resolve prerequisites first:
 1. Exasol Personal or external database availability
 2. Tool, extension, connector, or architecture selection
 3. Virtual schema adapter selection when external federation is required
-4. Notebook-connector AI setup when required
-5. Local Docker database lifecycle or helper-level connectivity validation
-6. Extension-specific TXAIE or Transformers workflow
-7. SQL, data movement, BucketFS, UDF, SLC, or integration task
-8. Distributed ML, data mining, or iterative HPC task (depends on UDF/SLC and BucketFS)
+4. Custom virtual schema adapter implementation or packaging when a maintained adapter is not enough
+5. Notebook-connector AI setup when required
+6. Local Docker database lifecycle or helper-level connectivity validation
+7. Extension-specific TXAIE or Transformers workflow
+8. SQL, data movement, BucketFS, UDF, SLC, or integration task
+9. Distributed ML, data mining, or iterative HPC task (depends on UDF/SLC and BucketFS)
 
 ## User Interaction Rules
 

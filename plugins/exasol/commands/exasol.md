@@ -109,6 +109,7 @@ When invoked:
 /exasol upload sales_data.csv to analytics.sales
 /exasol export the users table to CSV in S3
 /exasol create a PostgreSQL JDBC virtual schema
+/exasol build a custom virtual schema adapter for a new JDBC dialect
 /exasol list BucketFS files under models/
 /exasol upload model.pkl to BucketFS at models/model.pkl
 /exasol which Exasol connector should I use for Databricks?
