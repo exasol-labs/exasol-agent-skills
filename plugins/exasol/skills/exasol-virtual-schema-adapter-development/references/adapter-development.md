@@ -6,7 +6,7 @@ Use these as starting points before inventing implementation details:
 
 - Virtual Schemas overview and common framework: https://github.com/exasol/virtual-schemas
 - Common JDBC adapter framework: https://github.com/exasol/virtual-schema-common-jdbc
-- Generic JDBC adapter reference implementation: https://github.com/exasol/generic-jdbc-virtual-schema — use as a code reference only after checking current repository status, not as an unconditional production recommendation
+- Generic JDBC adapter reference implementation: https://github.com/exasol/generic-virtual-schema — use as a code reference only after checking current repository status, not as an unconditional production recommendation
 - Maintained JDBC adapter examples: use the closest source-specific adapter from the extension catalog before starting from scratch
 - Maintained document-file adapter examples: S3, Google Cloud Storage, Azure Blob Storage, and Azure Data Lake Storage Gen2 document-file virtual schema repositories listed in the extension catalog
 

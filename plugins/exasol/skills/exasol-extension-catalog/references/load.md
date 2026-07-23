@@ -34,7 +34,7 @@ Use specific adapter repositories when the source is known:
 - DynamoDB: https://github.com/exasol/dynamodb-virtual-schema
 - Elasticsearch: https://github.com/exasol/elasticsearch-virtual-schema
 - Exasol: https://github.com/exasol/exasol-virtual-schema
-- Generic JDBC: https://github.com/exasol/generic-jdbc-virtual-schema
+- Generic JDBC: https://github.com/exasol/generic-virtual-schema
 - Google Cloud Storage document files: https://github.com/exasol/google-cloud-storage-document-files-virtual-schema
 - HANA: https://github.com/exasol/hana-virtual-schema
 - Hive: https://github.com/exasol/hive-virtual-schema
