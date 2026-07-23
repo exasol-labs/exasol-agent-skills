@@ -31,8 +31,9 @@ When invoked:
    - If `CREATE CONNECTION` appears with `IMPORT` or object-store loading intent, prefer **exasol-import** behavior.
    - If `CREATE CONNECTION` appears with `EXPORT` or export-target setup intent, prefer **exasol-export** behavior.
    - If `CREATE CONNECTION` appears without clear import, load, or export intent, prefer **exasol-database** behavior.
+   - Virtual schema adapter-development workflows such as custom adapter build, source-specific JDBC dialect implementation, custom document-file adapter code, `virtual-schema-common-jdbc`, `SqlDialect`, metadata reader behavior, custom adapter properties, type mapping, pushdown capabilities, adapter JAR packaging, adapter JAR deployment, or remote debugging for virtual schema adapters -> use **exasol-virtual-schema-adapter-development** behavior.
    - Document-file virtual schema workflows such as `document virtual schema`, `document virtual schemas`, `document files virtual schema`, `document-file virtual schema`, `S3 document files`, `Google Cloud Storage document files`, `Azure Blob document files`, `Azure Data Lake Gen2 document files`, `Azure Data Lake Storage Gen2 document files`, or document-file virtual schema adapter decisions -> use **exasol-document-virtual-schemas** behavior.
-   - JDBC/database-source virtual schema workflows such as `JDBC virtual schema`, `generic JDBC`, database-source federation, supported JDBC dialect selection, or `EXPLAIN VIRTUAL` with JDBC context -> use **exasol-jdbc-virtual-schemas** behavior.
+   - JDBC/database-source virtual schema workflows such as `JDBC virtual schema`, database-source federation, supported JDBC dialect selection, or `EXPLAIN VIRTUAL` with JDBC context -> use **exasol-jdbc-virtual-schemas** behavior.
    - Notebook-connector setup, `Secrets`, `scs`, secure config store values, or backend configuration keys such as `db_host_name`, `db_schema`, `storage_backend`, or `huggingface_token` -> use **exasol-ai-setup** behavior.
    - Exasol tools, extensions, connectors, integrations, migration, governance, observability, BI/API surfaces, or architecture recommendations -> use **exasol-extension-catalog** behavior.
    - BucketFS files, buckets, `bfsdefault`, model/JAR uploads, BucketFS list/download/delete -> use **exasol-bucketfs** behavior.
@@ -108,6 +109,8 @@ When invoked:
 /exasol upload sales_data.csv to analytics.sales
 /exasol export the users table to CSV in S3
 /exasol create a PostgreSQL JDBC virtual schema
+/exasol build a custom virtual schema adapter for a new JDBC dialect
+/exasol add custom document-file adapter code for a new object-store source
 /exasol list BucketFS files under models/
 /exasol upload model.pkl to BucketFS at models/model.pkl
 /exasol which Exasol connector should I use for Databricks?

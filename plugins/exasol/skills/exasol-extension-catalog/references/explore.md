@@ -52,8 +52,8 @@ Version-specific notes are source-check reminders. Verify linked release notes o
 
 Use these when the user wants human SQL exploration:
 
-- EXAplus: https://docs.exasol.com/db/latest/connect_exasol/exaplus.htm
-- DBeaver: https://dbeaver.io/
+- EXAplus: https://docs.exasol.com/db/latest/connect_exasol/sql_clients/exaplus_cli/exaplus_cli.htm
+- DBeaver: https://github.com/dbeaver/dbeaver
 - DataGrip: https://www.jetbrains.com/datagrip/
 - DBVisualizer: https://www.dbvis.com/
 - Advanced Query Tool: https://www.querytool.com/
@@ -67,7 +67,7 @@ Use these when the user wants metadata discovery, governance, documentation, or 
 - Alation: https://www.alation.com/
 - Azure Data Catalog / Microsoft Purview: https://learn.microsoft.com/en-us/purview/
 - Collibra: https://www.collibra.com/
-- D-QUANTUM: https://synabi.com/
+- D-QUANTUM: verify through the Exasol ecosystem overview: https://docs.exasol.com/db/latest/connect_exasol/ecosystem_overview.htm
 - OpenMetadata: https://docs.open-metadata.org/connectors/database/exasol
 - Ecosystem overview: https://docs.exasol.com/db/latest/connect_exasol/ecosystem_overview.htm
 

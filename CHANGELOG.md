@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.23.0
+
+- Add exasol-virtual-schema-adapter-development skill for custom virtual schema adapter build and debugging workflows
+
 ## v0.22.0
 
 - Add exasol-document-virtual-schemas skill for document-file virtual schema workflows (S3, GCS, Azure object storage)

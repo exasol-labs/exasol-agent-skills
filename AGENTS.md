@@ -2,7 +2,7 @@
 
 ## What This Repo Is
 
-A skills marketplace for AI coding agents (Claude Code and OpenAI Codex) that gives them expertise in Exasol databases — guided Exasol Personal setup on AWS, exapump CLI, Exasol SQL, UDFs, BucketFS, and cloud data loading.
+A skills marketplace for AI coding agents (Claude Code and OpenAI Codex) that gives them expertise in Exasol databases — guided Exasol Personal setup on AWS, exapump CLI, Exasol SQL, UDFs, BucketFS, cloud data loading, virtual schemas, and custom virtual schema adapter development.
 
 ## Architecture
 
@@ -11,7 +11,7 @@ A skills marketplace for AI coding agents (Claude Code and OpenAI Codex) that gi
 - `.claude-plugin/marketplace.json` — discovery entry point; lists plugins with version
 - `plugins/exasol/.claude-plugin/plugin.json` — plugin metadata; version must match marketplace
 - `plugins/exasol/skills/exasol/SKILL.md` — top-level router skill; public user model is `/exasol <task>` or natural-language Exasol requests
-- `plugins/exasol/skills/*/SKILL.md` — specialized skills with routing algorithms that load only the reference files relevant to the task (progressive disclosure). Skills: `exasol` (top-level router), `exasol-setup-personal` (folder `setup-personal`; guided AWS deployment), `exasol-database` (SQL/exapump), `exasol-import` (native IMPORT and exapump file movement into Exasol), `exasol-export` (native EXPORT and exapump file movement out of Exasol), `exasol-cloud-storage-extension` (Cloud Storage Extension import/export workflows), `exasol-jdbc-virtual-schemas` (JDBC/database-source virtual schema workflows), `exasol-document-virtual-schemas` (document-file virtual schema workflows for S3/GCS/Azure object storage), `exasol-udfs` (UDFs/SLCs), `exasol-bucketfs` (BucketFS), `exasol-ai-setup` (notebook-connector setup), `exasol-itde` (local Docker Exasol lifecycle), `exasol-notebook-connections` (Python connection helpers), `exasol-text-ai` (Text AI Extension), `exasol-transformers` (Transformers Extension)
+- `plugins/exasol/skills/*/SKILL.md` — specialized skills with routing algorithms that load only the reference files relevant to the task (progressive disclosure). Skills: `exasol` (top-level router), `exasol-setup-personal` (folder `setup-personal`; guided AWS deployment), `exasol-database` (SQL/exapump), `exasol-import` (native IMPORT and exapump file movement into Exasol), `exasol-export` (native EXPORT and exapump file movement out of Exasol), `exasol-cloud-storage-extension` (Cloud Storage Extension import/export workflows), `exasol-jdbc-virtual-schemas` (JDBC/database-source virtual schema workflows), `exasol-document-virtual-schemas` (document-file virtual schema workflows for S3/GCS/Azure object storage), `exasol-virtual-schema-adapter-development` (custom virtual schema adapter build, packaging, and debugging workflows), `exasol-udfs` (UDFs/SLCs), `exasol-bucketfs` (BucketFS), `exasol-ai-setup` (notebook-connector setup), `exasol-itde` (local Docker Exasol lifecycle), `exasol-notebook-connections` (Python connection helpers), `exasol-text-ai` (Text AI Extension), `exasol-transformers` (Transformers Extension)
 - `plugins/exasol/commands/exasol.md` — unified `/exasol` slash command router (Claude Code only)
 - `plugins/exasol/skills/*/references/*.md` — detailed docs loaded on-demand by SKILL.md routing
 
@@ -59,7 +59,8 @@ claude plugin validate ./plugins/exasol
 `.github/workflows/ci.yml` runs on push to `main` and PRs:
 1. **validate-plugin** — JSON validity + version consistency between both manifests + version bump check on PRs (must be greater than latest tag)
 2. **test-installer** — all 5 Docker scenarios
-3. **release** — on `v*` tags, creates GitHub release with auto-generated notes
+3. **check-links** — validates Markdown links in a `Check Links` job shaped like Exasol `notebook-connector`'s documentation check; this Markdown-only repo runs `npx markdown-link-check@3.14.2` with `.github/markdown_check_config.json` instead of Notebook Connector's Poetry/Nox docs stack
+4. **release** — on `v*` tags, creates GitHub release with auto-generated notes
 
 `.github/workflows/auto-release.yml` runs on PR merge to `main`:
 - Creates a git tag and GitHub release from the version in the manifests
@@ -73,7 +74,7 @@ Version lives in two places that **must always match**:
 
 Releases are automated. When a PR merges to `main`, CI creates a tag and GitHub release from the version in the manifests.
 
-**PR authors must bump the version** in both manifests as part of their PR. CI validates the version is strictly greater than the latest release tag. Bump rules:
+**PR authors must bump the version** in both manifests as part of their PR and keep Markdown links passing the CI link checker. CI validates the version is strictly greater than the latest release tag. Bump rules:
 - `feat:` commits → minor bump (e.g., 0.9.0 → 0.10.0)
 - Everything else → patch bump (e.g., 0.9.0 → 0.9.1)
 

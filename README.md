@@ -107,6 +107,12 @@ Use Exasol document-file virtual schemas for federated read-only access to objec
 
 See [`plugins/exasol/skills/exasol-document-virtual-schemas/SKILL.md`](plugins/exasol/skills/exasol-document-virtual-schemas/SKILL.md) for details.
 
+### Exasol Virtual Schema Adapter Development Skill
+
+Build, package, validate, and debug custom Exasol virtual schema adapters when an existing JDBC or document-file virtual schema adapter is not enough.
+
+See [`plugins/exasol/skills/exasol-virtual-schema-adapter-development/SKILL.md`](plugins/exasol/skills/exasol-virtual-schema-adapter-development/SKILL.md) for details.
+
 ### Exasol Extension Catalog Skill
 
 Choose the right Exasol tool, extension, connector, integration, or architecture pattern for deployment, data loading, exploration, AI/ML enrichment, BI/API surfaces, governance, and scale.
@@ -171,6 +177,7 @@ Run SQL or describe any Exasol task directly:
 /exasol SELECT * FROM my_table
 /exasol upload sales.csv to analytics.sales
 /exasol export users to parquet
+/exasol build a custom virtual schema adapter for a new JDBC dialect
 /exasol list BucketFS files under models/
 /exasol which connector should I use for Databricks?
 /exasol initialize the Text AI Extension for notebook-connector
@@ -191,7 +198,8 @@ When adding a new Exasol capability:
 3. Add the new route to `plugins/exasol/skills/exasol/SKILL.md`.
 4. Mirror the route in `plugins/exasol/commands/exasol.md`.
 5. Update this README only with user-facing capability text, not internal routing details.
-6. Bump both manifest versions and add a CHANGELOG entry.
+6. Keep Markdown links valid so the CI link checker passes; use `npx --yes markdown-link-check@3.14.2 -c .github/markdown_check_config.json <file.md>` when changing links.
+7. Bump both manifest versions and add a CHANGELOG entry.
 
 Avoid adding new slash commands unless there is a strong backwards-compatibility reason. Prefer `/exasol bucketfs ...` over introducing a separate command for each domain.
 

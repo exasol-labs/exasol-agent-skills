@@ -59,9 +59,31 @@ jobs:
       - name: "Test: fresh install (Codex only)"
         run: docker run --rm -e SCENARIO=fresh-codex installer-test sh test/test-installer.sh
 
+  check-links:
+    name: Check Links
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    steps:
+      - name: Check out Repository
+        id: check-out-repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Set up Node.js Environment
+        id: set-up-node-js-environment
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+      - name: Check Links
+        id: check-links
+        run: |
+          git ls-files '*.md' | xargs npx --yes markdown-link-check@3.14.2 -c .github/markdown_check_config.json
+
   release:
     if: startsWith(github.ref, 'refs/tags/v')
-    needs: [validate-plugin, test-installer]
+    needs: [validate-plugin, test-installer, check-links]
     runs-on: ubuntu-latest
     permissions:
       contents: write
