@@ -123,8 +123,8 @@ Schematic installation smoke-test pattern after the build:
 # Inspect the selected adapter repository first; these commands are placeholders.
 ./mvnw clean verify
 ./mvnw package -DskipTests
-exapump bucketfs cp target/<adapter-artifact>-<version>.jar bfsdefault/default/jars/<adapter-artifact>-<version>.jar
-exapump bucketfs cp /path/to/<source-driver>-<version>.jar bfsdefault/default/jars/<source-driver>-<version>.jar
+exapump bucketfs cp target/<adapter-artifact>-<version>.jar jars/<adapter-artifact>-<version>.jar
+exapump bucketfs cp /path/to/<source-driver>-<version>.jar jars/<source-driver>-<version>.jar
 ```
 
 Use the repository's documented Maven or Gradle wrapper if it provides one. Do not invent release commands, signing steps, or deployment targets that are not documented by the selected repository.
