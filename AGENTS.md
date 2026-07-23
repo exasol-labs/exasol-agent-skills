@@ -59,7 +59,7 @@ claude plugin validate ./plugins/exasol
 `.github/workflows/ci.yml` runs on push to `main` and PRs:
 1. **validate-plugin** — JSON validity + version consistency between both manifests + version bump check on PRs (must be greater than latest tag)
 2. **test-installer** — all 5 Docker scenarios
-3. **check-links** — validates local links and anchors in tracked Markdown files; run `python3 test/check-links.py` locally for full external-link checks
+3. **check-links** — validates Markdown links with `gaurav-nelson/github-action-markdown-link-check@v1` and `.github/markdown_check_config.json`, matching the pattern used by Exasol projects such as `script-languages-release`
 4. **release** — on `v*` tags, creates GitHub release with auto-generated notes
 
 `.github/workflows/auto-release.yml` runs on PR merge to `main`:
