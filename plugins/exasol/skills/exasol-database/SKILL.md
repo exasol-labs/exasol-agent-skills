@@ -1,11 +1,11 @@
 ---
 name: exasol-database
-description: "Exasol database interaction via exapump CLI and Exasol SQL. Covers SQL queries, schema inspection, table design, query profiling, analytics, and Exasol-specific SQL behavior outside exasol-import and exasol-export."
+description: "Exasol database interaction via exapump CLI and Exasol SQL. Covers SQL queries, schema inspection, table design, query profiling, analytics, and Exasol-specific SQL behavior outside exasol-import, exasol-export, and exasol-cloud-storage-extension."
 ---
 
 # Exasol Database Skill
 
-Trigger when the user asks for **Exasol database interaction**, **exapump**, **Exasol SQL**, **EXA_** system views, schemas, tables, or query execution outside **exasol-import** and **exasol-export**.
+Trigger when the user asks for **Exasol database interaction**, **exapump**, **Exasol SQL**, **EXA_** system views, schemas, tables, or query execution outside **exasol-import**, **exasol-export**, and **exasol-cloud-storage-extension**.
 
 ## Step 0: Establish Connection
 
@@ -40,20 +40,23 @@ After the connection is established, determine the task type and load **only** t
    - Load: `references/analytics-qualify.md`
    - Load: `references/exasol-grammar-functions.md` for exact analytic-function and `OVER (…)` window-clause syntax
 
-5. **BucketFS file management** (upload/download/list/delete files in BucketFS, bfsdefault, bucket paths):
+5. **Cloud Storage Extension handoff** (`FROM SCRIPT CLOUD_STORAGE_EXTENSION`, `INTO SCRIPT CLOUD_STORAGE_EXTENSION`, `CLOUD_STORAGE_EXTENSION.IMPORT_PATH`, `CLOUD_STORAGE_EXTENSION.EXPORT_PATH`, Avro/ORC/Delta object-storage workflows):
+   - Activate the **exasol-cloud-storage-extension** skill for guidance
+
+6. **BucketFS file management** (upload/download/list/delete files in BucketFS, bfsdefault, bucket paths):
    - Activate the **exasol-bucketfs** skill for guidance
 
-6. **UDF development** (CREATE SCRIPT, ExaIterator, SCALAR/SET, Script Language Containers, SLC, exaslct):
+7. **UDF development** (CREATE SCRIPT, ExaIterator, SCALAR/SET, Script Language Containers, SLC, exaslct):
    - Activate the **exasol-udfs** skill for guidance
 
-7. **Virtual schema handoff** (CREATE/ALTER/REFRESH VIRTUAL SCHEMA, EXPLAIN VIRTUAL, JDBC/document-file virtual schemas, or custom adapter implementation requests):
+8. **Virtual schema handoff** (CREATE/ALTER/REFRESH VIRTUAL SCHEMA, EXPLAIN VIRTUAL, JDBC/document-file virtual schemas, or custom adapter implementation requests):
    - Activate **exasol-jdbc-virtual-schemas** for JDBC/database-source virtual schema setup, refresh, query, and troubleshooting
    - Activate **exasol-document-virtual-schemas** for document-file virtual schema setup, refresh, query, and troubleshooting against S3, GCS, or Azure object storage
    - Activate **exasol-virtual-schema-adapter-development** only for custom adapter implementation requests
 
 Multiple routes can apply — load all that match.
 
-8. **Before writing any SQL** (applies to routes 1–4):
+9. **Before writing any SQL** (applies to routes 1–4):
    - **Ingest `references/exasol-reserved-keywords.md` before designing queries** — load the reserved-word list (pinned to Exasol 2026.1.0) up front so you quote reserved identifiers from the start rather than discovering them through errors
    - **Always double-quote every identifier** (column names, table names, schema names) in SELECT, FROM, WHERE, GROUP BY, ORDER BY, and JOIN clauses — without exception
    - This preserves mixed-case names and prevents reserved-keyword errors in a single rule
@@ -66,6 +69,7 @@ Multiple routes can apply — load all that match.
 This skill handles core database interaction: connecting, SQL execution, schema inspection, and table design.
 For direct native `IMPORT` and local file movement into Exasol, use **exasol-import**.
 For direct native `EXPORT` and local file movement out of Exasol, use **exasol-export**.
+For Cloud Storage Extension import/export workflows, use **exasol-cloud-storage-extension**.
 For broad extension, connector, or federation selection, use **exasol-extension-catalog**.
 For JDBC/database-source virtual schema setup, refresh, query, and troubleshooting, use **exasol-jdbc-virtual-schemas**.
 For document-file virtual schema setup, refresh, query, and troubleshooting against S3, GCS, or Azure object storage, use **exasol-document-virtual-schemas**.
