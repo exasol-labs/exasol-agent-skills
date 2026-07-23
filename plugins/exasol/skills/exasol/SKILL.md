@@ -43,11 +43,12 @@ catalog route. Do not route a bare `Virtual Schema` mention here unless the
 source is clearly JDBC/database-based.
 
 When a request mentions custom virtual schema adapter implementation,
-source-specific JDBC dialect code, `virtual-schema-common-jdbc`, adapter JAR
-packaging, adapter properties, type mapping, pushdown capabilities, metadata
-reader behavior, adapter-side debugging, or remote debugging for a virtual
-schema adapter, prefer **exasol-virtual-schema-adapter-development** over the
-normal JDBC/document virtual schema usage routes.
+source-specific JDBC dialect code, custom document-file adapter code,
+`virtual-schema-common-jdbc`, adapter JAR packaging, adapter properties, type
+mapping, pushdown capabilities, metadata reader behavior, adapter-side
+debugging, or remote debugging for a virtual schema adapter, prefer
+**exasol-virtual-schema-adapter-development** over the normal JDBC/document
+virtual schema usage routes.
 
 When a request mentions `CREATE CONNECTION` without clear import, export, or
 object-store file movement intent, prefer **exasol-database**.
@@ -77,7 +78,7 @@ object-store file movement intent, prefer **exasol-database**.
    - Activate: **exasol-document-virtual-schemas**
 
 7. **Virtual schema adapter development workflows**
-   - Trigger phrases: `custom adapter`, `build virtual schema adapter`, `source-specific JDBC dialect`, `virtual-schema-common-jdbc`, `SqlDialect`, `metadata reader`, `adapter properties`, `type mapping`, `pushdown capabilities`, `new SQL dialect adapter`, `remote debugging for virtual schemas`, `adapter JAR packaging`, `adapter-side debugging`
+   - Trigger phrases: `custom adapter`, `build virtual schema adapter`, `source-specific JDBC dialect`, `custom document-file adapter code`, `virtual-schema-common-jdbc`, `SqlDialect`, `metadata reader`, `adapter properties`, `type mapping`, `pushdown capabilities`, `new SQL dialect adapter`, `remote debugging for virtual schemas`, `adapter JAR packaging`, `adapter-side debugging`
    - Activate: **exasol-virtual-schema-adapter-development**
 
 8. **Notebook-connector AI setup**

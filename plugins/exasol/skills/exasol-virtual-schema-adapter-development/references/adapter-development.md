@@ -11,6 +11,8 @@ Use these as starting points before inventing implementation details:
 
 Check the selected repository's current README, release notes, Java version, build tool, and debugger documentation before giving version-specific commands.
 
+If the user is still deciding which maintained adapter or extension to use, switch to **exasol-extension-catalog** first. Return here only when the task requires adapter code, custom packaging, dialect behavior, or adapter-side debugging.
+
 ## When to Build a Custom Adapter
 
 Build or customize an adapter only when one of these is true:
@@ -34,6 +36,18 @@ For JDBC-accessible systems that need custom adapter behavior, the usual develop
 7. create the virtual schema and validate it with `EXPLAIN VIRTUAL`
 
 This is the right path when the source behaves like a JDBC database but no dedicated maintained dialect adapter already fits. If the user only needs to configure an existing maintained adapter, route to **exasol-jdbc-virtual-schemas** instead.
+
+## Document-File Adapter Development Boundary
+
+Most document-file virtual schema tasks should stay in **exasol-document-virtual-schemas** because they use maintained S3, Google Cloud Storage, Azure Blob Storage, or Azure Data Lake Storage Gen2 adapter families.
+
+Use this adapter-development skill for document-file work only when the user must change adapter code, for example:
+
+- implementing support for a new object-store API or document source that is not covered by a maintained adapter
+- changing metadata inference, EDML mapping interpretation, or document path handling in adapter code
+- debugging adapter-side failures that cannot be explained by connection JSON, `MAPPING`, BucketFS mapping files, or `EXPLAIN VIRTUAL`
+
+Do not duplicate normal document-file setup examples here. For connection JSON, mapping-file, and existing adapter-family usage, route to **exasol-document-virtual-schemas**.
 
 ## Custom JDBC Dialect Implementation Checklist
 
@@ -85,6 +99,16 @@ Keep the build and install workflow practical:
 
 Schematic installation smoke-test pattern after the build:
 
+```sh
+# Inspect the selected adapter repository first; these commands are placeholders.
+./mvnw clean verify
+./mvnw package -DskipTests
+exapump bucketfs cp target/<adapter-artifact>-<version>.jar bfsdefault/default/jars/<adapter-artifact>-<version>.jar
+exapump bucketfs cp /path/to/<source-driver>-<version>.jar bfsdefault/default/jars/<source-driver>-<version>.jar
+```
+
+Use the repository's documented Maven or Gradle wrapper if it provides one. Do not invent release commands, signing steps, or deployment targets that are not documented by the selected repository.
+
 ```sql
 CREATE OR REPLACE JAVA ADAPTER SCRIPT adapter_schema.jdbc_adapter AS
   %scriptclass com.exasol.adapter.RequestDispatcher;
@@ -101,6 +125,21 @@ USING adapter_schema.jdbc_adapter
 WITH CONNECTION_NAME = 'SRC_CONN'
      SCHEMA_NAME = 'public';
 ```
+
+Minimal post-install smoke-test sequence:
+
+```text
+SELECT * FROM src_vs."VIRTUAL_TABLE_NAME" LIMIT 1;
+
+EXPLAIN VIRTUAL
+SELECT *
+FROM src_vs."VIRTUAL_TABLE_NAME"
+WHERE "FILTER_COLUMN" = 'PLACEHOLDER_VALUE';
+
+ALTER VIRTUAL SCHEMA src_vs REFRESH;
+```
+
+Keep table, column, and literal values as placeholder names unless the user provides non-sensitive values for immediate execution.
 
 ## Packaging and Dependency Rules
 
@@ -197,4 +236,5 @@ Before handing off a custom adapter change, confirm:
 
 - If the user only needs to create or query an existing JDBC virtual schema, switch to **exasol-jdbc-virtual-schemas**
 - If the user only needs to create or query an existing document-file virtual schema, switch to **exasol-document-virtual-schemas**
+- If the user asks which adapter family, connector, or extension to choose, switch to **exasol-extension-catalog** before development guidance
 - If the user needs to physically load data into Exasol instead of federating it, switch to **exasol-import** or **exasol-cloud-storage-extension**
