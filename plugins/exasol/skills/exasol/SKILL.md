@@ -36,6 +36,7 @@ When a request mentions `document virtual schema`, `document virtual schemas`,
 `Azure Data Lake Gen2 document files`, or
 `Azure Data Lake Storage Gen2 document files`,
 prefer **exasol-document-virtual-schemas** over the JDBC virtual schema route.
+
 When a request mentions `JDBC virtual schema` or a
 database-source virtual schema such as PostgreSQL, Oracle, MySQL, SQL Server,
 or DB2, prefer **exasol-jdbc-virtual-schemas** over the broader extension
