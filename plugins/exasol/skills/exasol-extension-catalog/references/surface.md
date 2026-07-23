@@ -54,7 +54,7 @@ Use these when the user asks about dashboards, reports, semantic exploration, se
 
 Use these when the user asks for low-code application builders:
 
-- Microsoft Power Apps: https://powerapps.microsoft.com/
+- Microsoft Power Apps: https://learn.microsoft.com/en-us/power-apps/
 - OutSystems: https://www.outsystems.com/
 - UI Bakery: https://uibakery.io/
 - Ecosystem overview: https://docs.exasol.com/db/latest/connect_exasol/ecosystem_overview.htm
@@ -70,7 +70,7 @@ Use these when the user asks for low-code application builders:
 
 - JDBC: https://docs.exasol.com/db/latest/connect_exasol/drivers/jdbc.htm
 - ODBC: https://docs.exasol.com/db/latest/connect_exasol/drivers/odbc.htm
-- ADO.NET: https://docs.exasol.com/db/latest/connect_exasol/drivers/ado.net.htm
+- ADO.NET: https://docs.exasol.com/db/latest/connect_exasol/drivers/ado_net.htm
 - PyExasol: https://github.com/exasol/pyexasol
 - SQLAlchemy Exasol: https://github.com/exasol/sqlalchemy-exasol
 - Exasol TypeScript/JavaScript driver: https://github.com/exasol/exasol-driver-ts
@@ -89,7 +89,7 @@ Use these when the user wants to expose Exasol through another query/virtualizat
 ## Admin and developer surfaces
 
 - Exasol Launcher: https://github.com/exasol/exasol-personal
-- Exasol Admin: https://docs.exasol.com/db/latest/administration/on-premise/manage_database/admin.htm
-- EXAplus: https://docs.exasol.com/db/latest/connect_exasol/exaplus.htm
+- Exasol Admin: https://docs.exasol.com/db/latest/administration/on-premise/admin_interface/admin_ui_overview.htm
+- EXAplus: https://docs.exasol.com/db/latest/connect_exasol/sql_clients/exaplus_cli/exaplus_cli.htm
 - VS Code extension: https://marketplace.visualstudio.com/items?itemName=Exasol.exasol-vscode
 - Notebook Connector: https://github.com/exasol/notebook-connector
