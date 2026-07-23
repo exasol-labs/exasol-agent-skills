@@ -29,6 +29,14 @@ or `query`.
 When a request mentions `EXPORT`, `EXPORT INTO`, or `exapump export`,
 prefer **exasol-export** over the broader database route.
 
+When a request mentions custom virtual schema adapter implementation,
+source-specific JDBC dialect code, custom document-file adapter code,
+`virtual-schema-common-jdbc`, adapter JAR packaging, custom adapter properties, type
+mapping, pushdown capabilities, metadata reader behavior, adapter-side
+debugging, or remote debugging for a virtual schema adapter, prefer
+**exasol-virtual-schema-adapter-development** over the normal JDBC/document
+virtual schema usage routes.
+
 When a request mentions `document virtual schema`, `document virtual schemas`,
 `document-file virtual schema`, `document files virtual schema`,
 `S3 document files`, `Google Cloud Storage document files`,
@@ -42,14 +50,6 @@ database-source virtual schema such as PostgreSQL, Oracle, MySQL, SQL Server,
 or DB2, prefer **exasol-jdbc-virtual-schemas** over the broader extension
 catalog route. Do not route a bare `Virtual Schema` mention here unless the
 source is clearly JDBC/database-based.
-
-When a request mentions custom virtual schema adapter implementation,
-source-specific JDBC dialect code, custom document-file adapter code,
-`virtual-schema-common-jdbc`, adapter JAR packaging, custom adapter properties, type
-mapping, pushdown capabilities, metadata reader behavior, adapter-side
-debugging, or remote debugging for a virtual schema adapter, prefer
-**exasol-virtual-schema-adapter-development** over the normal JDBC/document
-virtual schema usage routes.
 
 When a request mentions `CREATE CONNECTION` without clear import, export, or
 object-store file movement intent, prefer **exasol-database**.
