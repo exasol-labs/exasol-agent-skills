@@ -34,8 +34,11 @@ USER_AGENT = "exasol-agent-skills-link-check/1.0"
 IGNORED_EXTERNAL_PATTERNS = (
     "https://my-bucket.",
     "https://github.com/some/",
-    "http://w",
+    "http://w:<PASSWORD>@",
 )
+IGNORED_EXTERNAL_EXACT = {
+    "http://w",
+}
 
 
 def tracked_markdown_files(repo: Path) -> list[Path]:
@@ -62,11 +65,17 @@ def slugify_heading(heading: str) -> str:
 def anchors_for(path: Path) -> set[str]:
     anchors: set[str] = set()
     counts: dict[str, int] = {}
+    in_fence = False
     try:
         text = path.read_text(encoding="utf-8")
     except UnicodeDecodeError:
         text = path.read_text(errors="ignore")
     for line in text.splitlines():
+        if line.startswith("```"):
+            in_fence = not in_fence
+            continue
+        if in_fence:
+            continue
         match = HEADING_RE.match(line)
         if match:
             base = slugify_heading(match.group(1))
@@ -104,6 +113,8 @@ def links_in_file(path: Path) -> list[tuple[int, str]]:
 
 
 def check_external(url: str, timeout: float) -> str | None:
+    if url in IGNORED_EXTERNAL_EXACT:
+        return None
     if any(url.startswith(pattern) for pattern in IGNORED_EXTERNAL_PATTERNS):
         return None
     headers = {"User-Agent": USER_AGENT}
