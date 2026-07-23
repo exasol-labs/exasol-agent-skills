@@ -60,7 +60,7 @@ jobs:
         run: docker run --rm -e SCENARIO=fresh-codex installer-test sh test/test-installer.sh
 
   check-links:
-    name: Docs
+    name: Check Links
     runs-on: ubuntu-24.04
     permissions:
       contents: read
