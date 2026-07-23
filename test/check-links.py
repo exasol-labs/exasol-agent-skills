@@ -159,7 +159,9 @@ def check_local(repo: Path, source: Path, url: str, anchor_cache: dict[Path, set
     if not target.exists():
         return f"missing local target: {url}"
     if fragment and target.is_file():
-        anchors = anchor_cache.setdefault(target, anchors_for(target))
+        if target not in anchor_cache:
+            anchor_cache[target] = anchors_for(target)
+        anchors = anchor_cache[target]
         decoded_fragment = urllib.parse.unquote(fragment)
         if decoded_fragment not in anchors:
             return f"missing anchor #{fragment} in {target.relative_to(repo)}"
@@ -183,7 +185,9 @@ def main() -> int:
             parsed = urllib.parse.urlsplit(url)
             if parsed.scheme in {"http", "https"}:
                 if not args.skip_external:
-                    error = external_cache.setdefault(url, check_external(url, args.timeout))
+                    if url not in external_cache:
+                        external_cache[url] = check_external(url, args.timeout)
+                    error = external_cache[url]
                     if error:
                         failures.append(f"{path.relative_to(repo)}:{line_number}: {url} -> {error}")
             else:

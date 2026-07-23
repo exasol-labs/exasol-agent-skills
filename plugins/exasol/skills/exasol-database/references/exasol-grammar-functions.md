@@ -17,7 +17,7 @@
 >
 > - **DB version:** branch `master` (`master` = major version 8, incl. 2025; `R7.1` = 7.1)
 > - **Source commit:** `27ab185403619f8f1e37dfeb9b3cd6287a60047b`
-> - **Regenerate:** re-vendor the `diagrams/*.bnf` files from [`exasol/sql-statement-builder`](https://github.com/exasol/sql-statement-builder) at the branch above. Do not hand-edit.
+> - **Regenerate:** re-vendor the relevant function, predicate, literal, and data-type grammar excerpts from [`exasol/sql-statement-builder`](https://github.com/exasol/sql-statement-builder) at the branch above. Do not hand-edit.
 
 ## Sections in this file
 
