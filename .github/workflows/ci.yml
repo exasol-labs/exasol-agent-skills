@@ -90,7 +90,7 @@ jobs:
             echo "No Markdown files changed."
             exit 0
           fi
-          printf '%s\n' "$files" | xargs npx --yes markdown-link-check -c .github/markdown_check_config.json
+          printf '%s\n' "$files" | xargs npx --yes markdown-link-check@3.14.2 -c .github/markdown_check_config.json
 
   release:
     if: startsWith(github.ref, 'refs/tags/v')

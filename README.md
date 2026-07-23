@@ -198,7 +198,7 @@ When adding a new Exasol capability:
 3. Add the new route to `plugins/exasol/skills/exasol/SKILL.md`.
 4. Mirror the route in `plugins/exasol/commands/exasol.md`.
 5. Update this README only with user-facing capability text, not internal routing details.
-6. Keep Markdown links valid so the CI link checker passes; use `npx markdown-link-check -c .github/markdown_check_config.json <file.md>` when changing links.
+6. Keep Markdown links valid so the CI link checker passes; use `npx --yes markdown-link-check@3.14.2 -c .github/markdown_check_config.json <file.md>` when changing links.
 7. Bump both manifest versions and add a CHANGELOG entry.
 
 Avoid adding new slash commands unless there is a strong backwards-compatibility reason. Prefer `/exasol bucketfs ...` over introducing a separate command for each domain.
