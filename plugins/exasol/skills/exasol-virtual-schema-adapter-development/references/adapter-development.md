@@ -148,7 +148,7 @@ WITH CONNECTION_NAME = 'SRC_CONN'
 
 Minimal post-install smoke-test sequence:
 
-```text
+```sql
 SELECT * FROM src_vs."VIRTUAL_TABLE_NAME" LIMIT 1;
 
 EXPLAIN VIRTUAL
