@@ -136,14 +136,14 @@ CREATE OR REPLACE JAVA ADAPTER SCRIPT adapter_schema.jdbc_adapter AS
   %jar /buckets/bfsdefault/default/jars/<source-driver-jar-name>.jar;
 /
 
-CREATE OR REPLACE CONNECTION src_conn
+CREATE OR REPLACE CONNECTION SRC_CONN
 TO 'jdbc:<source-dialect>://<source-host>:<source-port>/<source-database>'
 USER '<source-username>' IDENTIFIED BY '<source-password-secret>';
 
 CREATE VIRTUAL SCHEMA src_vs
 USING adapter_schema.jdbc_adapter
 WITH CONNECTION_NAME = 'SRC_CONN'
-     SCHEMA_NAME = 'public';
+     SCHEMA_NAME = '<source-schema>';
 ```
 
 Minimal post-install smoke-test sequence:
@@ -241,7 +241,7 @@ Debugging order:
 Keep the adapter as narrow as the source requires:
 
 - dedicated maintained adapter if one already exists
-- `virtual-schema-common-jdbc` based development if the source is JDBC-accessible but needs source-specific dialect behavior
+- `virtual-schema-common-jdbc`-based development if the source is JDBC-accessible but needs source-specific dialect behavior
 - document-file adapter family if the source is file or object storage instead of a JDBC database
 
 Avoid redesigning the broader adapter ecosystem when the user only needs one working source path.

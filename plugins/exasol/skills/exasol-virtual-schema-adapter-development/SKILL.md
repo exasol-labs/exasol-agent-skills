@@ -1,11 +1,11 @@
 ---
 name: exasol-virtual-schema-adapter-development
-description: "Build, install, validate, and debug custom Exasol virtual schema adapters. Covers source-specific JDBC dialect implementation with virtual-schema-common-jdbc, custom document-file adapter implementation boundaries, JAR packaging, BucketFS deployment, adapter script setup, EXPLAIN VIRTUAL validation, and remote debugging workflows."
+description: "Build, install, validate, and debug custom Exasol virtual schema adapters. Covers source-specific JDBC dialect implementation with virtual-schema-common-jdbc, custom document-file adapter code boundaries, JAR packaging, BucketFS deployment, adapter script setup, EXPLAIN VIRTUAL validation, and adapter-side remote debugging workflows."
 ---
 
 # Exasol Virtual Schema Adapter Development Skill
 
-Trigger when the user mentions **build a custom virtual schema adapter**, **virtual-schema-common-jdbc**, **remote debugging for virtual schemas**, **new SQL dialect adapter**, **source-specific JDBC dialect**, **custom document-file adapter implementation**, **adapter properties**, **pushdown capabilities**, **type mapping**, **metadata reader**, or **adapter JAR packaging**.
+Trigger when the user mentions **build a custom virtual schema adapter**, **virtual-schema-common-jdbc**, **remote debugging for a virtual schema adapter**, **new SQL dialect adapter**, **source-specific JDBC dialect**, **custom document-file adapter implementation**, **custom adapter properties**, **pushdown capabilities**, **type mapping**, **metadata reader**, or **adapter JAR packaging**.
 
 ## Routing Algorithm
 
@@ -14,7 +14,7 @@ Trigger when the user mentions **build a custom virtual schema adapter**, **virt
    - Load: `references/adapter-development.md`
 
 2. **Design adapter behavior**
-   - Trigger phrases: `adapter properties`, `pushdown capabilities`, `type mapping`, `identifier quoting`, `literal rendering`, `function pushdown`, `custom dialect tests`, `adapter integration tests`
+   - Trigger phrases: `custom adapter properties`, `pushdown capabilities`, `type mapping`, `identifier quoting`, `literal rendering`, `function pushdown`, `custom dialect tests`, `adapter integration tests`
    - Load: `references/adapter-development.md`
 
 3. **Install or update adapter artifacts**
@@ -22,7 +22,7 @@ Trigger when the user mentions **build a custom virtual schema adapter**, **virt
    - Load: `references/adapter-development.md`
 
 4. **Validate and debug adapter behavior**
-   - Trigger phrases: `EXPLAIN VIRTUAL`, `connection validation`, `remote debugging`, `pushdown debugging`, `adapter-side issue`
+   - Trigger phrases: `EXPLAIN VIRTUAL`, `connection validation`, `remote debugging for virtual schema adapters`, `pushdown debugging`, `adapter-side issue`
    - Load: `references/adapter-development.md`
 
 ## Notes
