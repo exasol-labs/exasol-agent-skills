@@ -107,7 +107,7 @@ Use specific adapter repositories when the source is known:
 ## Spark, Glue, ADF, and ETL tools
 
 - **Spark Exasol Connector**: https://github.com/exasol/spark-connector
-- **AWS Glue integration**: https://github.com/exasol/aws-glue-exasol-connector
+- **AWS Glue integration**: https://docs.exasol.com/db/latest/connect_exasol/aws_glue.htm
 - **Azure Data Factory Functions / Bulk Loader**: https://github.com/exasol/azure-data-factory-functions
 - **Ecosystem ETL list**: https://docs.exasol.com/db/latest/connect_exasol/ecosystem_overview.htm
 

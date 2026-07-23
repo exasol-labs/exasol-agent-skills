@@ -59,7 +59,8 @@ claude plugin validate ./plugins/exasol
 `.github/workflows/ci.yml` runs on push to `main` and PRs:
 1. **validate-plugin** — JSON validity + version consistency between both manifests + version bump check on PRs (must be greater than latest tag)
 2. **test-installer** — all 5 Docker scenarios
-3. **release** — on `v*` tags, creates GitHub release with auto-generated notes
+3. **check-links** — validates local and external links in tracked Markdown files
+4. **release** — on `v*` tags, creates GitHub release with auto-generated notes
 
 `.github/workflows/auto-release.yml` runs on PR merge to `main`:
 - Creates a git tag and GitHub release from the version in the manifests
@@ -73,7 +74,7 @@ Version lives in two places that **must always match**:
 
 Releases are automated. When a PR merges to `main`, CI creates a tag and GitHub release from the version in the manifests.
 
-**PR authors must bump the version** in both manifests as part of their PR. CI validates the version is strictly greater than the latest release tag. Bump rules:
+**PR authors must bump the version** in both manifests as part of their PR and keep Markdown links passing the CI link checker. CI validates the version is strictly greater than the latest release tag. Bump rules:
 - `feat:` commits → minor bump (e.g., 0.9.0 → 0.10.0)
 - Everything else → patch bump (e.g., 0.9.0 → 0.9.1)
 

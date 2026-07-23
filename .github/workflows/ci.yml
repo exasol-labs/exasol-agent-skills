@@ -59,9 +59,16 @@ jobs:
       - name: "Test: fresh install (Codex only)"
         run: docker run --rm -e SCENARIO=fresh-codex installer-test sh test/test-installer.sh
 
+  check-links:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Check Markdown links
+        run: python3 test/check-links.py
+
   release:
     if: startsWith(github.ref, 'refs/tags/v')
-    needs: [validate-plugin, test-installer]
+    needs: [validate-plugin, test-installer, check-links]
     runs-on: ubuntu-latest
     permissions:
       contents: write

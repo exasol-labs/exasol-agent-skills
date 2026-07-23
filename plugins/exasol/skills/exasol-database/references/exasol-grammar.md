@@ -2,7 +2,7 @@
 
 > **Source of truth.** The supported Exasol SQL **statement** grammar used by
 > the database skill, in EBNF, derived from
-> [`exasol/sql-syntax-diagrams`](https://github.com/exasol/sql-syntax-diagrams) — the same source
+> [`exasol/sql-statement-builder`](https://github.com/exasol/sql-statement-builder) — the same source
 > the syntax-diagram images on docs.exasol.com are generated from (via
 > `Ebnf2ps`). Prefer these rules over inferring syntax from examples: they
 > define legal clauses, their ordering, and their repetition.
@@ -22,7 +22,7 @@
 >
 > - **DB version:** branch `master` (`master` = major version 8, incl. 2025; `R7.1` = 7.1)
 > - **Source commit:** `27ab185403619f8f1e37dfeb9b3cd6287a60047b`
-> - **Regenerate:** re-vendor the `diagrams/*.bnf` files from [`exasol/sql-syntax-diagrams`](https://github.com/exasol/sql-syntax-diagrams) at the branch above, then keep direct import/export workflow syntax out of this database reference.
+> - **Regenerate:** re-vendor the `diagrams/*.bnf` files from [`exasol/sql-statement-builder`](https://github.com/exasol/sql-statement-builder) at the branch above, then keep direct import/export workflow syntax out of this database reference.
 
 ## Statements in this file
 

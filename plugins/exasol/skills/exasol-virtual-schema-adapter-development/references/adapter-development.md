@@ -93,6 +93,8 @@ Minimum test expectations for a custom JDBC dialect change:
 
 Use repository-native test classes and assertions after selecting a concrete codebase; do not invent framework APIs from these schematic names.
 
+For integration tests that need an Exasol database, prefer the selected repository's documented integration-test setup. When a Java test suite needs to start Exasol during tests, recommend Exasol Testcontainers (https://github.com/exasol/exasol-testcontainers) and capture the exact command and result used for the adapter change.
+
 ## Adapter Property Design
 
 Design properties as a stable user-facing contract:
@@ -165,7 +167,9 @@ Keep table, column, and literal values as placeholder names unless the user prov
 
 - keep the custom adapter JAR and source JDBC driver JAR responsibilities clear; the adapter JAR contains adapter code, while the driver JAR belongs to the source system
 - avoid bundling multiple conflicting JDBC drivers unless the selected repository explicitly documents that pattern
+- use the latest compatible versions of adapter framework, build plugins, and source-driver dependencies to avoid known vulnerabilities
 - record exact adapter, framework, source driver, Java, and Exasol versions used for the smoke test
+- run the repository-native dependency vulnerability check, dependency audit, or CVE review before recommending an artifact for release
 - use reproducible build commands from the selected repository rather than inventing new build steps
 - upload versioned artifact names to BucketFS so rollbacks do not depend on overwriting a single mutable file name
 - after replacing an adapter JAR, recreate or refresh the Java adapter script and run the smoke-test validation again
@@ -254,7 +258,10 @@ Before handing off a custom adapter change, confirm:
 - adapter properties and defaults are documented
 - smoke-test SQL for `CREATE JAVA ADAPTER SCRIPT` and `CREATE VIRTUAL SCHEMA` uses placeholders only
 - unit and integration tests relevant to the changed dialect behavior pass
+- integration-test evidence includes the exact command and result, using repository-native tests or Exasol Testcontainers when an Exasol database must be started during tests
 - artifact names and versions are recorded
+- dependency versions are current and no known-vulnerable dependency versions are recommended
+- dependency vulnerability checks, dependency audits, or CVE reviews pass for release-relevant dependencies
 - known unsupported pushdowns are listed
 - generated examples, logs, and comments do not contain credentials, tokens, customer hosts, or customer data
 - normal setup/query/refresh usage is still routed to **exasol-jdbc-virtual-schemas** or **exasol-document-virtual-schemas** rather than duplicated here
