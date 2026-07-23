@@ -76,6 +76,8 @@ jobs:
         uses: gaurav-nelson/github-action-markdown-link-check@v1
         with:
           config-file: '.github/markdown_check_config.json'
+          check-modified-files-only: 'yes'
+          base-branch: 'main'
 
   release:
     if: startsWith(github.ref, 'refs/tags/v')

@@ -5,7 +5,7 @@
       "pattern": "^https://my-bucket\\.s3\\.eu-west-1\\.amazonaws\\.com"
     },
     {
-      "pattern": "^https://github\\.com/some/package\\.git@v1\\.0\\.0$"
+      "pattern": "^git\\+https://github\\.com/some/package\\.git@v1\\.0\\.0$"
     },
     {
       "pattern": "^http://w:<PASSWORD>@<HOST>:2580/default/jars/$"
