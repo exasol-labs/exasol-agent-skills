@@ -30,17 +30,19 @@ The `exapump` command is the CLI tool for managing BucketFS. All BucketFS operat
 
 ### Connection Configuration
 
-Connection settings are stored in `~/.exapump/config.toml` as named profiles. Example:
+Connection settings are stored in `~/.exapump/config.toml` as named profiles. Example with placeholders only:
 
 ```toml
-[production]
-host = "exasol-prod.example.com"
-user = "admin"
-password = "s3cret"
+[example]
+host = "<exasol-host>"
+user = "<exasol-user>"
+password = "<exasol-password>"
 default = true
-bfs_write_password = "bucketpw"
-bfs_read_password = "bucketpw"
+bfs_write_password = "<bucketfs-write-password>"
+bfs_read_password = "<bucketfs-read-password>"
 ```
+
+Do not store real hosts, usernames, passwords, or BucketFS credentials in skill files, examples, logs, or scratch files.
 
 Key profile fields:
 
@@ -146,7 +148,7 @@ exapump bucketfs cp my_library.jar jars/my_library.jar
 ```
 
 Reference in UDF SQL:
-```sql
+```text
 CREATE OR REPLACE JAVA SCALAR SCRIPT my_schema.my_func(input VARCHAR(2000))
 RETURNS VARCHAR(2000) AS
   %scriptclass com.example.MyClass;
@@ -174,7 +176,7 @@ exapump bucketfs cp my_slc.tar.gz slc/my_slc.tar.gz
 ```
 
 Then activate via SQL:
-```sql
+```text
 ALTER SESSION SET SCRIPT_LANGUAGES='PYTHON3=localzmq+protobuf:///bfsdefault/default/slc/my_slc?lang=python#buckets/bfsdefault/default/slc/my_slc/exaudf/exaudfclient_py3';
 ```
 

@@ -46,10 +46,10 @@ After the connection is established, determine the task type and load **only** t
 6. **UDF development** (CREATE SCRIPT, ExaIterator, SCALAR/SET, Script Language Containers, SLC, exaslct):
    - Activate the **exasol-udfs** skill for guidance
 
-7. **Virtual schema usage or adapter development** (CREATE/ALTER/REFRESH VIRTUAL SCHEMA, EXPLAIN VIRTUAL, JDBC/document-file virtual schemas, custom adapter code, adapter JAR packaging, adapter-side debugging):
+7. **Virtual schema handoff** (CREATE/ALTER/REFRESH VIRTUAL SCHEMA, EXPLAIN VIRTUAL, JDBC/document-file virtual schemas, or custom adapter implementation requests):
    - Activate **exasol-jdbc-virtual-schemas** for JDBC/database-source virtual schema setup, refresh, query, and troubleshooting
    - Activate **exasol-document-virtual-schemas** for document-file virtual schema setup, refresh, query, and troubleshooting against S3, GCS, or Azure object storage
-   - Activate **exasol-virtual-schema-adapter-development** only for custom adapter implementation, source-specific dialect code, adapter packaging, or adapter-side debugging
+   - Activate **exasol-virtual-schema-adapter-development** only for custom adapter implementation requests
 
 Multiple routes can apply — load all that match.
 
@@ -69,6 +69,6 @@ For direct native `EXPORT` and local file movement out of Exasol, use **exasol-e
 For broad extension, connector, or federation selection, use **exasol-extension-catalog**.
 For JDBC/database-source virtual schema setup, refresh, query, and troubleshooting, use **exasol-jdbc-virtual-schemas**.
 For document-file virtual schema setup, refresh, query, and troubleshooting against S3, GCS, or Azure object storage, use **exasol-document-virtual-schemas**.
-For custom virtual schema adapter implementation, source-specific dialect code, adapter packaging, and adapter-side debugging, use **exasol-virtual-schema-adapter-development**.
+For custom virtual schema adapter implementation, use **exasol-virtual-schema-adapter-development**.
 For BucketFS file management (upload, download, list, delete), the **exasol-bucketfs** skill provides specialized guidance and will activate automatically when relevant.
 For UDF development and Script Language Containers, the **exasol-udfs** skill provides specialized guidance and will activate automatically when relevant.

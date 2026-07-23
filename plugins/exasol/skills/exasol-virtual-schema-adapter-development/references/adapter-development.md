@@ -7,7 +7,8 @@ Use these as starting points before inventing implementation details:
 - Virtual Schemas overview and common framework: https://github.com/exasol/virtual-schemas
 - Common JDBC adapter framework: https://github.com/exasol/virtual-schema-common-jdbc
 - Generic JDBC adapter reference implementation: https://github.com/exasol/generic-jdbc-virtual-schema — use as a code reference only after checking current repository status, not as an unconditional production recommendation
-- Maintained adapter examples: use the closest source-specific adapter from the extension catalog before starting from scratch
+- Maintained JDBC adapter examples: use the closest source-specific adapter from the extension catalog before starting from scratch
+- Maintained document-file adapter examples: S3, Google Cloud Storage, Azure Blob Storage, and Azure Data Lake Storage Gen2 document-file virtual schema repositories listed in the extension catalog
 
 Check the selected repository's current README, release notes, Java version, build tool, and debugger documentation before giving version-specific commands.
 
@@ -49,6 +50,8 @@ Use this adapter-development skill for document-file work only when the user mus
 
 Do not duplicate normal document-file setup examples here. For connection JSON, mapping-file, and existing adapter-family usage, route to **exasol-document-virtual-schemas**.
 
+Document-file adapter implementation landmarks vary by repository. Before giving code-level advice, inspect the selected repository for its documented metadata reader, storage client, mapping parser, integration-test fixtures, and supported Java/build versions.
+
 ## Custom JDBC Dialect Implementation Checklist
 
 When implementing source-specific behavior, cover these areas explicitly:
@@ -72,6 +75,23 @@ src/test/java/.../<Source>IntegrationTest.java  # Exasol + representative source
 ```
 
 Keep examples schematic unless the user has selected a concrete adapter repository and version.
+
+Minimum test expectations for a custom JDBC dialect change:
+
+```text
+<Source>SqlDialectTest
+- renders quoted and unquoted identifiers according to the source rules
+- renders string, numeric, date, timestamp, and NULL literals correctly
+- renders supported filters, functions, ORDER BY, and LIMIT/pagination syntax
+- rejects or marks unsupported pushdown capabilities instead of generating unsafe SQL
+
+<Source>MetadataReaderTest or integration test
+- maps representative source types to Exasol virtual-schema metadata
+- preserves precision, scale, nullability, and case behavior where supported
+- returns actionable errors for invalid schema properties without exposing secrets
+```
+
+Use repository-native test classes and assertions after selecting a concrete codebase; do not invent framework APIs from these schematic names.
 
 ## Adapter Property Design
 
@@ -199,6 +219,13 @@ Use it when:
 - SQL-level checks such as `EXPLAIN VIRTUAL` are not enough
 
 When the user asks for remote debugging, stay aligned with the adapter repository's documented debugger setup instead of inventing a custom procedure.
+
+Remote debugging safety rules:
+
+- bind debug listeners to localhost, a private test network, or the repository-documented secure path; do not expose debug ports broadly
+- use short-lived test credentials and non-production source systems where possible
+- redact connection strings, user names, tokens, hostnames, generated SQL containing sensitive literals, and customer data before sharing logs
+- remove temporary debug flags and rebuild/redeploy the normal artifact after debugging
 
 Debugging order:
 
