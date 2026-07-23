@@ -148,8 +148,8 @@ exapump bucketfs cp my_library.jar jars/my_library.jar
 ```
 
 Reference in UDF SQL:
-```text
-CREATE OR REPLACE JAVA SCALAR SCRIPT my_schema.my_func(input VARCHAR(2000))
+```sql
+CREATE OR REPLACE JAVA SCALAR SCRIPT my_schema.my_func(p_input VARCHAR(2000))
 RETURNS VARCHAR(2000) AS
   %scriptclass com.example.MyClass;
   %jar /buckets/bfsdefault/default/jars/my_library.jar;
@@ -176,7 +176,7 @@ exapump bucketfs cp my_slc.tar.gz slc/my_slc.tar.gz
 ```
 
 Then activate via SQL:
-```text
+```sql
 ALTER SESSION SET SCRIPT_LANGUAGES='PYTHON3=localzmq+protobuf:///bfsdefault/default/slc/my_slc?lang=python#buckets/bfsdefault/default/slc/my_slc/exaudf/exaudfclient_py3';
 ```
 
