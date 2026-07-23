@@ -27,6 +27,7 @@ MARKDOWN_LINK_RE = re.compile(
 )
 BARE_URL_RE = re.compile(r"https?://[^\s<>)\]\"']+")
 HEADING_RE = re.compile(r"^\s{0,3}#{1,6}\s+(.+?)\s*#*\s*$")
+FENCE_RE = re.compile(r"^\s{0,3}(```|~~~)")
 HTML_ANCHOR_RE = re.compile(r"<(?:a|[^>]+\s+id=)[^>]*(?:id|name)=[\"']([^\"']+)[\"'][^>]*>", re.IGNORECASE)
 TRAILING_PUNCTUATION = ".,;:!?)]}>'\"”’"
 ACCEPTED_EXTERNAL_STATUSES = {403, 429}
@@ -71,7 +72,7 @@ def anchors_for(path: Path) -> set[str]:
     except UnicodeDecodeError:
         text = path.read_text(errors="ignore")
     for line in text.splitlines():
-        if line.startswith("```"):
+        if FENCE_RE.match(line):
             in_fence = not in_fence
             continue
         if in_fence:
