@@ -30,19 +30,17 @@ The `exapump` command is the CLI tool for managing BucketFS. All BucketFS operat
 
 ### Connection Configuration
 
-Connection settings are stored in `~/.exapump/config.toml` as named profiles. Example with placeholders only:
+Connection settings are stored in `~/.exapump/config.toml` as named profiles. Example:
 
 ```toml
-[example]
-host = "<exasol-host>"
-user = "<exasol-user>"
-password = "<exasol-password>"
+[production]
+host = "exasol-prod.example.com"
+user = "admin"
+password = "s3cret"
 default = true
-bfs_write_password = "<bucketfs-write-password>"
-bfs_read_password = "<bucketfs-read-password>"
+bfs_write_password = "bucketpw"
+bfs_read_password = "bucketpw"
 ```
-
-Do not store real hosts, usernames, passwords, or BucketFS credentials in skill files, examples, logs, or scratch files.
 
 Key profile fields:
 
@@ -149,7 +147,7 @@ exapump bucketfs cp my_library.jar jars/my_library.jar
 
 Reference in UDF SQL:
 ```sql
-CREATE OR REPLACE JAVA SCALAR SCRIPT my_schema.my_func(p_input VARCHAR(2000))
+CREATE OR REPLACE JAVA SCALAR SCRIPT my_schema.my_func(input VARCHAR(2000))
 RETURNS VARCHAR(2000) AS
   %scriptclass com.example.MyClass;
   %jar /buckets/bfsdefault/default/jars/my_library.jar;

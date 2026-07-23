@@ -3,7 +3,7 @@
 > **Source of truth.** The *complete* supported Exasol grammar for built-in
 > **functions**, operators, **predicates**, **literals**, and **data types**, in
 > EBNF, vendored verbatim from
-> [`exasol/sql-statement-builder`](https://github.com/exasol/sql-statement-builder) — the same source
+> [`exasol/sql-syntax-diagrams`](https://github.com/exasol/sql-syntax-diagrams) — the same source
 > the syntax-diagram images on docs.exasol.com are generated from (via
 > `Ebnf2ps`).
 >
@@ -16,8 +16,8 @@
 > file into context.
 >
 > - **DB version:** branch `master` (`master` = major version 8, incl. 2025; `R7.1` = 7.1)
-> - **Source snapshot:** vendored function, predicate, literal, and data-type grammar excerpts; verify the current upstream branch before regenerating
-> - **Regenerate:** re-vendor the relevant function, predicate, literal, and data-type grammar excerpts from [`exasol/sql-statement-builder`](https://github.com/exasol/sql-statement-builder) at the branch above. Do not hand-edit.
+> - **Source commit:** `27ab185403619f8f1e37dfeb9b3cd6287a60047b`
+> - **Regenerate:** re-vendor the `diagrams/*.bnf` files from [`exasol/sql-syntax-diagrams`](https://github.com/exasol/sql-syntax-diagrams) at the branch above. Do not hand-edit.
 
 ## Sections in this file
 

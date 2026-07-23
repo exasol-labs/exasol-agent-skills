@@ -107,7 +107,7 @@ Use specific adapter repositories when the source is known:
 ## Spark, Glue, ADF, and ETL tools
 
 - **Spark Exasol Connector**: https://github.com/exasol/spark-connector
-- **AWS Glue integration**: https://docs.exasol.com/db/latest/connect_exasol/aws_glue.htm
+- **AWS Glue integration**: https://github.com/exasol/glue-connector/blob/main/doc/user_guide/user_guide.md
 - **Azure Data Factory Functions / Bulk Loader**: https://github.com/exasol/azure-data-factory-functions
 - **Ecosystem ETL list**: https://docs.exasol.com/db/latest/connect_exasol/ecosystem_overview.htm
 
@@ -117,12 +117,12 @@ Use specific adapter repositories when the source is known:
 - JDBC: https://docs.exasol.com/db/latest/connect_exasol/drivers/jdbc.htm
 - ODBC: https://docs.exasol.com/db/latest/connect_exasol/drivers/odbc.htm
 - Exasol Download Portal: https://downloads.exasol.com/
-- ADO.NET: https://docs.exasol.com/db/latest/connect_exasol/drivers/ado.net.htm
+- ADO.NET: https://docs.exasol.com/db/latest/connect_exasol/drivers/ado_net.htm
 - PyExasol: https://github.com/exasol/pyexasol
 - PyExasol 2.2.2: https://github.com/exasol/pyexasol/releases/tag/2.2.2
 - SQLAlchemy Exasol: https://github.com/exasol/sqlalchemy-exasol
 - Exasol TypeScript/JavaScript driver: https://github.com/exasol/exasol-driver-ts
 - Go SQL Driver: https://github.com/exasol/exasol-driver-go
-- R Integration: https://docs.exasol.com/db/latest/connect_exasol/drivers/r.htm
+- R Integration: https://github.com/exasol/r-exasol
 - WebSockets API: https://github.com/exasol/websocket-api
 - Ibis backend: https://ibis-project.org/backends/exasol
