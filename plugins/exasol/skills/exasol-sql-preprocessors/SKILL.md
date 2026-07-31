@@ -45,7 +45,9 @@ Choose the narrowest matching route. Load `references/preprocessor-basics.md` fo
 
 ## Framework or No Framework
 
-Both are legitimate. Decide with this, and state the choice explicitly rather than defaulting:
+The framework is [`exasol-labs/preprocessor-framework`](https://github.com/exasol-labs/preprocessor-framework); its module catalog is [`exasol-labs/preprocessor-library`](https://github.com/exasol-labs/preprocessor-library).
+
+Both paths are legitimate. Decide with this, and state the choice explicitly rather than defaulting:
 
 | Situation | Recommend |
 |---|---|

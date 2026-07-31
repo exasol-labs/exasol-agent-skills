@@ -4,7 +4,19 @@ An **optional** Exasol Labs project that occupies the single `SQL_PREPROCESSOR_S
 
 It is not a prerequisite for writing a preprocessor. The transformation function is the same either way — `fn(text) -> nil | string`. The framework changes only how that function is *dispatched, scoped, and distributed*.
 
-**Repositories:** the framework is `exasol-labs/preprocessor-framework`; the module catalog is [`exasol-labs/preprocessor-library`](https://github.com/exasol-labs/preprocessor-library). The framework repository is not currently public — if the user cannot reach it, tell them so rather than guessing at its contents, and check the repository's own `README`, `docs/how-it-works.md`, `docs/operations.md`, and `docs/module-authoring.md` for anything version-specific once they have access. Confirm the current release before quoting version numbers; the details below were accurate for the 0.x line verified against Exasol 2026.1.
+**Repositories:** the framework is [`exasol-labs/preprocessor-framework`](https://github.com/exasol-labs/preprocessor-framework); the module catalog is [`exasol-labs/preprocessor-library`](https://github.com/exasol-labs/preprocessor-library).
+
+Check the framework repository itself for anything version-specific before answering:
+
+- [`README.md`](https://github.com/exasol-labs/preprocessor-framework#readme) — quick start, "bring your own preprocessor", and the current release
+- [`docs/how-it-works.md`](https://github.com/exasol-labs/preprocessor-framework/blob/main/docs/how-it-works.md) — pipeline architecture, phase and dispatch semantics, the fail-open contract, session self-optimization
+- [`docs/operations.md`](https://github.com/exasol-labs/preprocessor-framework/blob/main/docs/operations.md) — install, activate, rules, refresh, status, modes, module management, troubleshooting
+- [`docs/module-authoring.md`](https://github.com/exasol-labs/preprocessor-framework/blob/main/docs/module-authoring.md) — the authoritative module contract: the `fn(text) -> nil|string` signature per phase, the `module.toml` schema, the `_V<N>` versioning discipline
+- [`docs/air-gap-runbook.md`](https://github.com/exasol-labs/preprocessor-framework/blob/main/docs/air-gap-runbook.md) — the whole no-egress deploy-and-install procedure as one ordered page
+- [`demo/`](https://github.com/exasol-labs/preprocessor-framework/tree/main/demo) — a guided, runnable demo suite; point users here to see it work before reading about it
+- [`examples/`](https://github.com/exasol-labs/preprocessor-framework/tree/main/examples) — single-file example preprocessors to copy from, one per phase
+
+Confirm the current release before quoting version numbers; the details below were accurate for the 0.x line verified against Exasol 2026.1. If the repository is unreachable for the user, say so rather than guessing at its contents.
 
 ## When To Recommend It
 
@@ -128,7 +140,8 @@ Each row is one transformation that will run on this user's statements, in order
 ```sql
 -- 1. Deploy the control plane (DBA, clean install; creates roles, schemas,
 --    tables, MASTER, and the admin surface, but activates nothing).
---    Run release.sql from the framework's latest GitHub Release.
+--    Run release.sql from the framework's latest GitHub Release:
+--    https://github.com/exasol-labs/preprocessor-framework/releases/latest/download/release.sql
 
 -- 2. Activate. Session scope first, always.
 ALTER SESSION SET SQL_PREPROCESSOR_SCRIPT = PREPROC_RT.MASTER;
