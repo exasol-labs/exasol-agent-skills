@@ -51,6 +51,14 @@ or DB2, prefer **exasol-jdbc-virtual-schemas** over the broader extension
 catalog route. Do not route a bare `Virtual Schema` mention here unless the
 source is clearly JDBC/database-based.
 
+When a request mentions `SQL preprocessor`, `preprocessor script`,
+`SQL_PREPROCESSOR_SCRIPT`, `sqlparsing`, `CREATE PREPROCESSOR SCRIPT`, rewriting
+SQL text before execution, adding syntax Exasol does not have, a custom SQL
+command, in-database SQL dialect translation, or the preprocessor framework and
+its `PREPROC` commands, prefer **exasol-sql-preprocessors** over the broader
+**exasol-udfs** or **exasol-database** routes, even though a preprocessor is
+created with `CREATE SCRIPT`.
+
 When a request mentions `CREATE CONNECTION` without clear import, export, or
 object-store file movement intent, prefer **exasol-database**.
 
@@ -119,11 +127,15 @@ When a user mentions `Text AI Extension`, `TXAIE`, `deploy_license`,
    - Trigger phrases: `UDF`, `CREATE SCRIPT`, `SCALAR`, `SET script`, `ExaIterator`, `Python UDF`, `Java UDF`, `Lua UDF`, `R UDF`, `SLC`, `Script Language Container`, `exaslct`
    - Activate: **exasol-udfs**
 
-16. **Exasol Personal setup**
+16. **SQL preprocessor workflows**
+   - Trigger phrases: `SQL preprocessor`, `preprocessor script`, `SQL_PREPROCESSOR_SCRIPT`, `sqlparsing`, `getsqltext`, `setsqltext`, `CREATE PREPROCESSOR SCRIPT`, `PYTHON3 PREPROCESSOR SCRIPT`, `JAVA PREPROCESSOR SCRIPT`, `adapter_call`, `rewrite SQL before execution`, `custom SQL command`, `add syntax to Exasol`, `SQL dialect translation in the database`, `transpile SQL in Exasol`, `statement rewriting`, `preprocessor framework`, `preprocessor module`, `PREPROC ADD RULE`, `PREPROC INSTALL MODULE`, `PREPROC_RT.MASTER`, `MY_PIPELINE`
+   - Activate: **exasol-sql-preprocessors**
+
+17. **Exasol Personal setup**
    - Trigger phrases: `set up Exasol`, `Exasol Personal`, `deploy Exasol`, `install Exasol on AWS`, `new Exasol database`
    - Activate: **exasol-setup-personal**
 
-17. **Distributed ML, machine learning, data mining, iterative HPC**
+18. **Distributed ML, machine learning, data mining, iterative HPC**
    - Trigger phrases: `distributed ML`, `machine learning`, `train model`, `batch inference`,
      `prediction`, `feature engineering`, `hyperparameter`, `PyTorch`, `TensorFlow`,
      `scikit-learn`, `RAPIDS`, `GPU model`, `model deployment`, `distributed training`,
@@ -144,7 +156,8 @@ When setup and usage both apply, resolve prerequisites first:
 6. Local Docker database lifecycle or helper-level connectivity validation
 7. Extension-specific TXAIE or Transformers workflow
 8. SQL, data movement, BucketFS, UDF, SLC, or integration task
-9. Distributed ML, data mining, or iterative HPC task (depends on UDF/SLC and BucketFS)
+9. SQL preprocessor authoring or activation, after the SQL it emits is settled
+10. Distributed ML, data mining, or iterative HPC task (depends on UDF/SLC and BucketFS)
 
 ## User Interaction Rules
 

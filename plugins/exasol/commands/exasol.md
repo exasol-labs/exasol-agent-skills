@@ -42,6 +42,7 @@ When invoked:
    - Text AI Extension workflows such as `deploy_license`, `initialize_text_ai_extension`, `Extraction`, `NamedEntityExtractor`, `PipelineExtractor`, `BranchExtractor`, `StandardExtractor`, `TopicClassifierExtractor`, feature extraction, or zero-shot classification -> use **exasol-text-ai** behavior.
    - Transformers Extension workflows such as `initialize_te_extension`, `deploy_scripts`, `TE UDF` usage, or Transformers model workflows in Exasol -> use **exasol-transformers** behavior.
    - UDFs, `CREATE SCRIPT`, `ExaIterator`, Python/Java/Lua/R scripts, Script Language Containers, or `exaslct` -> use **exasol-udfs** behavior.
+   - SQL preprocessor workflows such as `SQL preprocessor`, `preprocessor script`, `SQL_PREPROCESSOR_SCRIPT`, `sqlparsing`, `getsqltext`, `setsqltext`, `CREATE PREPROCESSOR SCRIPT`, `PYTHON3 PREPROCESSOR SCRIPT`, `JAVA PREPROCESSOR SCRIPT`, `adapter_call`, rewriting SQL text before execution, adding syntax Exasol does not have, custom SQL commands, in-database SQL dialect translation, or the preprocessor framework and its `PREPROC` commands -> use **exasol-sql-preprocessors** behavior. Prefer this over **exasol-udfs** even though a preprocessor is created with `CREATE SCRIPT`.
    - Distributed ML, machine learning, training, inference, feature engineering, hyperparameter search, GPU UDFs, PyTorch/TensorFlow/RAPIDS, model lifecycle, iterative algorithms, frequent itemset mining, data mining -> use **exasol-distributed-ml** behavior.
    - Exasol Personal, AWS setup, first Exasol deployment, or new database setup -> use **exasol-setup-personal** behavior.
 
@@ -90,11 +91,17 @@ When invoked:
    - Use Exasol UDF and Script Language Container guidance.
    - Route file upload or SLC activation sub-tasks through BucketFS or database behavior as needed.
 
-9. **For Exasol Personal setup routes:**
+9. **For SQL preprocessor routes:**
+   - There is exactly one `SQL_PREPROCESSOR_SCRIPT` slot per system; check whether it is already occupied before proposing a deploy.
+   - Always prove a preprocessor at `ALTER SESSION` scope before `ALTER SYSTEM` scope, and give the `= NULL` rollback line in the same message as the activation line.
+   - Recommend splitting the slot script (thin wrapper) from the transformation logic (imported helper), because `EXECUTE SCRIPT` cannot call a preprocessor script and the helper is what makes it testable.
+   - State whether the framework is being used or not; do not present it as a prerequisite for writing a preprocessor.
+
+10. **For Exasol Personal setup routes:**
    - Do not require an existing exapump profile before setup.
    - Guide deployment first, then create or validate the exapump profile after the database exists.
 
-10. **On errors:** Apply Exasol-specific knowledge to diagnose and fix issues. Common causes:
+11. **On errors:** Apply Exasol-specific knowledge to diagnose and fix issues. Common causes:
    - Reserved keyword used as identifier: verify by running `exapump sql "SELECT * FROM EXA_SQL_KEYWORDS WHERE KEYWORD = '<word>'"`, then double-quote the identifier.
    - Uppercase identifier mismatch
    - Missing NOT NULL on UNIQUE constraint columns
@@ -117,6 +124,9 @@ When invoked:
 /exasol compare Exasol options for governed Text-to-SQL
 /exasol write a Python UDF that normalizes product names
 /exasol build a Script Language Container with pandas installed
+/exasol write a SQL preprocessor that adds a SHOW TOP TABLES command
+/exasol make Exasol accept PostgreSQL-style expr::type casts
+/exasol run two preprocessors at once, scoped to different roles
 /exasol set up Exasol Personal on AWS
 /exasol show me the schema of the orders table
 /exasol is "profile" a reserved keyword in Exasol?
