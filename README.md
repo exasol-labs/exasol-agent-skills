@@ -125,6 +125,12 @@ Build User Defined Functions in Python, Java, Lua, or R, and package them into d
 
 See [`plugins/exasol/skills/exasol-udfs/SKILL.md`](plugins/exasol/skills/exasol-udfs/SKILL.md) for details.
 
+### Exasol SQL Preprocessor Skill
+
+Write, deploy, test, and debug SQL preprocessor scripts that rewrite statement text before compilation — custom SQL commands, dialect translation, and statement guardrails — with or without the Exasol Labs preprocessor framework.
+
+See [`plugins/exasol/skills/exasol-sql-preprocessors/SKILL.md`](plugins/exasol/skills/exasol-sql-preprocessors/SKILL.md) for details.
+
 ### BucketFS Skill
 
 Manage files in Exasol's distributed file system — list, upload, download, and delete files that your UDFs and scripts can access.

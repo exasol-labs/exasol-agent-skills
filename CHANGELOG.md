@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.24.0
+
+- Add exasol-sql-preprocessors skill for SQL preprocessor authoring, the `SQL_PREPROCESSOR_SCRIPT` slot, Lua/Python3/Java preprocessor entry points, and the optional Exasol Labs preprocessor framework
+
 ## v0.23.0
 
 - Add exasol-virtual-schema-adapter-development skill for custom virtual schema adapter build and debugging workflows
