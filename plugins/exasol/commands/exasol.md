@@ -43,7 +43,7 @@ When invoked:
    - Transformers Extension workflows such as `initialize_te_extension`, `deploy_scripts`, `TE UDF` usage, or Transformers model workflows in Exasol -> use **exasol-transformers** behavior.
    - UDFs, `CREATE SCRIPT`, `ExaIterator`, Python/Java/Lua/R scripts, Script Language Containers, or `exaslct` -> use **exasol-udfs** behavior.
    - Distributed ML, machine learning, training, inference, feature engineering, hyperparameter search, GPU UDFs, PyTorch/TensorFlow/RAPIDS, model lifecycle, iterative algorithms, frequent itemset mining, data mining -> use **exasol-distributed-ml** behavior.
-   - Exasol Personal, AWS setup, first Exasol deployment, or new database setup -> use **exasol-setup-personal** behavior.
+   - Exasol Personal, local macOS setup, cloud provider setup (AWS, Azure, Exoscale, STACKIT), first Exasol deployment, or new database setup -> use **exasol-setup-personal** behavior.
 
    If a request matches the broad `extension` wording and also contains
    `Text AI Extension`, `TXAIE`, `deploy_license`, `initialize_text_ai_extension`,
@@ -92,7 +92,8 @@ When invoked:
 
 9. **For Exasol Personal setup routes:**
    - Do not require an existing exapump profile before setup.
-   - Guide deployment first, then create or validate the exapump profile after the database exists.
+   - Choose the deployment flavor first (local on macOS, otherwise a cloud provider), then follow the upstream `exasol/exasol-personal` documentation rather than reciting commands from memory.
+   - Run all SQL during setup with the launcher's built-in client, `exasol connect`, not exapump. Do not install or configure exapump as part of setup — that belongs to the database skill afterwards.
 
 10. **On errors:** Apply Exasol-specific knowledge to diagnose and fix issues. Common causes:
    - Reserved keyword used as identifier: verify by running `exapump sql "SELECT * FROM EXA_SQL_KEYWORDS WHERE KEYWORD = '<word>'"`, then double-quote the identifier.

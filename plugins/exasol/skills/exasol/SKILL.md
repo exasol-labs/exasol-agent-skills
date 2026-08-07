@@ -120,7 +120,7 @@ When a user mentions `Text AI Extension`, `TXAIE`, `deploy_license`,
    - Activate: **exasol-udfs**
 
 16. **Exasol Personal setup**
-   - Trigger phrases: `set up Exasol`, `Exasol Personal`, `deploy Exasol`, `install Exasol on AWS`, `new Exasol database`
+   - Trigger phrases: `set up Exasol`, `Exasol Personal`, `deploy Exasol`, `install Exasol locally`, `Exasol on my Mac`, `install Exasol on AWS`, `Azure`, `Exoscale`, `STACKIT`, `new Exasol database`
    - Activate: **exasol-setup-personal**
 
 17. **Distributed ML, machine learning, data mining, iterative HPC**
