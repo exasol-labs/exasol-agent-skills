@@ -120,7 +120,8 @@ When a user mentions `Text AI Extension`, `TXAIE`, `deploy_license`,
    - Activate: **exasol-udfs**
 
 16. **Exasol Personal setup**
-   - Trigger phrases: `set up Exasol`, `Exasol Personal`, `deploy Exasol`, `install Exasol locally`, `Exasol on my Mac`, `install Exasol on AWS`, `Azure`, `Exoscale`, `STACKIT`, `new Exasol database`
+   - Trigger phrases: `set up Exasol`, `Exasol Personal`, `deploy Exasol`, `install Exasol locally`, `Exasol on my Mac`, `install Exasol on AWS`, `install Exasol on Azure`, `deploy Exasol to Azure`, `Exoscale`, `STACKIT`, `new Exasol database`
+   - Do not activate on a bare cloud-provider or storage token such as `Azure Blob` or `S3` — those belong to the import, export, and document virtual schema routes. This route requires deployment intent (`install`, `deploy`, `set up`) aimed at Exasol itself.
    - Activate: **exasol-setup-personal**
 
 17. **Distributed ML, machine learning, data mining, iterative HPC**

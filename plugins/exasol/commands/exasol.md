@@ -95,8 +95,8 @@ When invoked:
    - Choose the deployment flavor first (local on macOS, otherwise a cloud provider), then follow the upstream `exasol/exasol-personal` documentation rather than reciting commands from memory.
    - Run all SQL during setup with the launcher's built-in client, `exasol connect`, not exapump. Do not install or configure exapump as part of setup — that belongs to the database skill afterwards.
 
-10. **On errors:** Apply Exasol-specific knowledge to diagnose and fix issues. Common causes:
-   - Reserved keyword used as identifier: verify by running `exapump sql "SELECT * FROM EXA_SQL_KEYWORDS WHERE KEYWORD = '<word>'"`, then double-quote the identifier.
+10. **On errors:** Apply Exasol-specific knowledge to diagnose and fix issues. Run any diagnostic SQL with whichever client the current route already uses — `exapump sql` for database routes, `exasol connect -c` on a setup route, where no exapump profile exists yet. Common causes:
+   - Reserved keyword used as identifier: verify by querying `SELECT * FROM EXA_SQL_KEYWORDS WHERE KEYWORD = '<word>'`, then double-quote the identifier.
    - Uppercase identifier mismatch
    - Missing NOT NULL on UNIQUE constraint columns
    - Using unsupported syntax from other databases

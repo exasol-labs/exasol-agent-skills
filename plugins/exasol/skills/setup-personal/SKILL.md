@@ -35,6 +35,14 @@ Raw URL pattern:
 https://raw.githubusercontent.com/exasol/exasol-personal/main/<document>
 ```
 
+**If a fetch fails** — the host is unreachable, the network is restricted, or the document has moved — do not improvise the missing steps from memory, and do not fall back to the outdated commands you may recall. Tell the user which document could not be retrieved and why, then offer to either retry, or have them open the document themselves and paste the relevant section:
+
+```
+https://github.com/exasol/exasol-personal/blob/main/<document>
+```
+
+Only the launcher-state commands this skill names directly (`exasol version`, `exasol info`, `exasol connect`, `exasol deployments list`, `exasol diag local`) are safe to run without the upstream docs; anything that installs, provisions, or destroys is not.
+
 **Always use the `AskUserQuestion` tool for every question, confirmation, and decision point — no exceptions. Never assume answers or skip questions.**
 
 ## Running SQL During Setup
@@ -99,7 +107,7 @@ Then use `AskUserQuestion` to ask which flavor they want, tailoring the recommen
 
 If the user picks a cloud provider, use `AskUserQuestion` to confirm which one: AWS, Azure, Exoscale, or STACKIT.
 
-Record the chosen flavor — it maps directly to the `exasol install <preset>` preset name (`local`, `aws`, `azure`, `exoscale`, `stackit`).
+Record the chosen flavor — it selects the `exasol install <preset>` preset name (`local`, `aws`, `azure`, `exoscale`, `stackit`). The preset name alone is not always a complete command: some providers require additional flags, listed in Phase 3.
 
 ---
 
@@ -129,8 +137,22 @@ If the user wants to run UDFs, follow the README's **UDFs and Script Language Co
 
 1. Fetch the provider's `HOWTO_SETUP_<PROVIDER>_ACCOUNT.md` from the upstream repo and walk the user through it step by step, waiting for confirmation at each step. This covers account preparation, permissions, and the credentials or environment variables the launcher expects.
 2. Use `AskUserQuestion` to confirm credentials are in place before deploying.
-3. Fetch the upstream `README.md` and follow its **Deploy to the Cloud** section to run `exasol install <preset>`.
-4. Before running the install, use `AskUserQuestion` to ask whether the user wants defaults or a custom cluster size and instance type (README section **Cloud: Choosing cluster size and compute instance types**), and whether they want a named deployment.
+3. **Collect every install option before running anything** — all of the options below are install-time only and cannot be changed afterwards without destroying and reinstalling. In one round of `AskUserQuestion`, gather:
+   - **Any flags the provider requires** (see the table below) — the install fails without them.
+   - **Cluster size and instance type**, or the defaults (README section **Cloud: Choosing cluster size and compute instance types**).
+   - **A named deployment** (`-d <name>`), or the default.
+4. Fetch the upstream `README.md`, follow its **Deploy to the Cloud** section, and run `exasol install <preset>` with the options collected in step 3.
+
+**Per-provider install flags** — confirm these against the provider's HOWTO, which is authoritative:
+
+| Provider | Required | Optional |
+|---|---|---|
+| `aws` | none — region comes from the AWS CLI profile | |
+| `azure` | `--location <region>` — the target region is **not** inferred | |
+| `exoscale` | none | `--zone <zone>` (defaults to `ch-gva-2`) |
+| `stackit` | `--project-id <uuid>` | `--region <region>` (defaults to `eu01`) |
+
+The README's **Deploy to the Cloud** section shows bare `exasol install <preset>` commands for readability. For Azure and STACKIT those are incomplete — always add the required flag.
 
 Tell the user cloud deployment takes about 10–20 minutes and must not be interrupted — an interrupted install can leave billable resources behind that need `exasol destroy` or manual cleanup.
 
@@ -163,7 +185,7 @@ Verify the load with `exasol connect`:
 exasol connect -c "SELECT COUNT(*) FROM PRODUCTS; SELECT COUNT(*) FROM PRODUCT_REVIEWS"
 ```
 
-Expected: `PRODUCTS` = 1,000,000 rows; `PRODUCT_REVIEWS` = 1,822,007 rows.
+Compare the results against the row counts in the README's **Load Sample Data** table, which you already fetched — do not rely on counts quoted from memory.
 
 ---
 
