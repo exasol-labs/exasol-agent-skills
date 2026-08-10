@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.24.0
+
+- Rewrite exasol-setup-personal to cover all Exasol Personal deployment flavors: local (macOS), AWS, Azure, Exoscale, and STACKIT
+- Recommend the local deployment on macOS 15+ with at least 8 GB RAM; fall back to cloud providers elsewhere
+- Replace hardcoded install steps with high-level direction that defers to the upstream `exasol/exasol-personal` README and per-provider account setup guides
+- Use the launcher's built-in `exasol connect` client for all SQL during setup, and drop the exapump installation and profile steps from the setup flow
+- Document the per-provider `exasol install` flags (Azure `--location`, STACKIT `--project-id`, Exoscale `--zone`) and collect all install-time options before provisioning
+- Fail loudly instead of improvising when upstream documentation cannot be fetched
+
 ## v0.23.0
 
 - Add exasol-virtual-schema-adapter-development skill for custom virtual schema adapter build and debugging workflows

@@ -163,9 +163,9 @@ See [`plugins/exasol/skills/exasol-transformers/SKILL.md`](plugins/exasol/skills
 
 ### Exasol Personal Setup Skill
 
-Step-by-step guided setup of your own Exasol database on AWS — from account creation and IAM configuration to deployment, data loading, and exploration. No prior AWS or Exasol experience required.
+Step-by-step guided setup of your own Exasol database — locally on a Mac, or deployed to your own AWS, Azure, Exoscale, or STACKIT account. Picks the right deployment flavor (local is recommended on macOS), then follows the official [exasol/exasol-personal](https://github.com/exasol/exasol-personal) instructions through deployment, sample data loading, and exploration. No prior cloud or Exasol experience required.
 
-Triggers on: "set up Exasol", "Exasol Personal", "deploy Exasol", "install Exasol on AWS"
+Triggers on: "set up Exasol", "Exasol Personal", "deploy Exasol", "install Exasol locally", "install Exasol on AWS"
 
 See [`plugins/exasol/skills/setup-personal/SKILL.md`](plugins/exasol/skills/setup-personal/SKILL.md) for details.
 
