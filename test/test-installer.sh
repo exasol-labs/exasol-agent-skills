@@ -106,19 +106,25 @@ esac
 
 if [ "$SCENARIO" = "piped-interactive-codex" ]; then
   output_file="$STATE_DIR/piped-interactive-output"
-  if ! printf 'exasol\n' \
-    | script -qec "cat '$REPO_DIR/install.sh' | AGENT=codex CODEX_SKILLS=prompt INSTALL_EXAPUMP=no sh > '$output_file' 2>&1" /dev/null \
+  terminal_file="$STATE_DIR/piped-interactive-terminal"
+  if ! printf 'n\ny\nexasol\n' \
+    | script -qec "cat '$REPO_DIR/install.sh' | CODEX_SKILLS=prompt INSTALL_EXAPUMP=no sh > '$output_file' 2>&1" "$terminal_file" \
     >/dev/null 2>&1; then
     [ ! -f "$output_file" ] || cat "$output_file" >&2
     fail "curl-piped interactive install failed"
   fi
   output="$(cat "$output_file")"
+  terminal_output="$(cat "$terminal_file")"
   echo "$output"
   [ ! -f "$STATE_DIR/marketplace" ] || fail "Claude marketplace should not be added"
   [ -f "$STATE_DIR/codex_skills" ] || fail "Selected Codex skills were not installed"
   grep -Fq -- "--agent codex --global" "$STATE_DIR/codex_add_args" || fail "Codex picker was not interactive"
   if grep -Fq -- "--skill *" "$STATE_DIR/codex_add_args"; then fail "Interactive Codex install bypassed skill selection"; fi
-  echo "$output" | grep -q "Select Exasol skills for OpenAI Codex" || fail "Expected interactive Codex selection message"
+  echo "$terminal_output" | grep -q "Install for Claude Code?" || fail "Claude prompt was not visible on the terminal"
+  echo "$terminal_output" | grep -q "Install for OpenAI Codex?" || fail "Codex prompt was not visible on the terminal"
+  echo "$terminal_output" | grep -q "Select Exasol skills for OpenAI Codex" || fail "Codex selection message was not visible on the terminal"
+  echo "$terminal_output" | grep -q "Select skills:" || fail "Codex picker was not visible on the terminal"
+  if echo "$output" | grep -q "Select Exasol skills for OpenAI Codex"; then fail "Codex selection message was hidden in redirected output"; fi
   echo "$output" | grep -q "shared router verified" || fail "Expected selected-skill verification"
   pass "Curl-piped interactive Codex selection with redirected output succeeded"
   exit 0
