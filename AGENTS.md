@@ -29,9 +29,10 @@ All installer tests run in Docker with mocked CLIs. **Do not run tests outside D
 # Build once
 docker build -f Dockerfile.test -t installer-test .
 
-# Run all 8 scenarios
+# Run all 9 scenarios
 docker run --rm -e SCENARIO=fresh        installer-test sh test/test-installer.sh
 docker run --rm -e SCENARIO=fresh-exapump installer-test sh test/test-installer.sh
+docker run --rm -e SCENARIO=exapump-api-failure installer-test sh test/test-installer.sh
 docker run --rm -e SCENARIO=idempotent   installer-test sh test/test-installer.sh
 docker run --rm -e SCENARIO=update       installer-test sh test/test-installer.sh
 docker run --rm -e SCENARIO=fresh-claude installer-test sh test/test-installer.sh
@@ -44,6 +45,7 @@ docker run --rm -e SCENARIO=piped-interactive-codex installer-test sh test/test-
 |----------|---------------|
 | `fresh` | First-time install: no exapump, both agents |
 | `fresh-exapump` | First-time install with explicit non-interactive exapump opt-in |
+| `exapump-api-failure` | Continues agent installation when the optional exapump release lookup fails |
 | `idempotent` | Re-run when everything is already up to date |
 | `update` | Upgrade from an older plugin + exapump version |
 | `fresh-claude` | Claude Code only (`AGENT=claude`), npx absent |

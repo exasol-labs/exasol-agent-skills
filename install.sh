@@ -55,7 +55,7 @@ manage_exapump() {
       info "Skipping optional exapump installation in non-interactive mode. Set INSTALL_EXAPUMP=yes to enable it."
       return 1
       ;;
-    *) fail "Unknown INSTALL_EXAPUMP value '$INSTALL_EXAPUMP'. Use 'yes' or 'no'." ;;
+    *) fail "Unknown INSTALL_EXAPUMP value '$INSTALL_EXAPUMP'. Use 'yes', 'true', '1', 'no', 'false', or '0'." ;;
   esac
 }
 
@@ -103,7 +103,10 @@ choose_agents() {
 info "Checking exapump..."
 command -v curl >/dev/null 2>&1 || fail "curl is required to check releases and download installers."
 latest_version=""
-latest_version="$(curl -fsSL --proto '=https' --tlsv1.2 "$EXAPUMP_LATEST_API" 2>/dev/null | sed -n 's/.*"tag_name"[^"]*"\(v\{0,1\}[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\)".*/\1/p')"
+latest_release=""
+if latest_release="$(curl -fsSL --proto '=https' --tlsv1.2 "$EXAPUMP_LATEST_API" 2>/dev/null)"; then
+  latest_version="$(printf '%s\n' "$latest_release" | sed -n 's/.*"tag_name"[^"]*"\(v\{0,1\}[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\)".*/\1/p')"
+fi
 
 if command -v exapump >/dev/null 2>&1; then
   current_version="$(exapump --version 2>/dev/null | sed -n 's/.*[[:space:]]\{1,\}\(v\{0,1\}[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\).*/\1/p')"
@@ -187,7 +190,7 @@ if [ "$INSTALL_CODEX" -eq 1 ]; then
       CODEX_INSTALL_MODE="prompt"
       ;;
     all) CODEX_INSTALL_MODE="all" ;;
-    *) fail "Unknown CODEX_SKILLS value '$CODEX_SKILLS'. Use 'prompt' or 'all'." ;;
+    *) fail "Unknown CODEX_SKILLS value '$CODEX_SKILLS'. Use 'auto', 'prompt', or 'all'." ;;
   esac
 
   if [ "$CODEX_INSTALL_MODE" = "prompt" ]; then

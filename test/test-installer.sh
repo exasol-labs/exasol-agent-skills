@@ -56,6 +56,11 @@ case "$SCENARIO" in
     rm -f "$MOCK_BIN/exapump"
     export INSTALL_EXAPUMP=yes
     ;;
+  exapump-api-failure)
+    echo "=== Scenario: exapump release lookup failure ==="
+    rm -f "$MOCK_BIN/exapump"
+    export MOCK_EXAPUMP_API_FAILURE=yes
+    ;;
   idempotent)
     echo "=== Scenario: idempotent re-run ==="
     touch "$STATE_DIR/marketplace"
@@ -161,6 +166,14 @@ case "$SCENARIO" in
     grep -q '/v0.6.0/install.sh$' "$STATE_DIR/exapump_install_url" || fail "Expected a release-tag-pinned exapump installer URL"
     echo "$output" | grep -q "exapump installed" || fail "Expected exapump installed message"
     pass "Explicit exapump install succeeded"
+    ;;
+  exapump-api-failure)
+    [ -f "$STATE_DIR/marketplace" ] || fail "Marketplace was not added"
+    [ -f "$STATE_DIR/plugin" ] || fail "Plugin was not installed"
+    assert_codex_install
+    [ ! -f "$STATE_DIR/exapump_version" ] || fail "exapump should not be installed without release metadata"
+    echo "$output" | grep -q "Could not determine latest exapump version" || fail "Expected exapump lookup warning"
+    pass "Install continued after exapump release lookup failed"
     ;;
   idempotent)
     assert_codex_install

@@ -36,6 +36,9 @@ emit() {
 
 case "$url" in
   *api.github.com/repos/exasol-labs/exapump/releases/latest*)
+    if [ "${MOCK_EXAPUMP_API_FAILURE:-no}" = "yes" ]; then
+      exit 22
+    fi
     emit <<EOF
 {"tag_name": "${MOCK_EXAPUMP_LATEST}", "name": "${MOCK_EXAPUMP_LATEST}"}
 EOF
