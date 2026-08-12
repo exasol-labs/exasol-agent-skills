@@ -1,4 +1,6 @@
 #!/bin/sh
+# Install or update Exasol integrations for Claude Code and Codex, with
+# explicit optional management of the exapump CLI.
 set -e
 
 umask 077
@@ -24,16 +26,20 @@ ok()    { printf '\033[0;32m[ok]\033[0m    %s\n' "$1"; }
 warn()  { printf '\033[0;33m[warn]\033[0m  %s\n' "$1"; }
 fail()  { printf '\033[0;31m[error]\033[0m %s\n' "$1" >&2; exit 1; }
 
+# Detect a controlling terminal even when the installer stdin and stdout are
+# redirected by a curl pipeline or log file.
 has_terminal() {
   if [ -t 0 ]; then
     return 0
   fi
-  if [ -t 1 ] && (: </dev/tty) 2>/dev/null; then
+  if (: </dev/tty) 2>/dev/null; then
     return 0
   fi
   return 1
 }
 
+# Download a version-pinned helper installer to a private temporary file
+# before executing it, so download failures cannot run partial shell input.
 download_and_run() {
   url="$1"
   version="$2"
@@ -42,6 +48,8 @@ download_and_run() {
   EXAPUMP_VERSION="$version" sh "$TEMP_FILE"
 }
 
+# Require an explicit opt-in for exapump in automation and confirmation in an
+# interactive terminal; exapump is never installed silently.
 manage_exapump() {
   prompt="$1"
   case "${INSTALL_EXAPUMP:-}" in
@@ -177,6 +185,8 @@ if [ "$INSTALL_CLAUDE" -eq 1 ]; then
 fi
 
 # --- OpenAI Codex ---
+# Preserve the skill picker when a controlling terminal exists; automation
+# installs all skills explicitly and verifies the shared router afterwards.
 if [ "$INSTALL_CODEX" -eq 1 ]; then
   case "${CODEX_SKILLS:-auto}" in
     auto)

@@ -1,4 +1,6 @@
 #!/bin/sh
+# Run isolated installer scenarios against mocked Claude, Codex, curl, and
+# exapump commands; this file is intended to execute only in Docker.
 set -e
 
 SCENARIO="${SCENARIO:-fresh}"
@@ -99,13 +101,16 @@ case "$SCENARIO" in
     ;;
 esac
 
-# Simulate `curl ... | sh` under a controlling terminal. The script body uses
-# stdin, while prompts and the nested Codex picker must read from /dev/tty.
+# Simulate `curl ... | sh >install.log` under a controlling terminal. The
+# installer has redirected stdin/stdout, so the Codex picker must use /dev/tty.
 if [ "$SCENARIO" = "piped-interactive-codex" ]; then
   output_file="$STATE_DIR/piped-interactive-output"
-  printf 'n\nn\ny\nexasol\n' \
-    | script -qec "cat '$REPO_DIR/install.sh' | sh" /dev/null \
-    > "$output_file" 2>&1 || fail "curl-piped interactive install failed"
+  if ! printf 'exasol\n' \
+    | script -qec "cat '$REPO_DIR/install.sh' | AGENT=codex CODEX_SKILLS=prompt INSTALL_EXAPUMP=no sh > '$output_file' 2>&1" /dev/null \
+    >/dev/null 2>&1; then
+    [ ! -f "$output_file" ] || cat "$output_file" >&2
+    fail "curl-piped interactive install failed"
+  fi
   output="$(cat "$output_file")"
   echo "$output"
   [ ! -f "$STATE_DIR/marketplace" ] || fail "Claude marketplace should not be added"
@@ -114,7 +119,7 @@ if [ "$SCENARIO" = "piped-interactive-codex" ]; then
   if grep -Fq -- "--skill *" "$STATE_DIR/codex_add_args"; then fail "Interactive Codex install bypassed skill selection"; fi
   echo "$output" | grep -q "Select Exasol skills for OpenAI Codex" || fail "Expected interactive Codex selection message"
   echo "$output" | grep -q "shared router verified" || fail "Expected selected-skill verification"
-  pass "Curl-piped interactive Codex selection succeeded"
+  pass "Curl-piped interactive Codex selection with redirected output succeeded"
   exit 0
 fi
 
