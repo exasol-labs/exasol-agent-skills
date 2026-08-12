@@ -2,10 +2,12 @@
 
 ## v0.24.1
 
-- Condense the README to user-facing installation, updates, features, and usage; keep internal routing out of it.
-- Harden installer downloads with HTTPS/TLS checks, release-tag pinning, secure temporary files, and clear failures; preserve interactive Codex skill selection for curl-piped runs, support explicit non-interactive installation, and verify the shared router.
-- Make the top-level `exasol` skill the shared routing source for Codex and Claude, and reduce Claude's `/exasol` command to a documented delegate.
-- Align the contributor architecture list with the complete installed skill set.
+- Condense the README and remove routing details.
+- Harden downloads and make exapump installation explicit.
+- Preserve interactive Codex skill selection and verify the shared router.
+- Use the `exasol` skill as the shared Codex and Claude router.
+- Make Claude's `/exasol` command delegate to the shared router.
+- Align contributor documentation with the installed skills.
 
 ## v0.24.0
 
