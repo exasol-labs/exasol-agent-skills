@@ -70,9 +70,9 @@ claude plugin validate ./plugins/exasol
 3. **check-links** — validates Markdown links in a `Check Links` job shaped like Exasol `notebook-connector`'s documentation check; this Markdown-only repo runs `npx markdown-link-check@3.14.2` with `.github/markdown_check_config.json` instead of Notebook Connector's Poetry/Nox docs stack
 4. **release** — on `v*` tags, creates GitHub release with auto-generated notes
 
-`.github/workflows/auto-release.yml` runs on PR merge to `main`:
-- Creates a git tag and GitHub release from the version in the manifests
-- No commits pushed — the PR must already contain the version bump
+The `release` job runs after a maintainer pushes a `v*` tag:
+- CI validates the tagged package, then creates a GitHub release with generated notes
+- The tag must match both manifest versions; pushing the tag is the explicit release action
 
 ## Versioning and Releasing
 
@@ -80,7 +80,7 @@ Version lives in two places that **must always match**:
 - `.claude-plugin/marketplace.json` → `metadata.version`
 - `plugins/exasol/.claude-plugin/plugin.json` → `version`
 
-Releases are automated. When a PR merges to `main`, CI creates a tag and GitHub release from the version in the manifests.
+Releases are automated after an explicit `v*` tag push. PR merges do not publish releases.
 
 **PR authors must bump the version** in both manifests as part of their PR and keep Markdown links passing the CI link checker. CI validates the version is strictly greater than the latest release tag. Bump rules:
 - `feat:` commits → minor bump (e.g., 0.9.0 → 0.10.0)

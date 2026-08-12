@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.24.2
+
+- Publish releases only from explicit matching version tags.
+
 ## v0.24.1
 
 - Harden installer downloads and exapump updates.

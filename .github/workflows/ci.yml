@@ -97,9 +97,17 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - name: Extract version from tag
         id: version
-        run: echo "version=${GITHUB_REF#refs/tags/}" >> "$GITHUB_OUTPUT"
+        run: |
+          VERSION="${GITHUB_REF#refs/tags/v}"
+          MANIFEST_VERSION=$(jq -r '.metadata.version' .claude-plugin/marketplace.json)
+          PLUGIN_VERSION=$(jq -r '.version' plugins/exasol/.claude-plugin/plugin.json)
+          [ "$VERSION" = "$MANIFEST_VERSION" ] || { echo "::error::Tag version does not match marketplace manifest"; exit 1; }
+          [ "$VERSION" = "$PLUGIN_VERSION" ] || { echo "::error::Tag version does not match plugin manifest"; exit 1; }
+          echo "version=v${VERSION}" >> "$GITHUB_OUTPUT"
       - name: Create GitHub release
         env:
           GH_TOKEN: ${{ github.token }}
