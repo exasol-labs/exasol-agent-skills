@@ -43,7 +43,11 @@ https://github.com/exasol/exasol-personal/blob/main/<document>
 
 Only the launcher-state commands this skill names directly (`exasol version`, `exasol info`, `exasol connect`, `exasol deployments list`, `exasol diag local`) are safe to run without the upstream docs; anything that installs, provisions, or destroys is not.
 
-**Always use the `AskUserQuestion` tool for every question, confirmation, and decision point — no exceptions. Never assume answers or skip questions.**
+Ask the user explicitly at every question, confirmation, and decision point.
+Use the host agent's structured user-input mechanism when one is available;
+otherwise ask a concise question in the conversation. Never assume answers or
+skip required confirmations. This instruction applies equally to Claude Code
+and OpenAI Codex.
 
 ## Running SQL During Setup
 
@@ -61,7 +65,9 @@ exasol connect --csv -c "SELECT * FROM PRODUCTS" > products.csv
 
 Non-interactive runs (`-c` / `-f`) stop at the first failing statement and exit non-zero, so use them when you need to detect errors. Add `--json` for machine-readable output.
 
-This skill never installs or configures `exapump`. If the user needs it later — for local file uploads or exports — that belongs to the **exasol-database** skill, after setup is finished.
+This skill never installs or configures `exapump`. After setup, use
+**exasol-import** for local uploads, **exasol-export** for local exports, and
+**exasol-database** for general SQL or exapump profile work.
 
 ---
 
@@ -85,7 +91,7 @@ Then explain the two flavors:
 - Requires a cloud account with permission to provision compute instances, plus per-provider credentials
 - Deployment takes roughly 10–20 minutes and incurs cloud costs
 
-Use `AskUserQuestion` to ask: **"Ready to get started?"**
+Ask: **"Ready to get started?"**
 
 ---
 
@@ -99,13 +105,13 @@ sw_vers                       # macOS only — check version is 15 or later
 sysctl -n hw.memsize          # macOS only — check at least 8 GB
 ```
 
-Then use `AskUserQuestion` to ask which flavor they want, tailoring the recommendation:
+Then ask which flavor they want, tailoring the recommendation:
 
 - **On macOS 15+ with at least 8 GB RAM:** offer **Local** as the first, recommended option, with AWS, Azure, and the other cloud providers as alternatives. Recommend local unless the user needs something local does not yet support (multi-node, virtual schemas, Admin UI, or a shared instance) — ask about those needs if it is unclear.
 - **On macOS below 15, or with less than 8 GB RAM:** explain local is not supported on this machine and offer the cloud providers.
 - **On Linux or Windows:** explain local deployment is macOS-only today (Windows and Linux support is coming) and offer the cloud providers.
 
-If the user picks a cloud provider, use `AskUserQuestion` to confirm which one: AWS, Azure, Exoscale, or STACKIT.
+If the user picks a cloud provider, confirm which one: AWS, Azure, Exoscale, or STACKIT.
 
 Record the chosen flavor — it selects the `exasol install <preset>` preset name (`local`, `aws`, `azure`, `exoscale`, `stackit`). The preset name alone is not always a complete command: some providers require additional flags, listed in Phase 3.
 
@@ -129,15 +135,15 @@ If it is not installed, fetch the upstream `README.md` and follow its **Install 
 
 Fetch the upstream `README.md` and follow its **Quick Start — Run Exasol Locally** section.
 
-Before installing, use `AskUserQuestion` to ask whether the user wants the default deployment or a named one (`-d <name>`), explaining that named deployments let several databases run side by side. Follow the README's **Deployments and Named Deployments** section.
+Before installing, ask whether the user wants the default deployment or a named one (`-d <name>`), explaining that named deployments let several databases run side by side. Follow the README's **Deployments and Named Deployments** section.
 
 If the user wants to run UDFs, follow the README's **UDFs and Script Language Containers** section to install the needed script language container — local deployments ship without one.
 
 ### If Cloud
 
 1. Fetch the provider's `HOWTO_SETUP_<PROVIDER>_ACCOUNT.md` from the upstream repo and walk the user through it step by step, waiting for confirmation at each step. This covers account preparation, permissions, and the credentials or environment variables the launcher expects.
-2. Use `AskUserQuestion` to confirm credentials are in place before deploying.
-3. **Collect every install option before running anything** — all of the options below are install-time only and cannot be changed afterwards without destroying and reinstalling. In one round of `AskUserQuestion`, gather:
+2. Confirm credentials are in place before deploying.
+3. **Collect every install option before running anything** — all of the options below are install-time only and cannot be changed afterwards without destroying and reinstalling. In one round of questions, gather:
    - **Any flags the provider requires** (see the table below) — the install fails without them.
    - **Cluster size and instance type**, or the defaults (README section **Cloud: Choosing cluster size and compute instance types**).
    - **A named deployment** (`-d <name>`), or the default.
@@ -175,7 +181,7 @@ Also tell the user about lifecycle commands from the README:
 
 ## Phase 5: Load Sample Data (Optional)
 
-Use `AskUserQuestion` to ask: **"Would you like to load sample data? This adds a PRODUCTS table (1M rows) and a PRODUCT_REVIEWS table (1.8M rows) you can query right away."**
+Ask: **"Would you like to load sample data? This adds a PRODUCTS table (1M rows) and a PRODUCT_REVIEWS table (1.8M rows) you can query right away."**
 
 If yes, follow the upstream `README.md` **Load Sample Data** section, running the statements with `exasol connect` (`-f sample.sql` from the deployment directory, or `-c` with the SQL inline).
 
@@ -198,7 +204,9 @@ Tell the user they can now use `/exasol` or just describe what they want in natu
 - **Explore the schema** — list schemas, tables, and columns
 - **Run UDFs** — on local deployments, install a script language container first
 
-The Exasol router activates the right guidance automatically whenever the user asks for Exasol SQL, exapump, data loading, BucketFS, or UDF work.
+The shared Exasol router activates **exasol-database** for SQL and general
+exapump work, **exasol-import** or **exasol-export** for data movement,
+**exasol-bucketfs** for BucketFS, and **exasol-udfs** for UDF/SLC work.
 
 ---
 

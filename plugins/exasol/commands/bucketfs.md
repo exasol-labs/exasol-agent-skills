@@ -19,6 +19,11 @@ Compatibility shortcut for BucketFS-specific tasks. Prefer
    shared top-level **exasol** skill.
 2. Follow the top-level router into **exasol-bucketfs**, then follow that
    skill's connection, command, validation, and safety guidance.
+3. Never ask the user to paste passwords, tokens, or connection secrets into
+   the conversation. If credentials are missing, direct the user to enter them
+   locally through the documented exapump profile workflow.
+4. Show the exact BucketFS target and obtain confirmation before deleting or
+   overwriting data.
 
 ## Examples
 

@@ -80,12 +80,20 @@ Validate a specific release tag and commit:
 sh .github/scripts/validate-release-tag.sh vX.Y.Z <tag-commit> origin/main
 ```
 
+Validate package consistency and credential-like content:
+
+```bash
+python3 test/check-package.py
+sh test/check-security.sh
+```
+
 ## CI
 
 `.github/workflows/ci.yml` runs on push to `main` and PRs:
 1. **validate-plugin** — JSON validity + version consistency between both manifests and the changelog + version bump check on PRs (must be greater than existing tags)
 2. **test-installer** — all 9 Docker scenarios
-3. **check-links** — validates Markdown links in a `Check Links` job shaped like Exasol `notebook-connector`'s documentation check; this Markdown-only repo runs `npx markdown-link-check@3.14.2` with `.github/markdown_check_config.json` instead of Notebook Connector's Poetry/Nox docs stack
+3. **package-safety** — validates skill metadata, routing references, command delegation, workflow and manifest keys, and credential-like content
+4. **check-links** — validates Markdown links in a `Check Links` job shaped like Exasol `notebook-connector`'s documentation check; this Markdown-only repo runs `npx markdown-link-check@3.14.2` with `.github/markdown_check_config.json` instead of Notebook Connector's Poetry/Nox docs stack
 
 `.github/workflows/release.yml` runs after a maintainer pushes a `v*` tag:
 - It runs the reusable CI workflow and publishes only after all CI jobs pass
