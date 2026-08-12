@@ -7,6 +7,10 @@ description: Top-level router for Exasol work. Use for any Exasol database, exap
 
 Use this skill whenever the user asks about Exasol. The user does not need to know internal skill names. Treat `/exasol <task>` and natural-language Exasol requests as the public interface.
 
+This `SKILL.md` is the shared routing source of truth for OpenAI Codex and
+Claude Code. Claude command files delegate to it and must not copy its routing
+table.
+
 ## Routing Algorithm
 
 Choose the narrowest matching route. If multiple routes apply, load them in dependency order.
@@ -155,6 +159,18 @@ When setup and usage both apply, resolve prerequisites first:
 - Prefer `/exasol <task>` in examples.
 - Do not expose implementation labels such as `exasol-database` unless the user is contributing to this repo.
 
+## Safety Rules
+
+- Before executing a destructive operation, show the exact target and obtain
+  confirmation.
+- Never expose credentials, tokens, customer data, or secret configuration in
+  commands, output, or generated files.
+- Follow any stricter safety or validation rules in the selected specialized
+  skill.
+
 ## Adding Routes
 
-When adding a new specialized Exasol skill, update this router and mirror the same intent route in `plugins/exasol/commands/exasol.md`. Keep the new skill focused on its domain and put detailed docs in `references/`.
+When adding a new specialized Exasol skill, update this router. Claude command
+files must continue delegating to this shared router rather than copying its
+trigger list. Keep the new skill focused on its domain and put detailed docs in
+`references/`.

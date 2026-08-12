@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.24.2
+
+- Make the top-level `exasol` skill the shared routing source for Codex and Claude, and reduce Claude's `/exasol` command to a documented delegate.
+- Align the contributor architecture list with the complete installed skill set.
+
 ## v0.24.1
 
 - Condense the README to user-facing installation, updates, features, and usage; keep internal routing out of it.
