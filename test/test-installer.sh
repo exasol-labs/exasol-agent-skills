@@ -1,6 +1,4 @@
 #!/bin/sh
-# Run isolated installer scenarios against mocked Claude, Codex, curl, and
-# exapump commands; this file is intended to execute only in Docker.
 set -e
 
 SCENARIO="${SCENARIO:-fresh}"
@@ -101,8 +99,6 @@ case "$SCENARIO" in
     ;;
 esac
 
-# Simulate `curl ... | sh >install.log` under a controlling terminal. The
-# installer has redirected stdin/stdout, so the Codex picker must use /dev/tty.
 if [ "$SCENARIO" = "piped-interactive-codex" ]; then
   output_file="$STATE_DIR/piped-interactive-output"
   if ! printf 'exasol\n' \

@@ -1,14 +1,12 @@
 #!/bin/sh
 # Mock curl for testing install.sh
-# Handles release metadata, `-o` downloads, and tag-pinned exapump installers
-# without making network requests.
+# Handles the GitHub API latest-release endpoint and the exapump install script.
 
 STATE_DIR="${STATE_DIR:-/tmp/mock-claude-state}"
 MOCK_EXAPUMP_LATEST="${MOCK_EXAPUMP_LATEST:-v0.6.0}"
 MOCK_MARKETPLACE_VERSION="${MOCK_MARKETPLACE_VERSION:-0.6.0}"
 
-# Capture the requested URL and optional output file so secure-download tests
-# exercise the same curl argument shape as the real installer.
+# Extract the URL from args (last non-flag argument)
 url=""
 output_file=""
 expect_output=0

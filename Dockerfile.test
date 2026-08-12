@@ -1,6 +1,4 @@
 FROM alpine:3.20
-# util-linux-misc provides script(1), which creates the controlling PTY used
-# to verify interactive selection through curl pipelines and redirected logs.
 RUN apk add --no-cache bash grep sed coreutils util-linux-misc
 WORKDIR /workspace
 COPY install.sh .

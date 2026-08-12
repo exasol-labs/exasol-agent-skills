@@ -1,7 +1,6 @@
 #!/bin/sh
 # Mock npx CLI for testing install.sh
-# Records Codex add/list calls and simulates interactive selection,
-# non-interactive installation, and router-verification failures.
+# Simulates non-interactive Codex skill installation and verification.
 
 STATE_DIR="${STATE_DIR:-/tmp/mock-claude-state}"
 mkdir -p "$STATE_DIR"
