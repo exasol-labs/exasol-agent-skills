@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.24.2
+
+- Publish releases only from explicit matching version tags.
+- Run CI before publishing and serialize release runs.
+
 ## v0.24.1
 
 - Harden installer downloads and exapump updates.
