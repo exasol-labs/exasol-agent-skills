@@ -17,23 +17,29 @@ Agent skills for [Exasol](https://exasol.com) — gives Claude Code and OpenAI C
 
 ## Get Started
 
-**One-line install:**
+### Interactive install
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/exasol-labs/exasol-agent-skills/main/install.sh | sh
+curl -fsSL --proto '=https' --tlsv1.2 \
+  https://raw.githubusercontent.com/exasol-labs/exasol-agent-skills/main/install.sh | sh
 ```
 
-The installer prompts you to choose which agents to install for (Claude Code, OpenAI Codex, or both). When piped non-interactively, it installs for both by default. Set `AGENT` to install for a specific agent:
+The installer asks whether to install for Claude Code, Codex, or both. Codex
+opens a skill picker; select the shared `exasol` router plus any specialized
+skills you need. The installer also asks before installing or updating exapump.
+
+### Non-interactive install
 
 ```bash
-export AGENT=claude
-curl -fsSL https://raw.githubusercontent.com/exasol-labs/exasol-agent-skills/main/install.sh | sh
+curl -fsSL --proto '=https' --tlsv1.2 \
+  https://raw.githubusercontent.com/exasol-labs/exasol-agent-skills/main/install.sh \
+  | AGENT=both CODEX_SKILLS=all INSTALL_EXAPUMP=no sh
 ```
 
-```bash
-export AGENT=codex
-curl -fsSL https://raw.githubusercontent.com/exasol-labs/exasol-agent-skills/main/install.sh | sh
-```
+Set `AGENT` to `claude`, `codex`, or `both`. `CODEX_SKILLS=all` installs all
+Codex skills without a picker. Set `INSTALL_EXAPUMP=yes` to install or update
+exapump; otherwise it is skipped. With no variables, a non-interactive run
+installs both agents and all Codex skills, but skips exapump.
 
 Running the installer again updates to the latest version.
 
@@ -50,7 +56,8 @@ claude plugin install exasol@exasol-skills
 **OpenAI Codex:**
 
 ```bash
-npx skills add exasol-labs/exasol-agent-skills --agent codex
+npx --yes skills@1.5.22 add exasol-labs/exasol-agent-skills \
+  --agent codex --global
 ```
 
 </details>

@@ -5,6 +5,7 @@
 - Harden installer downloads and exapump updates.
 - Preserve interactive Codex skill selection in piped runs.
 - Verify Codex installation and expand Docker coverage.
+- Document interactive and non-interactive installation.
 
 ## v0.24.0
 
