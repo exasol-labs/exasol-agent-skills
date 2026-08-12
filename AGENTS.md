@@ -18,8 +18,8 @@ A skills marketplace for AI coding agents (Claude Code and OpenAI Codex) that gi
 **Installer (`install.sh`)** — curl-pipeable, idempotent, POSIX shell (no bash, no jq). Supports both agents:
 - Agent selection via `AGENT` env var (`claude`, `codex`, `both`) or interactive prompts; non-interactive defaults to both
 - Claude Code path: `claude plugin marketplace add/update` + `claude plugin install/update`
-- Codex path: `npx skills add exasol-labs/exasol-agent-skills --agent codex`
-- Shared: exapump version check and install/update via GitHub API
+- Codex path: pinned `skills` CLI; interactive and curl-piped terminal runs show the skill picker through `/dev/tty`, while non-interactive runs use `--skill '*' --global --yes`; both verify the shared `exasol` router afterwards
+- Shared: exapump version check via GitHub API; interactive install/update requires confirmation, and non-interactive install/update requires `INSTALL_EXAPUMP=yes`
 
 ## Testing
 
@@ -29,21 +29,29 @@ All installer tests run in Docker with mocked CLIs. **Do not run tests outside D
 # Build once
 docker build -f Dockerfile.test -t installer-test .
 
-# Run all 5 scenarios
+# Run all 9 scenarios
 docker run --rm -e SCENARIO=fresh        installer-test sh test/test-installer.sh
+docker run --rm -e SCENARIO=fresh-exapump installer-test sh test/test-installer.sh
+docker run --rm -e SCENARIO=exapump-api-failure installer-test sh test/test-installer.sh
 docker run --rm -e SCENARIO=idempotent   installer-test sh test/test-installer.sh
 docker run --rm -e SCENARIO=update       installer-test sh test/test-installer.sh
 docker run --rm -e SCENARIO=fresh-claude installer-test sh test/test-installer.sh
 docker run --rm -e SCENARIO=fresh-codex  installer-test sh test/test-installer.sh
+docker run --rm -e SCENARIO=codex-verification-failure installer-test sh test/test-installer.sh
+docker run --rm -e SCENARIO=piped-interactive-codex installer-test sh test/test-installer.sh
 ```
 
 | Scenario | What it tests |
 |----------|---------------|
 | `fresh` | First-time install: no exapump, both agents |
+| `fresh-exapump` | First-time install with explicit non-interactive exapump opt-in |
+| `exapump-api-failure` | Continues agent installation when the optional exapump release lookup fails |
 | `idempotent` | Re-run when everything is already up to date |
 | `update` | Upgrade from an older plugin + exapump version |
 | `fresh-claude` | Claude Code only (`AGENT=claude`), npx absent |
 | `fresh-codex` | Codex only (`AGENT=codex`), claude CLI absent |
+| `codex-verification-failure` | Rejects a successful Codex CLI exit when no shared router was installed |
+| `piped-interactive-codex` | Verifies that `curl ... | sh` reads agent and Codex skill selections from the controlling terminal |
 
 Mock files in `test/`: `mock-claude.sh`, `mock-curl.sh`, `mock-exapump.sh`, `mock-npx.sh`. They use `$STATE_DIR` (`/tmp/mock-claude-state`) to track state via files (e.g., `marketplace`, `plugin`, `codex_skills`, `plugin_version`).
 
@@ -58,7 +66,7 @@ claude plugin validate ./plugins/exasol
 
 `.github/workflows/ci.yml` runs on push to `main` and PRs:
 1. **validate-plugin** — JSON validity + version consistency between both manifests + version bump check on PRs (must be greater than latest tag)
-2. **test-installer** — all 5 Docker scenarios
+2. **test-installer** — all 9 Docker scenarios
 3. **check-links** — validates Markdown links in a `Check Links` job shaped like Exasol `notebook-connector`'s documentation check; this Markdown-only repo runs `npx markdown-link-check@3.14.2` with `.github/markdown_check_config.json` instead of Notebook Connector's Poetry/Nox docs stack
 4. **release** — on `v*` tags, creates GitHub release with auto-generated notes
 
@@ -90,7 +98,7 @@ Stage related changes together in logical commits. The release commit (`chore: r
 
 ## Shell Conventions
 
-`install.sh` and test scripts follow POSIX shell (`#!/bin/sh`, not bash). No `jq` — use `sed`/`grep` for JSON parsing. All variables double-quoted. The `ask()` function defaults to "Y" when piped non-interactively.
+`install.sh` and test scripts follow POSIX shell (`#!/bin/sh`, not bash). No `jq` — use `sed`/`grep` for JSON parsing. All variables double-quoted. Interactive prompts use the controlling terminal so they remain available when the script itself is piped.
 
 ## Local Development
 
