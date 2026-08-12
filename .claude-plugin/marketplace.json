@@ -5,7 +5,7 @@
   },
   "metadata": {
     "description": "A collection of agent skills for working with Exasol databases (Claude Code, OpenAI Codex)",
-    "version": "0.24.3"
+    "version": "0.24.4"
   },
   "plugins": [
     {

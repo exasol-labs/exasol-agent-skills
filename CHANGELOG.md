@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.24.4
+
+- Condense the README and remove routing details.
+- Use the `exasol` skill as the shared agent router.
+- Make Claude commands delegate to the shared router.
+
 ## v0.24.3
 
 - Keep interactive installer prompts visible on the terminal.
