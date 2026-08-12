@@ -1,13 +1,23 @@
 ---
 name: exasol-extension-catalog
-description: Catalog and routing guide for Exasol tools, extensions, connectors, integrations, and architecture patterns. Use when users ask how to extend, customize, deploy, load, explore, enrich, surface, scale, automate, govern, migrate, or integrate Exasol, including Exasol Labs tools, AI/ML, UDFs, lakehouse, SAP, Databricks, agentic workflows, or product/version status.
+description: Catalog and selection guide for Exasol tools, extensions, connectors, integrations, and architecture patterns. Use when the primary intent is comparison, discovery, support-status research, or architecture selection; hand operational work to the selected dedicated skill.
 ---
 
 # Exasol Extension Catalog Skill
 
-Last reviewed: 2026-07-03.
+Last reviewed: 2026-08-12.
 
-Use this skill when a user asks how to extend, customize, integrate, deploy, operate, automate, enrich, expose, or scale Exasol.
+Use this skill to discover or compare Exasol capability families. It helps the
+user choose a tool, extension, connector, integration, or architecture pattern;
+it is not an alternate execution guide for workflows that already have a
+dedicated skill.
+
+If the request asks to execute, configure, or troubleshoot a dedicated workflow
+such as Text AI, Transformers, Cloud Storage Extension, native import/export,
+JDBC or document virtual schemas, adapter development, BucketFS, UDF/SLC,
+distributed ML, notebook-connector setup, or Exasol Personal setup, use that
+specialized skill. Keep comparison and selection requests in this catalog even
+when they name one or more of those options, then hand off after the choice.
 
 The catalog organizes Exasol capabilities into six categories:
 
@@ -29,7 +39,10 @@ The catalog organizes Exasol capabilities into six categories:
 
 ## Routing Algorithm
 
-Choose the narrowest matching category and load only the matching reference files. If multiple categories apply, load all relevant references before answering.
+For catalog requests, choose the narrowest matching category and load only the
+matching reference files. If multiple categories apply, load all relevant
+references before answering. Once the user chooses a concrete workflow, hand
+off to its dedicated skill instead of repeating operational instructions here.
 
 1. **Run Exasol somewhere or operate deployment tooling**
    - Trigger phrases: `deploy`, `install`, `Exasol SaaS`, `Exasol Personal`, `Docker DB`, `Terraform`, `Ansible`, `scheduler`, `public keys`, `artifact verification`, `Extension Manager`
@@ -76,4 +89,8 @@ Choose the narrowest matching category and load only the matching reference file
 - Use **exasol-bucketfs** for BucketFS file upload, download, list, and delete workflows.
 - Use **exasol-udfs** for UDF and Script Language Container implementation details.
 - Use **exasol-ai-setup** and **exasol-notebook-connections** for notebook-connector configuration and Python connection helpers.
+- Use **exasol-itde** for notebook-connector's local Docker database lifecycle after choosing that development environment.
+- Use **exasol-text-ai** for Text AI Extension deployment, extraction, and validation.
+- Use **exasol-transformers** for Transformers Extension deployment and inference.
+- Use **exasol-distributed-ml** for in-database model training, inference, GPU, and iterative ML workflows.
 - Use **exasol-setup-personal** for guided Exasol Personal deployment.

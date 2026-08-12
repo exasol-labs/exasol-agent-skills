@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.24.5
+
+- Clarify extension catalog and specialized skill boundaries.
+- Route selected workflows directly to their focused skills.
+
 ## v0.24.4
 
 - Condense the README and remove routing details.
