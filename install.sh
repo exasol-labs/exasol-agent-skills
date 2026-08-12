@@ -1,30 +1,78 @@
 #!/bin/sh
 set -e
 
+umask 077
+TEMP_FILE=""
+cleanup() {
+  if [ -n "$TEMP_FILE" ]; then
+    rm -f "$TEMP_FILE"
+  fi
+}
+trap cleanup EXIT HUP INT TERM
+
 MARKETPLACE_NAME="exasol-skills"
 MARKETPLACE_REPO="exasol-labs/exasol-agent-skills"
 MARKETPLACE_JSON_URL="https://raw.githubusercontent.com/${MARKETPLACE_REPO}/main/.claude-plugin/marketplace.json"
 PLUGIN_ID="exasol@${MARKETPLACE_NAME}"
-PLUGIN_NAME="exasol"
 EXAPUMP_REPO="exasol-labs/exapump"
-EXAPUMP_INSTALL_URL="https://raw.githubusercontent.com/${EXAPUMP_REPO}/main/install.sh"
+EXAPUMP_INSTALL_BASE="https://raw.githubusercontent.com/${EXAPUMP_REPO}"
 EXAPUMP_LATEST_API="https://api.github.com/repos/${EXAPUMP_REPO}/releases/latest"
+CODEX_SKILLS_CLI="skills@1.5.22"
 
 info()  { printf '\033[0;34m[info]\033[0m  %s\n' "$1"; }
 ok()    { printf '\033[0;32m[ok]\033[0m    %s\n' "$1"; }
 warn()  { printf '\033[0;33m[warn]\033[0m  %s\n' "$1"; }
 fail()  { printf '\033[0;31m[error]\033[0m %s\n' "$1" >&2; exit 1; }
 
+has_terminal() {
+  if [ -t 0 ]; then
+    return 0
+  fi
+  if [ -t 1 ] && (: </dev/tty) 2>/dev/null; then
+    return 0
+  fi
+  return 1
+}
+
+download_and_run() {
+  url="$1"
+  version="$2"
+  TEMP_FILE="$(mktemp "${TMPDIR:-/tmp}/exasol-agent-skills.XXXXXX")" || fail "Could not create a secure temporary file."
+  curl -fsSL --proto '=https' --tlsv1.2 "$url" -o "$TEMP_FILE" || fail "Could not download the installer from $url."
+  EXAPUMP_VERSION="$version" sh "$TEMP_FILE"
+}
+
+manage_exapump() {
+  prompt="$1"
+  case "${INSTALL_EXAPUMP:-}" in
+    1|true|yes) return 0 ;;
+    0|false|no) return 1 ;;
+    "")
+      if has_terminal; then
+        ask "$prompt"
+        return $?
+      fi
+      info "Skipping optional exapump installation in non-interactive mode. Set INSTALL_EXAPUMP=yes to enable it."
+      return 1
+      ;;
+    *) fail "Unknown INSTALL_EXAPUMP value '$INSTALL_EXAPUMP'. Use 'yes' or 'no'." ;;
+  esac
+}
+
 ask() {
   printf '\033[0;33m[prompt]\033[0m %s [Y/n] ' "$1"
-  if [ -t 0 ]; then
-    read -r answer
+  if has_terminal; then
+    if [ -t 0 ]; then
+      read -r answer
+    else
+      read -r answer </dev/tty
+    fi
     case "$answer" in
       [Nn]*) return 1 ;;
       *) return 0 ;;
     esac
   else
-    # Non-interactive (piped) — default to yes
+    # Callers that deliberately allow a non-interactive default receive yes.
     printf 'Y (non-interactive)\n'
     return 0
   fi
@@ -38,7 +86,7 @@ choose_agents() {
       both)   INSTALL_CLAUDE=1; INSTALL_CODEX=1 ;;
       *)      fail "Unknown AGENT value '$AGENT'. Use 'claude', 'codex', or 'both'." ;;
     esac
-  elif [ -t 0 ]; then
+  elif has_terminal; then
     INSTALL_CLAUDE=0
     INSTALL_CODEX=0
     if ask "Install for Claude Code?"; then INSTALL_CLAUDE=1; fi
@@ -53,10 +101,9 @@ choose_agents() {
 
 # --- exapump ---
 info "Checking exapump..."
+command -v curl >/dev/null 2>&1 || fail "curl is required to check releases and download installers."
 latest_version=""
-if command -v curl >/dev/null 2>&1; then
-  latest_version="$(curl -fsSL "$EXAPUMP_LATEST_API" 2>/dev/null | sed -n 's/.*"tag_name"[^"]*"\([^"]*\)".*/\1/p')"
-fi
+latest_version="$(curl -fsSL --proto '=https' --tlsv1.2 "$EXAPUMP_LATEST_API" 2>/dev/null | sed -n 's/.*"tag_name"[^"]*"\(v\{0,1\}[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\)".*/\1/p')"
 
 if command -v exapump >/dev/null 2>&1; then
   current_version="$(exapump --version 2>/dev/null | sed -n 's/.*[[:space:]]\{1,\}\(v\{0,1\}[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\).*/\1/p')"
@@ -64,11 +111,15 @@ if command -v exapump >/dev/null 2>&1; then
   current_num="${current_version#v}"
   latest_num="${latest_version#v}"
 
-  if [ -n "$latest_num" ] && [ "$current_num" != "$latest_num" ]; then
+  if [ -z "$current_num" ]; then
+    warn "exapump was found, but its version could not be determined. Leaving it unchanged."
+  elif [ -z "$latest_num" ]; then
+    warn "Could not determine the latest exapump version. Leaving ${current_version} unchanged."
+  elif [ "$current_num" != "$latest_num" ]; then
     info "exapump ${current_version} installed, latest is ${latest_version}."
-    if ask "Update exapump to ${latest_version}?"; then
+    if manage_exapump "Update exapump to ${latest_version}?"; then
       info "Updating exapump..."
-      curl -fsSL "$EXAPUMP_INSTALL_URL" | sh
+      download_and_run "${EXAPUMP_INSTALL_BASE}/${latest_version}/install.sh" "$latest_num"
       ok "exapump updated to ${latest_version}."
     else
       info "Skipping exapump update."
@@ -79,9 +130,9 @@ if command -v exapump >/dev/null 2>&1; then
 else
   warn "exapump not found."
   if [ -n "$latest_version" ]; then
-    if ask "Install exapump ${latest_version}?"; then
+    if manage_exapump "Install exapump ${latest_version}?"; then
       info "Installing exapump..."
-      curl -fsSL "$EXAPUMP_INSTALL_URL" | sh
+      download_and_run "${EXAPUMP_INSTALL_BASE}/${latest_version}/install.sh" "${latest_version#v}"
       ok "exapump installed."
     else
       info "Skipping exapump install. You can install later: https://github.com/${EXAPUMP_REPO}"
@@ -108,7 +159,7 @@ if [ "$INSTALL_CLAUDE" -eq 1 ]; then
   info "Checking marketplace..."
   if claude plugin marketplace list --json 2>/dev/null | grep -q "\"${MARKETPLACE_NAME}\""; then
     info "Marketplace '${MARKETPLACE_NAME}' found. Updating..."
-    claude plugin marketplace update "${MARKETPLACE_NAME}" 2>/dev/null || true
+    claude plugin marketplace update "${MARKETPLACE_NAME}"
   else
     info "Adding marketplace '${MARKETPLACE_NAME}'..."
     claude plugin marketplace add "${MARKETPLACE_REPO}"
@@ -118,7 +169,7 @@ if [ "$INSTALL_CLAUDE" -eq 1 ]; then
   info "Checking plugin..."
   if claude plugin list --json 2>/dev/null | grep -q "\"${PLUGIN_ID}\""; then
     info "Plugin '${PLUGIN_ID}' found. Updating..."
-    claude plugin update "${PLUGIN_NAME}" --scope user 2>/dev/null || true
+    claude plugin update "${PLUGIN_ID}" --scope user
   else
     info "Installing plugin '${PLUGIN_ID}'..."
     claude plugin install "${PLUGIN_ID}" --scope user
@@ -127,14 +178,48 @@ fi
 
 # --- OpenAI Codex ---
 if [ "$INSTALL_CODEX" -eq 1 ]; then
-  info "Installing Exasol skills for OpenAI Codex..."
-  npx skills add "exasol-labs/exasol-agent-skills" --agent codex
-  ok "Exasol skills installed for OpenAI Codex."
+  case "${CODEX_SKILLS:-auto}" in
+    auto)
+      if has_terminal; then CODEX_INSTALL_MODE="prompt"; else CODEX_INSTALL_MODE="all"; fi
+      ;;
+    prompt)
+      has_terminal || fail "CODEX_SKILLS=prompt requires an interactive terminal."
+      CODEX_INSTALL_MODE="prompt"
+      ;;
+    all) CODEX_INSTALL_MODE="all" ;;
+    *) fail "Unknown CODEX_SKILLS value '$CODEX_SKILLS'. Use 'prompt' or 'all'." ;;
+  esac
+
+  if [ "$CODEX_INSTALL_MODE" = "prompt" ]; then
+    info "Select Exasol skills for OpenAI Codex. Include 'exasol' for shared routing."
+    if [ -t 0 ]; then
+      npx --yes "$CODEX_SKILLS_CLI" add "exasol-labs/exasol-agent-skills" \
+        --agent codex --global
+    else
+      npx --yes "$CODEX_SKILLS_CLI" add "exasol-labs/exasol-agent-skills" \
+        --agent codex --global </dev/tty
+    fi
+  else
+    info "Non-interactive mode: installing all Exasol skills globally for OpenAI Codex..."
+    npx --yes "$CODEX_SKILLS_CLI" add "exasol-labs/exasol-agent-skills" \
+      --agent codex --skill '*' --global --yes
+  fi
+
+  CODEX_SKILLS_JSON="$(npx --yes "$CODEX_SKILLS_CLI" list --global --agent codex --json)"
+  if printf '%s\n' "$CODEX_SKILLS_JSON" | grep -q '"name"[[:space:]]*:[[:space:]]*"exasol"'; then
+    if [ "$CODEX_INSTALL_MODE" = "prompt" ]; then
+      ok "Selected Exasol skills installed for OpenAI Codex; shared router verified."
+    else
+      ok "All Exasol skills installed for OpenAI Codex; shared router verified."
+    fi
+  else
+    fail "Codex installation completed without the shared 'exasol' router. Select 'exasol' together with any specialized skills."
+  fi
 fi
 
 # --- verify ---
 info "Verifying..."
-VERSION="$(curl -fsSL "$MARKETPLACE_JSON_URL" 2>/dev/null | sed -n 's/.*"version"[^"]*"\([^"]*\)".*/\1/p' | head -1)"
+VERSION="$(curl -fsSL --proto '=https' --tlsv1.2 "$MARKETPLACE_JSON_URL" 2>/dev/null | sed -n 's/.*"version"[^"]*"\([^"]*\)".*/\1/p' | head -1)"
 
 if [ "$INSTALL_CLAUDE" -eq 1 ]; then
   if claude plugin list --json 2>/dev/null | grep -q "\"${PLUGIN_ID}\""; then

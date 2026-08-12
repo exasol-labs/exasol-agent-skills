@@ -1,5 +1,5 @@
 FROM alpine:3.20
-RUN apk add --no-cache bash grep sed coreutils
+RUN apk add --no-cache bash grep sed coreutils util-linux-misc
 WORKDIR /workspace
 COPY install.sh .
 COPY test/ test/
