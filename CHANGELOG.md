@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.24.1
+
+- Harden installer downloads and exapump updates.
+- Preserve interactive Codex skill selection in piped runs.
+- Verify Codex installation and expand Docker coverage.
+
 ## v0.24.0
 
 - Rewrite exasol-setup-personal to cover all Exasol Personal deployment flavors: local (macOS), AWS, Azure, Exoscale, and STACKIT
