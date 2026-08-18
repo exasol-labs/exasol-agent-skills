@@ -111,6 +111,7 @@ if [ "$SCENARIO" = "piped-interactive-codex" ]; then
     | script -qec "cat '$REPO_DIR/install.sh' | CODEX_SKILLS=prompt INSTALL_EXAPUMP=no sh > '$output_file' 2>&1" "$terminal_file" \
     >/dev/null 2>&1; then
     [ ! -f "$output_file" ] || cat "$output_file" >&2
+    [ ! -f "$terminal_file" ] || cat "$terminal_file" >&2
     fail "curl-piped interactive install failed"
   fi
   output="$(cat "$output_file")"
