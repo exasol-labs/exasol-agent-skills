@@ -62,27 +62,49 @@ claude plugin validate .
 claude plugin validate ./plugins/exasol
 ```
 
+Test the release tag validator locally:
+
+```bash
+sh test/test-release-tag.sh
+```
+
+Validate package, changelog, and existing-tag version consistency:
+
+```bash
+sh .github/scripts/validate-package-version.sh --newer-than-tags
+```
+
+Validate a specific release tag and commit:
+
+```bash
+sh .github/scripts/validate-release-tag.sh vX.Y.Z <tag-commit> origin/main
+```
+
 ## CI
 
 `.github/workflows/ci.yml` runs on push to `main` and PRs:
-1. **validate-plugin** — JSON validity + version consistency between both manifests + version bump check on PRs (must be greater than latest tag)
+1. **validate-plugin** — JSON validity + version consistency between both manifests and the changelog + version bump check on PRs (must be greater than existing tags)
 2. **test-installer** — all 9 Docker scenarios
 3. **check-links** — validates Markdown links in a `Check Links` job shaped like Exasol `notebook-connector`'s documentation check; this Markdown-only repo runs `npx markdown-link-check@3.14.2` with `.github/markdown_check_config.json` instead of Notebook Connector's Poetry/Nox docs stack
-4. **release** — on `v*` tags, creates GitHub release with auto-generated notes
 
-`.github/workflows/auto-release.yml` runs on PR merge to `main`:
-- Creates a git tag and GitHub release from the version in the manifests
-- No commits pushed — the PR must already contain the version bump
+`.github/workflows/release.yml` runs after a maintainer pushes a `v*` tag:
+- It runs the reusable CI workflow and publishes only after all CI jobs pass
+- It validates that the tag matches both manifests and points to a commit on `main`
+- It checks that the version matches the changelog and is newer than existing release tags
+- It creates a release only for an existing tag
+- It serializes release runs to avoid concurrent publication
 
 ## Versioning and Releasing
 
-Version lives in two places that **must always match**:
+Version is synchronized in three places that **must always match**:
 - `.claude-plugin/marketplace.json` → `metadata.version`
 - `plugins/exasol/.claude-plugin/plugin.json` → `version`
+- `CHANGELOG.md` → latest `## vX.Y.Z` heading
 
-Releases are automated. When a PR merges to `main`, CI creates a tag and GitHub release from the version in the manifests.
+Releases are automated after an explicit `v*` tag push. PR merges do not publish releases.
+Repository administrators must restrict creation of `v*` tags to release maintainers with a GitHub tag ruleset.
 
-**PR authors must bump the version** in both manifests as part of their PR and keep Markdown links passing the CI link checker. CI validates the version is strictly greater than the latest release tag. Bump rules:
+**PR authors must bump the version** in both manifests, add the matching changelog heading, and keep Markdown links passing the CI link checker. CI validates the version is strictly greater than every existing stable release tag. Bump rules:
 - `feat:` commits → minor bump (e.g., 0.9.0 → 0.10.0)
 - Everything else → patch bump (e.g., 0.9.0 → 0.9.1)
 
