@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.24.7
+
+- Refresh exasol-extension-catalog skill: update deploy, scale, and surface references.
+
 ## v0.24.2
 
 - Publish releases only from explicit matching version tags.
