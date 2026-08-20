@@ -45,7 +45,7 @@ references before answering. Once the user chooses a concrete workflow, hand
 off to its dedicated skill instead of repeating operational instructions here.
 
 1. **Run Exasol somewhere or operate deployment tooling**
-   - Trigger phrases: `deploy`, `install`, `Exasol SaaS`, `Exasol Personal`, `Docker DB`, `Terraform`, `Ansible`, `scheduler`, `public keys`, `artifact verification`, `Extension Manager`
+   - Trigger phrases: `deploy`, `install`, `Exasol SaaS`, `Exasol Personal`, `Exasol Local`, `exasol-local-vm`, `STACKIT`, `Docker DB`, `Terraform`, `OpenTofu`, `Ansible`, `scheduler`, `public keys`, `artifact verification`, `Extension Manager`
    - Load: `references/deploy.md`
 
 2. **Bring data into Exasol or query data elsewhere**
@@ -61,11 +61,11 @@ off to its dedicated skill instead of repeating operational instructions here.
    - Load: `references/enrich.md`
 
 5. **Expose Exasol to apps, BI, APIs, users, or agents**
-   - Trigger phrases: `BI`, `dashboard`, `Tableau`, `Power BI`, `Superset`, `REST API`, `ERA`, `Power Apps`, `low-code`, `application driver`, `CData`, `Denodo`, `Trino`
+   - Trigger phrases: `BI`, `dashboard`, `Dash`, `Plotly`, `dash-server`, `Grafana`, `Tableau`, `Power BI`, `Superset`, `REST API`, `ERA`, `Power Apps`, `low-code`, `application driver`, `CData`, `Denodo`, `Trino`
    - Load: `references/surface.md`
 
 6. **Improve scale, governance, performance, observability, repeatability, or reliability**
-   - Trigger phrases: `scale`, `performance`, `governance`, `RBAC`, `observability`, `CloudWatch`, `telemetry`, `SBOM`, `testing`, `CI`, `change management`, `data protection`, `warehouse automation`
+   - Trigger phrases: `scale`, `performance`, `governance`, `RBAC`, `observability`, `CloudWatch`, `telemetry`, `SBOM`, `testing`, `CI`, `pytest-slc`, `SLC testing`, `change management`, `data protection`, `warehouse automation`
    - Load: `references/scale.md`
 
 ## Fast Routing Guide

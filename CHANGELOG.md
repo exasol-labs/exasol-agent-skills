@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.24.7
+
+- Refresh exasol-extension-catalog skill: update deploy, scale, and surface references.
+
 ## v0.24.6
 
 - Add package consistency and credential-pattern checks.
