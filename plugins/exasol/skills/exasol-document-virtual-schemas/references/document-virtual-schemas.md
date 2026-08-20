@@ -128,4 +128,6 @@ It shows the effective pushdown query without executing the remote workload itse
 - If the user wants to query external data in place, stay in this skill
 - If the user wants to physically load data into Exasol, switch to **exasol-import** or **exasol-cloud-storage-extension**
 - If the source is a JDBC database rather than object or file storage, switch to **exasol-jdbc-virtual-schemas**
+- If maintained document-file adapters are insufficient and custom adapter code is required, switch to **exasol-virtual-schema-adapter-development**
+- If the source or integration family is still undecided, switch to **exasol-extension-catalog** before selecting an operational workflow
 - If the user is deciding among available maintained document-file adapters, choose the storage-family-specific adapter that fits the source

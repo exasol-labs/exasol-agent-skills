@@ -4,6 +4,26 @@
 
 - Refresh exasol-extension-catalog skill: update deploy, scale, and surface references.
 
+## v0.24.6
+
+- Add package consistency and credential-pattern checks.
+- Make BucketFS and setup guidance safe across both agents.
+
+## v0.24.5
+
+- Clarify extension catalog and specialized skill boundaries.
+- Route selected workflows directly to their focused skills.
+
+## v0.24.4
+
+- Condense the README and remove routing details.
+- Use the `exasol` skill as the shared agent router.
+- Make Claude commands delegate to the shared router.
+
+## v0.24.3
+
+- Keep interactive installer prompts visible on the terminal.
+
 ## v0.24.2
 
 - Publish releases only from explicit matching version tags.

@@ -11,14 +11,14 @@ A skills marketplace for AI coding agents (Claude Code and OpenAI Codex) that gi
 - `.claude-plugin/marketplace.json` — discovery entry point; lists plugins with version
 - `plugins/exasol/.claude-plugin/plugin.json` — plugin metadata; version must match marketplace
 - `plugins/exasol/skills/exasol/SKILL.md` — top-level router skill; public user model is `/exasol <task>` or natural-language Exasol requests
-- `plugins/exasol/skills/*/SKILL.md` — specialized skills with routing algorithms that load only the reference files relevant to the task (progressive disclosure). Skills: `exasol` (top-level router), `exasol-setup-personal` (folder `setup-personal`; guided local-or-cloud deployment that defers to the upstream `exasol/exasol-personal` docs), `exasol-database` (SQL/exapump), `exasol-import` (native IMPORT and exapump file movement into Exasol), `exasol-export` (native EXPORT and exapump file movement out of Exasol), `exasol-cloud-storage-extension` (Cloud Storage Extension import/export workflows), `exasol-jdbc-virtual-schemas` (JDBC/database-source virtual schema workflows), `exasol-document-virtual-schemas` (document-file virtual schema workflows for S3/GCS/Azure object storage), `exasol-virtual-schema-adapter-development` (custom virtual schema adapter build, packaging, and debugging workflows), `exasol-udfs` (UDFs/SLCs), `exasol-bucketfs` (BucketFS), `exasol-ai-setup` (notebook-connector setup), `exasol-itde` (local Docker Exasol lifecycle), `exasol-notebook-connections` (Python connection helpers), `exasol-text-ai` (Text AI Extension), `exasol-transformers` (Transformers Extension)
-- `plugins/exasol/commands/exasol.md` — unified `/exasol` slash command router (Claude Code only)
+- `plugins/exasol/skills/*/SKILL.md` — specialized skills with routing algorithms that load only the reference files relevant to the task (progressive disclosure). Skills: `exasol` (top-level router), `exasol-setup-personal` (folder `setup-personal`; guided local-or-cloud deployment that defers to the upstream `exasol/exasol-personal` docs), `exasol-database` (SQL/exapump), `exasol-import` (native IMPORT and exapump file movement into Exasol), `exasol-export` (native EXPORT and exapump file movement out of Exasol), `exasol-cloud-storage-extension` (Cloud Storage Extension import/export workflows), `exasol-jdbc-virtual-schemas` (JDBC/database-source virtual schema workflows), `exasol-document-virtual-schemas` (document-file virtual schema workflows for S3/GCS/Azure object storage), `exasol-virtual-schema-adapter-development` (custom virtual schema adapter build, packaging, and debugging workflows), `exasol-extension-catalog` (tool and architecture selection), `exasol-distributed-ml` (distributed ML and GPU workflows), `exasol-udfs` (UDFs/SLCs), `exasol-bucketfs` (BucketFS), `exasol-ai-setup` (notebook-connector setup), `exasol-itde` (local Docker Exasol lifecycle), `exasol-notebook-connections` (Python connection helpers), `exasol-text-ai` (Text AI Extension), `exasol-transformers` (Transformers Extension)
+- `plugins/exasol/commands/*.md` — thin Claude-only `/exasol` and compatibility `/bucketfs` entry points that delegate to the shared router
 - `plugins/exasol/skills/*/references/*.md` — detailed docs loaded on-demand by SKILL.md routing
 
 **Installer (`install.sh`)** — curl-pipeable, idempotent, POSIX shell (no bash, no jq). Supports both agents:
 - Agent selection via `AGENT` env var (`claude`, `codex`, `both`) or interactive prompts; non-interactive defaults to both
 - Claude Code path: `claude plugin marketplace add/update` + `claude plugin install/update`
-- Codex path: pinned `skills` CLI; interactive and curl-piped terminal runs show the skill picker through `/dev/tty`, while non-interactive runs use `--skill '*' --global --yes`; both verify the shared `exasol` router afterwards
+- Codex path: pinned `skills` CLI; interactive and curl-piped terminal runs keep prompts and the skill picker on `/dev/tty` when standard streams are redirected, while non-interactive runs use `--skill '*' --global --yes`; both verify the shared `exasol` router afterwards
 - Shared: exapump version check via GitHub API; interactive install/update requires confirmation, and non-interactive install/update requires `INSTALL_EXAPUMP=yes`
 
 ## Testing
@@ -80,12 +80,20 @@ Validate a specific release tag and commit:
 sh .github/scripts/validate-release-tag.sh vX.Y.Z <tag-commit> origin/main
 ```
 
+Validate package consistency and credential-like content:
+
+```bash
+python3 test/check-package.py
+sh test/check-security.sh
+```
+
 ## CI
 
 `.github/workflows/ci.yml` runs on push to `main` and PRs:
 1. **validate-plugin** — JSON validity + version consistency between both manifests and the changelog + version bump check on PRs (must be greater than existing tags)
 2. **test-installer** — all 9 Docker scenarios
-3. **check-links** — validates Markdown links in a `Check Links` job shaped like Exasol `notebook-connector`'s documentation check; this Markdown-only repo runs `npx markdown-link-check@3.14.2` with `.github/markdown_check_config.json` instead of Notebook Connector's Poetry/Nox docs stack
+3. **package-safety** — validates skill metadata, routing references, command delegation, workflow and manifest keys, and credential-like content
+4. **check-links** — validates Markdown links in a `Check Links` job shaped like Exasol `notebook-connector`'s documentation check; this Markdown-only repo runs `npx markdown-link-check@3.14.2` with `.github/markdown_check_config.json` instead of Notebook Connector's Poetry/Nox docs stack
 
 `.github/workflows/release.yml` runs after a maintainer pushes a `v*` tag:
 - It runs the reusable CI workflow and publishes only after all CI jobs pass
@@ -120,7 +128,7 @@ Stage related changes together in logical commits. The release commit (`chore: r
 
 ## Shell Conventions
 
-`install.sh` and test scripts follow POSIX shell (`#!/bin/sh`, not bash). No `jq` — use `sed`/`grep` for JSON parsing. All variables double-quoted. Interactive prompts use the controlling terminal so they remain available when the script itself is piped.
+`install.sh` and test scripts follow POSIX shell (`#!/bin/sh`, not bash). No `jq` — use `sed`/`grep` for JSON parsing. All variables double-quoted. Interactive prompts and selectors use the controlling terminal so they remain visible when the script is piped or standard output is redirected.
 
 ## Local Development
 

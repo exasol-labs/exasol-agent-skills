@@ -36,10 +36,10 @@ Connection settings are stored in `~/.exapump/config.toml` as named profiles. Ex
 [production]
 host = "exasol-prod.example.com"
 user = "admin"
-password = "s3cret"
+password = "<database-password>"
 default = true
-bfs_write_password = "bucketpw"
-bfs_read_password = "bucketpw"
+bfs_write_password = "<bucketfs-write-password>"
+bfs_read_password = "<bucketfs-read-password>"
 ```
 
 Key profile fields:
@@ -75,7 +75,10 @@ Connection parameters can also be overridden per command via CLI flags (highest 
 
 1. Check if `~/.exapump/config.toml` exists and contains a default profile.
 2. If configured, proceed with the operation.
-3. If not configured, **ask the user** for the required connection details (host, port, bucket, passwords). Do not guess or assume any defaults. Help the user create the profile in `~/.exapump/config.toml`.
+3. If not configured, explain which host, port, bucket, and credential fields
+   are required, then have the user enter secrets locally through
+   `exapump profile add <name>` or their secure configuration workflow. Do not
+   ask them to paste passwords into chat, guess values, or echo secret values.
 
 ---
 
@@ -134,6 +137,12 @@ exapump bucketfs rm <path-in-bucket>
 ```bash
 exapump bucketfs rm models/old_model.pkl     # Delete a single file
 ```
+
+Before running `rm`, show the exact bucket, path, and profile, then obtain
+explicit confirmation. Before a `cp` that would overwrite an existing
+BucketFS or local file, inspect the target and obtain confirmation. Never print
+profile passwords or pass them as command-line arguments when a profile can
+hold them securely.
 
 ---
 
