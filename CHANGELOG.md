@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.24.6
+
+- Add package consistency and credential-pattern checks.
+- Make BucketFS and setup guidance safe across both agents.
+
 ## v0.24.5
 
 - Clarify extension catalog and specialized skill boundaries.
