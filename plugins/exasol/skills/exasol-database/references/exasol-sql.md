@@ -2,6 +2,8 @@
 
 A comprehensive reference for Exasol's SQL dialect — covering behavior that differs from standard SQL, PostgreSQL, MySQL, or Oracle.
 
+**Contents:** [Data Types](#data-types) · [Identifier Handling](#identifier-handling) · [Constraints](#constraints) · [Regular Expressions](#regular-expressions-pcre2) · [Set Operations](#set-operations) · [Reserved Keywords](#reserved-keywords) · [System Tables](#useful-system-tables) · [Other Behaviors](#other-noteworthy-behaviors) · [Cross-Dialect Function Traps](#cross-dialect-function-traps)
+
 ## Data Types
 
 | Type | Parameters | Limits | Notes |
@@ -237,8 +239,76 @@ WHEN NOT MATCHED THEN INSERT VALUES (s.id, s.value);
 
 ### Date/Time Functions
 ```sql
-SELECT CURRENT_TIMESTAMP;                          -- now
+SELECT CURRENT_TIMESTAMP;                          -- now (NOW() also works)
 SELECT ADD_DAYS(CURRENT_DATE, 7);                 -- 7 days from now
 SELECT DAYS_BETWEEN('2024-01-01', '2024-12-31');  -- day difference
 SELECT TO_CHAR(CURRENT_TIMESTAMP, 'YYYY-MM-DD');  -- format
 ```
+
+---
+
+## Cross-Dialect Function Traps
+
+These are the functions agents most often write wrong for Exasol. Training data is
+dominated by PostgreSQL, SQL Server, Snowflake, and BigQuery, so when Exasol is silent
+the wrong dialect tends to win — confidently and without warning. **When you need a
+function that is not documented here and you are not certain of the Exasol signature,
+do not infer it from another dialect — verify first** (see "Verifying unknown
+functions"). Every entry below is confirmed against the Exasol SQL reference.
+
+### `DATE_TRUNC` — format string comes FIRST
+Exasol takes the unit first, then the value — the **opposite** of the column-first
+order used by BigQuery and (optionally) Snowflake:
+```sql
+SELECT DATE_TRUNC('hour', ts);          -- CORRECT (unit, value)
+SELECT DATE_TRUNC(ts, 'hour');          -- WRONG (BigQuery/Snowflake order)
+```
+Valid units: `microseconds`, `milliseconds`, `second`, `minute`, `hour`, `day`,
+`week`, `month`, `quarter`, `year`, `decade`, `century`, `millennium`.
+The Oracle-compatible `TRUNC(ts, 'fmt')` also exists with its own format codes.
+
+### No `DATEADD` / `DATEDIFF` (SQL Server, Redshift)
+Exasol has **no** `DATEADD` or `DATEDIFF`. Use the dedicated add/diff functions:
+```sql
+-- Add: ADD_DAYS, ADD_HOURS, ADD_MINUTES, ADD_SECONDS, ADD_WEEKS, ADD_MONTHS, ADD_YEARS
+SELECT ADD_DAYS(ts, 7);                  -- not DATEADD(day, 7, ts)
+SELECT ADD_MONTHS(ts, -1);
+
+-- Diff: SECONDS_BETWEEN, MINUTES_BETWEEN, HOURS_BETWEEN, DAYS_BETWEEN, MONTHS_BETWEEN, YEARS_BETWEEN
+SELECT DAYS_BETWEEN(end_ts, start_ts);   -- not DATEDIFF(day, start, end)
+```
+
+### `SECONDS_BETWEEN(t1, t2)` returns `t1 − t2`
+The result is `t1 − t2` as a decimal **including fractional seconds**, and is negative
+when `t1` is earlier than `t2`. Pass the later timestamp first for a positive duration:
+```sql
+SELECT SECONDS_BETWEEN(end_ts, start_ts);   -- positive elapsed seconds, e.g. 62.345
+```
+Because the result already carries fractional seconds as a `DECIMAL`, you do **not**
+need `CAST(... AS DOUBLE)` to get sub-second precision.
+
+### Other common dialect substitutions
+| You might reach for (other dialect) | Use in Exasol |
+|---|---|
+| `GETDATE()`, `SYSDATE` (SQL Server / Oracle) | `CURRENT_TIMESTAMP` or `NOW()` |
+| `ISNULL(x, y)` (SQL Server) | `NVL(x, y)`, `IFNULL(x, y)`, or `COALESCE(x, y)` |
+| `LEN(s)` (SQL Server) | `LENGTH(s)` |
+| `DATEADD` / `DATEDIFF` | `ADD_*` / `*_BETWEEN` (see above) |
+
+### Verifying unknown functions
+This reference is a curated set of Exasol-specific behaviors, **not** a complete
+function catalog. When you need something not documented here, resolve it in this
+order — never silently fall back to another SQL dialect:
+
+1. **Run it against the live database** (best — version-exact, so it also sidesteps
+   version drift between Exasol releases):
+   ```bash
+   # An error here means your assumption was wrong; a result confirms the signature
+   exapump sql "SELECT DATE_TRUNC('hour', CURRENT_TIMESTAMP)"
+   ```
+2. **Consult the official Exasol SQL reference** for the running version. The canonical
+   function index is authoritative for names, argument order, and return types:
+   - All functions: <https://docs.exasol.com/db/latest/sql_references/functions/all_functions.htm>
+   - Individual functions live at `.../functions/alphabeticallistfunctions/<name>.htm`
+3. **If you still cannot confirm it, say so** — flag the uncertainty to the user rather
+   than emitting confident-but-unverified syntax.

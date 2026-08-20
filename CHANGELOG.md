@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.25.0
+
+- Add cross-dialect SQL traps to exasol-sql reference and a verify-don't-guess guard to the exasol-database skill
+
 ## v0.24.7
 
 - Refresh exasol-extension-catalog skill: update deploy, scale, and surface references.
