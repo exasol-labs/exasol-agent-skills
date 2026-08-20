@@ -148,5 +148,5 @@ INTO SCRIPT "MY_SCHEMA"."MY_EXPORT_SCRIPT";
 ## Adjacent Routing
 
 - If the user wants to load data into Exasol instead of writing it out, switch to **exasol-import** for native `IMPORT`, local upload workflows, Parquet import, reject handling, and staging-based loading.
-- If the user asks for connector, extension, or integration-based data transfer instead of direct native `EXPORT` or `exapump export`, switch to **exasol-extension-catalog**.
+- If the user explicitly wants extension-based Parquet export, switch to **exasol-cloud-storage-extension**. Use **exasol-extension-catalog** only while choosing among native export, extension, connector, or integration families.
 - If the user needs to create or change the script used by `EXPORT ... INTO SCRIPT`, switch to **exasol-udfs** for script implementation details.

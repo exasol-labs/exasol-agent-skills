@@ -19,4 +19,5 @@ Trigger when the user mentions **Cloud Storage Extension**, **FROM SCRIPT CLOUD_
 - Use **exasol-import** for direct local-file and native SQL import behavior.
 - Use **exasol-export** for direct native SQL export behavior and local `exapump export`.
 - Use **exasol-bucketfs** when the user needs to upload, list, or remove the extension JAR in BucketFS.
-- Use **exasol-extension-catalog** when the user wants federated read-only access instead of copying data.
+- Use **exasol-document-virtual-schemas** for federated read-only access to object or file storage.
+- Use **exasol-extension-catalog** only when the user is still comparing federation, copy, connector, or extension families.
