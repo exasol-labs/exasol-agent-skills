@@ -15,7 +15,7 @@ Version-specific notes are source-check reminders. Verify linked release notes o
 - **Use for**: federated access to external systems as virtual tables.
 - **Best when**: user wants to query external data without copying it into Exasol.
 - **Notable capabilities**: SQL access to external systems, optimizer pushdown for supported operations.
-- **Dedicated follow-up**: use `exasol-jdbc-virtual-schemas` for JDBC/database-source virtual schema setup, refresh, and troubleshooting after choosing that family; use `exasol-document-virtual-schemas` for document-file virtual schema setup, refresh, and troubleshooting after choosing an object/file storage adapter family; use `exasol-virtual-schema-adapter-development` only when a custom adapter implementation, source-specific dialect, adapter packaging, or adapter-side debugging is required.
+- **Dedicated follow-up**: use **exasol-jdbc-virtual-schemas** for JDBC/database-source virtual schema setup, refresh, and troubleshooting after choosing that family; use **exasol-document-virtual-schemas** for document-file virtual schema setup, refresh, and troubleshooting after choosing an object or file storage adapter family; use **exasol-virtual-schema-adapter-development** only when a custom adapter implementation, source-specific dialect, adapter packaging, or adapter-side debugging is required.
 - **Links**:
   - https://github.com/exasol/virtual-schemas
   - https://github.com/exasol/exasol-virtual-schema
@@ -34,7 +34,7 @@ Use specific adapter repositories when the source is known:
 - DynamoDB: https://github.com/exasol/dynamodb-virtual-schema
 - Elasticsearch: https://github.com/exasol/elasticsearch-virtual-schema
 - Exasol: https://github.com/exasol/exasol-virtual-schema
-- Generic JDBC: https://github.com/exasol/generic-virtual-schema
+- Generic JDBC (archived; reference only, not a production recommendation): https://github.com/exasol/generic-virtual-schema
 - Google Cloud Storage document files: https://github.com/exasol/google-cloud-storage-document-files-virtual-schema
 - HANA: https://github.com/exasol/hana-virtual-schema
 - Hive: https://github.com/exasol/hive-virtual-schema

@@ -60,6 +60,18 @@ jobs:
       - name: "Test: curl-piped interactive Codex selection"
         run: docker run --rm -e SCENARIO=piped-interactive-codex installer-test sh test/test-installer.sh
 
+  package-safety:
+    name: Package safety and consistency
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Check skill metadata and routing references
+        run: python3 test/check-package.py
+      - name: Check for credential-like material
+        run: sh test/check-security.sh
+
   check-links:
     name: Check Links
     runs-on: ubuntu-24.04

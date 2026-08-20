@@ -41,4 +41,4 @@ Trigger when the user mentions **IMPORT**, **IMPORT INTO**, **upload CSV**, **up
 - Use this skill only for direct data movement into Exasol.
 - Use **exasol-export** for native `EXPORT`, local export workflows, and `CREATE CONNECTION` questions tied to export target setup.
 - Use **exasol-database** for general `CREATE CONNECTION` questions, SQL, schema inspection, and table design.
-- Use **exasol-extension-catalog** when the user is asking for extension-based object-storage loading workflows or federated-read alternatives rather than direct `IMPORT`.
+- Use **exasol-cloud-storage-extension** when the user explicitly wants extension-based object-storage loading. Use **exasol-document-virtual-schemas** for federated read-only object or file storage access or **exasol-jdbc-virtual-schemas** for federated read-only database access. Use **exasol-extension-catalog** only when the user is still choosing among those families.

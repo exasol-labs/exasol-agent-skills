@@ -21,7 +21,7 @@ Version-specific notes are source-check reminders. Verify linked release notes o
 
 - **Use for**: free personal-use Exasol deployments on own infrastructure.
 - **Best when**: user wants to deploy a full Exasol database in AWS, Azure, Exoscale, STACKIT, or local macOS Apple Silicon.
-- **Notable capabilities**: Exasol Launcher, cloud/local presets, custom preset extensibility, start/stop/destroy, built-in SQL client.
+- **Notable capabilities**: Exasol Launcher, local & cloud presets, custom preset extensibility, built-in SQL client, agent-friendly CLI.
 - **Links**:
   - https://github.com/exasol/exasol-personal
   - https://downloads.exasol.com/exasol-personal

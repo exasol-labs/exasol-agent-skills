@@ -92,6 +92,7 @@ Use these when the user wants repeatable CI, integration testing, Java testing u
 
 - Exasol Testcontainers: https://github.com/exasol/exasol-testcontainers
 - Integration Test Docker Environment: https://github.com/exasol/integration-test-docker-environment
+- pytest-slc: https://github.com/exasol/pytest-slc
 - Test DB Builder: https://github.com/exasol/test-db-builder-java
 - SQL Statement Builder: https://github.com/exasol/sql-statement-builder
 - jOOQ: https://www.jooq.org/

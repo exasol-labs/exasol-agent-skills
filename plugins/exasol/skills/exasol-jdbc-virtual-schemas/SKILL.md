@@ -28,5 +28,6 @@ Trigger when the user mentions **JDBC virtual schema**, **database-source federa
 - Use this skill for federated access through JDBC/database-source virtual schemas.
 - Use **exasol-import** or **exasol-cloud-storage-extension** when the user wants to efficiently bulk-copy data into Exasol instead of querying it in place.
 - Use **exasol-export** when the user wants to move Exasol data out to another system.
+- Use **exasol-virtual-schema-adapter-development** when no maintained JDBC dialect fits and the user needs custom dialect code, packaging, or adapter-side debugging.
 - Use **exasol-extension-catalog** when the source is not clearly JDBC/database-based or the user is still choosing between Virtual Schema, extension, connector, or integration families.
 - Use **exasol-bucketfs** when the task is specifically about uploading, listing, or removing adapter and driver JARs in BucketFS.

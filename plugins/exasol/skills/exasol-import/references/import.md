@@ -8,8 +8,8 @@ Choose the narrowest matching workflow:
 - Local FBV files on the user's machine: use native `IMPORT INTO "MY_SCHEMA"."MY_TABLE" FROM LOCAL FBV FILE '/path/to/data.fbv'` through an EXAplus or JDBC-style client connection
 - Remote CSV or FBV files already reachable by Exasol over FTP/SFTP, HTTP/HTTPS, S3, Azure Blob Storage, or GCS: use native `IMPORT`
 - S3 Parquet files: use native `IMPORT INTO "MY_SCHEMA"."MY_TABLE" FROM PARQUET AT s3_conn FILE 'data/file.parquet'`
-- Read-only access to external systems without copying data: use **exasol-extension-catalog** to choose the right Virtual Schema path
-- Extension-based object-storage file readers: use **exasol-extension-catalog** to route to the Cloud Storage Extension material
+- Read-only access without copying data: use **exasol-document-virtual-schemas** for a known object or file storage source or **exasol-jdbc-virtual-schemas** for a known database source; use **exasol-extension-catalog** only while choosing the integration family
+- An already-selected extension-based object-storage file reader: use **exasol-cloud-storage-extension**
 
 ## Connection Objects
 
@@ -168,6 +168,6 @@ WHEN NOT MATCHED THEN INSERT VALUES (
 
 ## Adjacent Routing
 
-- If the user needs an extension-based object-storage loading workflow rather than direct `IMPORT`, switch to **exasol-extension-catalog**
+- If the user needs the Cloud Storage Extension rather than direct `IMPORT`, switch to **exasol-cloud-storage-extension**
 - If the user wants to write data out of Exasol, switch to **exasol-export** for native `EXPORT` or local export workflows
-- If the user wants federated read-only access instead of copying data, switch to **exasol-extension-catalog**
+- If the user wants federated read-only access instead of copying data, use **exasol-document-virtual-schemas** for a known object or file storage source or **exasol-jdbc-virtual-schemas** for a known database source. Use **exasol-extension-catalog** only when the source or integration family is still undecided.
