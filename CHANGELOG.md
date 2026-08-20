@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.24.3
+
+- Keep interactive installer prompts visible on the terminal.
+
 ## v0.24.2
 
 - Publish releases only from explicit matching version tags.

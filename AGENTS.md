@@ -18,7 +18,7 @@ A skills marketplace for AI coding agents (Claude Code and OpenAI Codex) that gi
 **Installer (`install.sh`)** — curl-pipeable, idempotent, POSIX shell (no bash, no jq). Supports both agents:
 - Agent selection via `AGENT` env var (`claude`, `codex`, `both`) or interactive prompts; non-interactive defaults to both
 - Claude Code path: `claude plugin marketplace add/update` + `claude plugin install/update`
-- Codex path: pinned `skills` CLI; interactive and curl-piped terminal runs show the skill picker through `/dev/tty`, while non-interactive runs use `--skill '*' --global --yes`; both verify the shared `exasol` router afterwards
+- Codex path: pinned `skills` CLI; interactive and curl-piped terminal runs keep prompts and the skill picker on `/dev/tty` when standard streams are redirected, while non-interactive runs use `--skill '*' --global --yes`; both verify the shared `exasol` router afterwards
 - Shared: exapump version check via GitHub API; interactive install/update requires confirmation, and non-interactive install/update requires `INSTALL_EXAPUMP=yes`
 
 ## Testing
@@ -120,7 +120,7 @@ Stage related changes together in logical commits. The release commit (`chore: r
 
 ## Shell Conventions
 
-`install.sh` and test scripts follow POSIX shell (`#!/bin/sh`, not bash). No `jq` — use `sed`/`grep` for JSON parsing. All variables double-quoted. Interactive prompts use the controlling terminal so they remain available when the script itself is piped.
+`install.sh` and test scripts follow POSIX shell (`#!/bin/sh`, not bash). No `jq` — use `sed`/`grep` for JSON parsing. All variables double-quoted. Interactive prompts and selectors use the controlling terminal so they remain visible when the script is piped or standard output is redirected.
 
 ## Local Development
 
