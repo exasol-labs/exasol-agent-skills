@@ -1,342 +1,212 @@
 ---
 name: exasol-setup-personal
-description: Guided setup of Exasol Personal — a single-node Exasol database deployed to your own cloud account. Covers AWS account preparation, CLI installation, deployment, sample data loading, and MCP server setup.
+description: Guided setup of Exasol Personal — a free Exasol database running locally on a Mac or deployed to your own AWS, Azure, Exoscale, or STACKIT account. Picks the right deployment flavor, then follows the official exasol/exasol-personal instructions.
 ---
 
 # Exasol Personal Setup Skill
 
-Trigger when the user mentions **Exasol Personal**, **setup Exasol**, **deploy Exasol**, **install Exasol**, **personal database**, **Exasol on AWS**, or asks to **get started with Exasol**.
+Trigger when the user mentions **Exasol Personal**, **setup Exasol**, **deploy Exasol**, **install Exasol**, **personal database**, **Exasol locally**, **Exasol on AWS/Azure/Exoscale/STACKIT**, or asks to **get started with Exasol**.
 
-**Always use the `AskUserQuestion` tool for every question, confirmation, and decision point throughout this skill — no exceptions. Never assume answers or skip questions.**
+## How This Skill Works
 
-Guide the user through each phase below in order. Do not skip phases — each depends on the previous one.
+This skill provides **high-level direction only**: it helps the user pick the right deployment flavor and keeps the overall setup on track. It deliberately does **not** duplicate installation commands, account-setup steps, or credential details.
 
-For each phase, use your knowledge or research to provide current, accurate steps. Do not make up commands or URLs you are not confident about — if unsure, search for the official documentation.
+**The official repository is the single source of truth:**
+
+```
+https://github.com/exasol/exasol-personal
+```
+
+Once the flavor is chosen, fetch the relevant upstream documents and follow them exactly. Never reproduce commands from memory — Exasol Personal changes frequently, and stale commands break setups.
+
+Upstream documents to fetch (raw URLs, `main` branch):
+
+| Document | Fetch when |
+|---|---|
+| `README.md` | Always — the master instructions |
+| `HOWTO_SETUP_AWS_ACCOUNT.md` | AWS cloud deployment |
+| `HOWTO_SETUP_AZURE_ACCOUNT.md` | Azure cloud deployment |
+| `HOWTO_SETUP_EXOSCALE_ACCOUNT.md` | Exoscale cloud deployment |
+| `HOWTO_SETUP_STACKIT_ACCOUNT.md` | STACKIT cloud deployment |
+| `doc/presets.md` | Custom or external presets |
+
+Raw URL pattern:
+```
+https://raw.githubusercontent.com/exasol/exasol-personal/main/<document>
+```
+
+**If a fetch fails** — the host is unreachable, the network is restricted, or the document has moved — do not improvise the missing steps from memory, and do not fall back to the outdated commands you may recall. Tell the user which document could not be retrieved and why, then offer to either retry, or have them open the document themselves and paste the relevant section:
+
+```
+https://github.com/exasol/exasol-personal/blob/main/<document>
+```
+
+Only the launcher-state commands this skill names directly (`exasol version`, `exasol info`, `exasol connect`, `exasol deployments list`, `exasol diag local`) are safe to run without the upstream docs; anything that installs, provisions, or destroys is not.
+
+**Always use the `AskUserQuestion` tool for every question, confirmation, and decision point — no exceptions. Never assume answers or skip questions.**
+
+## Running SQL During Setup
+
+**Use the launcher's built-in SQL client, `exasol connect`, for every SQL statement and script this skill executes — never `exapump`.**
+
+`exasol connect` is part of the launcher the user just installed, reads its credentials from the deployment directory automatically, and works identically for local and cloud deployments. Requiring an exapump profile mid-setup adds a second tool and a second set of credentials before the database is even verified.
+
+```bash
+exasol connect                          # interactive shell
+exasol connect -c "SELECT 1"            # inline statement(s), ';'-separated
+exasol connect -f script.sql            # run a script file
+exasol connect -d <name> -c "SELECT 1"  # target a named deployment
+exasol connect --csv -c "SELECT * FROM PRODUCTS" > products.csv
+```
+
+Non-interactive runs (`-c` / `-f`) stop at the first failing statement and exit non-zero, so use them when you need to detect errors. Add `--json` for machine-readable output.
+
+This skill never installs or configures `exapump`. If the user needs it later — for local file uploads or exports — that belongs to the **exasol-database** skill, after setup is finished.
 
 ---
 
 ## Phase 0: Introduction
 
-Begin by explaining what Exasol Personal is and what this skill will do.
+Explain what Exasol Personal is:
 
-Tell the user:
+A full Exasol analytics database — in-memory, columnar, MPP — free for personal use. It runs either **locally on your Mac** or **in your own cloud account**. The `exasol` launcher CLI handles install, start/stop, connect, and destroy.
 
-**What is Exasol Personal?**
+Then explain the two flavors:
 
-Exasol Personal is a single-node Exasol database deployed entirely to your own cloud account. Exasol is an analytics-optimised, in-memory columnar database built for high-performance SQL — it's the same technology used by large enterprises, now available for personal use. Key benefits:
+**Local (macOS only, fastest)**
+- Runs in a VM on the user's Mac, starts in seconds
+- No cloud account, no credentials, no cost
+- Requires macOS 15 (Sequoia) or later and at least 8 GB RAM
+- Limitations: no script language container preinstalled (install one with `exasol slc install <language>` to enable UDFs), no virtual schemas yet, no Admin UI yet, always single-node
 
-- **Blazing fast analytics** — columnar storage and in-memory processing make complex queries over millions of rows run in seconds
-- **Your own infrastructure** — the database runs on your AWS account; you own the data and control the costs
-- **Full SQL compatibility** — standard SQL with powerful Exasol extensions like DISTRIBUTE BY, window functions, and UDFs
-- **Simple CLI** — the `exasol` CLI handles provisioning, deployment, and management with a single command
-- **Built-in SQL client** — connect and query immediately with `exasol connect`, no additional tooling required
-
-**What this skill will do:**
-
-This skill guides you step by step through the complete setup:
-1. Prepare your AWS account and IAM permissions
-2. Install and configure the AWS CLI
-3. Install the `exasol` CLI
-4. Deploy your Exasol database to AWS (takes 10–20 minutes)
-5. Set up `exapump` for SQL execution and data loading
-6. Optionally load sample data to explore
+**Cloud (AWS, Azure, Exoscale, STACKIT)**
+- Runs on provisioned compute in the user's own cloud account
+- Needed for: multi-node clusters, virtual schemas, the Admin UI, a shared instance, or any non-macOS host
+- Requires a cloud account with permission to provision compute instances, plus per-provider credentials
+- Deployment takes roughly 10–20 minutes and incurs cloud costs
 
 Use `AskUserQuestion` to ask: **"Ready to get started?"**
 
 ---
 
-## Phase 1: Cloud Provider Selection
+## Phase 1: Choose the Deployment Flavor
 
-Use `AskUserQuestion` to ask which cloud provider they want to use. Currently only **AWS** is supported. If they choose anything else, explain that only AWS is available at this time and use `AskUserQuestion` to ask if they want to proceed with AWS.
-
----
-
-## Phase 2: AWS Account Setup
-
-Use `AskUserQuestion` to ask: **"Do you already have an AWS account with permissions to launch EC2 instances (specifically r6i.xlarge), or do you need to set one up?"** There's no recommended option.
-
-### If they need to set up an AWS account:
-
-Walk them through these steps one by one, waiting for confirmation at each step before moving on.
-
-#### Step 1: Create an AWS account
-
-Guide the user through creating an AWS account. Use your knowledge of the AWS sign-up process to provide current steps, or research the official AWS documentation if needed.
-
-#### Step 2: Create the IAM policy
-
-This policy grants Exasol Personal the exact permissions it needs — no more, no less.
-
-Fetch the policy JSON from:
-```
-https://raw.githubusercontent.com/exasol/exasol-personal/refs/heads/main/assets/infrastructure/aws/iam-policy.broad.json
-```
-
-Then guide the user through creating an IAM policy in the AWS console using that JSON. Use your knowledge of the AWS IAM console to provide current navigation steps, naming the policy `ExasolPersonalPolicy`.
-
-Use `AskUserQuestion` to confirm the policy was created before continuing.
-
-#### Step 3: Create a dedicated IAM user
-
-Guide the user through creating an IAM user named `exasol-personal` in the AWS IAM console, attaching the `ExasolPersonalPolicy` directly to that user. Use your knowledge of the AWS IAM console to provide current steps.
-
-Use `AskUserQuestion` to confirm the user was created before continuing.
-
-#### Step 4: Create access keys
-
-Guide the user through creating CLI access keys for the `exasol-personal` IAM user in the AWS IAM console. Use your knowledge of the AWS IAM console to provide current steps.
-
-Make sure the user saves both values — the Secret Access Key is shown only once:
-- **Access Key ID** (starts with `AKIA...`)
-- **Secret Access Key**
-
-Use `AskUserQuestion` to confirm the user has both values saved before proceeding.
-
-### If they already have an AWS account:
-
-Use `AskUserQuestion` to confirm they have an IAM user with appropriate permissions and access keys ready before proceeding to Phase 3.
-
----
-
-## Phase 3: AWS CLI Installation
-
-Check if the AWS CLI is installed by running:
+First detect the platform:
 
 ```bash
-aws --version
+uname -s
+sw_vers                       # macOS only — check version is 15 or later
+sysctl -n hw.memsize          # macOS only — check at least 8 GB
 ```
 
-### If the AWS CLI is installed:
+Then use `AskUserQuestion` to ask which flavor they want, tailoring the recommendation:
 
-Confirm the version and proceed to Phase 4.
+- **On macOS 15+ with at least 8 GB RAM:** offer **Local** as the first, recommended option, with AWS, Azure, and the other cloud providers as alternatives. Recommend local unless the user needs something local does not yet support (multi-node, virtual schemas, Admin UI, or a shared instance) — ask about those needs if it is unclear.
+- **On macOS below 15, or with less than 8 GB RAM:** explain local is not supported on this machine and offer the cloud providers.
+- **On Linux or Windows:** explain local deployment is macOS-only today (Windows and Linux support is coming) and offer the cloud providers.
 
-### If the AWS CLI is NOT installed:
+If the user picks a cloud provider, use `AskUserQuestion` to confirm which one: AWS, Azure, Exoscale, or STACKIT.
 
-Use `AskUserQuestion` to ask if they want to install it. If yes, use `AskUserQuestion` to ask which OS they are on, then guide them through installing the AWS CLI using your knowledge of the official installation process for their platform, or research the official AWS documentation if needed.
-
-After installation, verify with `aws --version`. If it fails, the user may need to open a new terminal or add it to their PATH.
+Record the chosen flavor — it selects the `exasol install <preset>` preset name (`local`, `aws`, `azure`, `exoscale`, `stackit`). The preset name alone is not always a complete command: some providers require additional flags, listed in Phase 3.
 
 ---
 
-## Phase 4: AWS CLI Profile Configuration
+## Phase 2: Install the Exasol Launcher
 
-Use `AskUserQuestion` to collect the following values one at a time:
-
-1. **Profile name** — the name for the AWS CLI named profile (default: `exasol`)
-2. **AWS Access Key ID** — from their IAM user
-3. **AWS Secret Access Key** — from their IAM user
-4. **Default region** — AWS region to deploy in (e.g., `eu-west-1`, `us-east-1`, `eu-central-1`)
-5. **Default output format** — `text`, `json`, or `table` (default: `text`)
-
-Then use `AskUserQuestion` to ask: **"Would you like me to run the AWS CLI commands to set up the profile for you, or would you prefer to run them yourself?"**
-
-**If they want you to run the commands**, execute:
-
-```bash
-aws configure set aws_access_key_id <ACCESS_KEY_ID> --profile <profile-name>
-aws configure set aws_secret_access_key <SECRET_ACCESS_KEY> --profile <profile-name>
-aws configure set region <REGION> --profile <profile-name>
-aws configure set output <OUTPUT_FORMAT> --profile <profile-name>
-```
-
-**If they want to run the commands themselves**, show them the commands with their values filled in so they can copy and run them.
-
-Ask them to confirm once done.
-
-Either way, verify the configuration afterwards:
-
-```bash
-aws sts get-caller-identity --profile <profile-name>
-```
-
-This should return the account ID and IAM user ARN. If it fails, the credentials are incorrect — ask the user to double-check and retry.
-
----
-
-## Phase 5: Exasol CLI Installation
-
-Check if the `exasol` CLI is installed:
+Check whether the launcher is already installed:
 
 ```bash
 exasol version
 ```
 
-### If not installed:
-
-Install it by running:
-
-```bash
-curl https://downloads.exasol.com/exasol-personal/installer.sh | sh
-```
-
-After installation, verify with `exasol version`. If the command is not found, the user may need to open a new terminal or add `~/.exasol/bin` to their PATH.
+If it is not installed, fetch the upstream `README.md` and follow its **Install the Launcher** section for the user's platform. Verify with `exasol version` afterwards; if the command is not found, the user may need a new terminal or a `PATH` adjustment as described by the installer output.
 
 ---
 
-## Phase 6: Deployment
+## Phase 3: Flavor-Specific Setup
 
-Use `AskUserQuestion` to ask for:
+### If Local
 
-1. **Deployment directory name** (default: `exasol-deployment`)
-2. **Deployment directory location** (default: current working directory)
+Fetch the upstream `README.md` and follow its **Quick Start — Run Exasol Locally** section.
 
-Then execute the following steps:
+Before installing, use `AskUserQuestion` to ask whether the user wants the default deployment or a named one (`-d <name>`), explaining that named deployments let several databases run side by side. Follow the README's **Deployments and Named Deployments** section.
 
-### Step 1: Export the AWS profile
+If the user wants to run UDFs, follow the README's **UDFs and Script Language Containers** section to install the needed script language container — local deployments ship without one.
 
-```bash
-export AWS_PROFILE=<profile-name>
-```
+### If Cloud
 
-Use the profile name from Phase 4.
+1. Fetch the provider's `HOWTO_SETUP_<PROVIDER>_ACCOUNT.md` from the upstream repo and walk the user through it step by step, waiting for confirmation at each step. This covers account preparation, permissions, and the credentials or environment variables the launcher expects.
+2. Use `AskUserQuestion` to confirm credentials are in place before deploying.
+3. **Collect every install option before running anything** — all of the options below are install-time only and cannot be changed afterwards without destroying and reinstalling. In one round of `AskUserQuestion`, gather:
+   - **Any flags the provider requires** (see the table below) — the install fails without them.
+   - **Cluster size and instance type**, or the defaults (README section **Cloud: Choosing cluster size and compute instance types**).
+   - **A named deployment** (`-d <name>`), or the default.
+4. Fetch the upstream `README.md`, follow its **Deploy to the Cloud** section, and run `exasol install <preset>` with the options collected in step 3.
 
-### Step 2: Create and enter the deployment directory
+**Per-provider install flags** — confirm these against the provider's HOWTO, which is authoritative:
 
-```bash
-mkdir -p <location>/<directory-name>
-cd <location>/<directory-name>
-```
+| Provider | Required | Optional |
+|---|---|---|
+| `aws` | none — region comes from the AWS CLI profile | |
+| `azure` | `--location <region>` — the target region is **not** inferred | |
+| `exoscale` | none | `--zone <zone>` (defaults to `ch-gva-2`) |
+| `stackit` | `--project-id <uuid>` | `--region <region>` (defaults to `eu01`) |
 
-### Step 3: Deploy Exasol
+The README's **Deploy to the Cloud** section shows bare `exasol install <preset>` commands for readability. For Azure and STACKIT those are incomplete — always add the required flag.
 
-```bash
-exasol install aws
-```
-
-Tell the user:
-- This will take **10–20 minutes**.
-- The CLI generates Terraform configs, provisions AWS infrastructure, and installs the Exasol database.
-- Do not interrupt the process.
-
-### Step 4: Verify deployment
-
-After installation completes, run:
-
-```bash
-exasol info
-```
-
-This shows connection details including the host, port, and credentials. The credentials are also stored in `deployment.json` in the deployment directory.
-
-Test the connection using `exasol connect` (the built-in SQL client):
-
-```bash
-exasol connect
-```
-
-Type `SELECT 1;` and press Enter. If it returns a result, the deployment is working. Type `exit` or press Ctrl+D to quit.
-
-Tell the user:
-- **All `exasol` commands must be run from the deployment directory.**
-- `exasol stop` pauses the instance (but networking/storage costs continue).
-- `exasol start` restarts a stopped instance (IP addresses change — use `exasol info` for new connection details).
-- `exasol destroy` removes ALL AWS resources. **Never** delete the deployment directory without running `exasol destroy` first.
+Tell the user cloud deployment takes about 10–20 minutes and must not be interrupted — an interrupted install can leave billable resources behind that need `exasol destroy` or manual cleanup.
 
 ---
 
-## Phase 7: Set Up exapump and Explore Data
+## Phase 4: Verify and Connect
 
-Now help the user connect to their Exasol Personal database using `exapump` — the CLI tool used for SQL execution and data loading. The connection credentials are in `deployment.json` in the deployment directory.
+Follow the upstream `README.md` **Next steps** section:
 
-### Step 1: Read the credentials
+- Run `exasol info` for connection details and the Admin UI URL (cloud only).
+- Credentials live in `secrets.json` in the deployment directory.
+- Test with the built-in SQL client: `exasol connect -c "SELECT 1"`.
 
-```bash
-cat deployment.json
-```
+Also tell the user about lifecycle commands from the README:
+- `exasol stop` / `exasol start` — pause and resume (cloud: networking and storage keep costing; IPs change on restart)
+- `exasol deployments list` — see all deployments and their status
+- `exasol destroy` — remove the deployment and all its data; **never** delete a deployment directory without destroying first
 
-Note the host, port, username, and password — you will need these for the exapump profile.
+---
 
-### Step 2: Check if exapump is installed
+## Phase 5: Load Sample Data (Optional)
 
-```bash
-exapump --version
-```
+Use `AskUserQuestion` to ask: **"Would you like to load sample data? This adds a PRODUCTS table (1M rows) and a PRODUCT_REVIEWS table (1.8M rows) you can query right away."**
 
-If not installed, install it:
+If yes, follow the upstream `README.md` **Load Sample Data** section, running the statements with `exasol connect` (`-f sample.sql` from the deployment directory, or `-c` with the SQL inline).
 
-```bash
-curl -fsSL https://raw.githubusercontent.com/exasol-labs/exapump/main/install.sh | sh
-```
-
-Verify again after installation. If the command is not found, the user may need to open a new terminal or add `~/.exapump/bin` to their PATH.
-
-### Step 3: Set up an exapump profile
-
-List all existing profiles:
+Verify the load with `exasol connect`:
 
 ```bash
-exapump profile list
+exasol connect -c "SELECT COUNT(*) FROM PRODUCTS; SELECT COUNT(*) FROM PRODUCT_REVIEWS"
 ```
 
-**Never assume which profile to use.** Always ask the user explicitly:
+Compare the results against the row counts in the README's **Load Sample Data** table, which you already fetched — do not rely on counts quoted from memory.
 
-- **If no profiles exist:** Use `AskUserQuestion` to ask: **"No exapump profiles found. Shall I create one? What would you like to name it?"** (suggest `exasol-personal`). Then create it:
+---
 
-  ```bash
-  exapump profile add <name>
-  ```
+## Phase 6: Hand Off
 
-  This is interactive and will prompt for:
-  - **Host** — from `deployment.json`
-  - **Port** — from `deployment.json` (typically `8563`)
-  - **Username** — from `deployment.json`
-  - **Password** — from `deployment.json`
-  - **TLS** — enter `y` (Exasol Personal uses a self-signed certificate; accept it)
+Tell the user they can now use `/exasol` or just describe what they want in natural language. Suggest concrete next steps:
 
-- **If one or more profiles exist:** Use `AskUserQuestion` to ask: **"These profiles exist: [list]. Which would you like to use, or would you like to create a new one? Note: existing profiles may have stale credentials if the instance was restarted — would you like to update any of them with the current credentials from deployment.json?"**
+- **Query the data** — "show me the top 10 products by price", "how many reviews per product category?"
+- **Load their own data** — CSV or Parquet files into new tables
+- **Explore the schema** — list schemas, tables, and columns
+- **Run UDFs** — on local deployments, install a script language container first
 
-  - **Use an existing profile as-is:** Note the profile name for use in subsequent commands.
-  - **Update an existing profile:** Delete and recreate it:
+The Exasol router activates the right guidance automatically whenever the user asks for Exasol SQL, exapump, data loading, BucketFS, or UDF work.
 
-    ```bash
-    exapump profile remove <name>
-    exapump profile add <name>
-    ```
+---
 
-    Enter the credentials from `deployment.json` as above.
+## Troubleshooting
 
-  - **Create a new profile:** Run `exapump profile add <name>` with the chosen name.
+Do not improvise fixes. Fetch the upstream documentation first:
 
-### Step 4: Test the connection
-
-```bash
-exapump sql --profile <chosen-profile> "SELECT 1"
-```
-
-If this fails, verify the credentials in `deployment.json` match what was entered. Offer to update the profile and retry.
-
-### Step 5: Load sample data (Optional)
-
-Use `AskUserQuestion` to ask: **"Would you like to load sample data? This includes a PRODUCTS table (1M rows, 27.3 MiB) and a PRODUCT_REVIEWS table (1.8M rows, 154.5 MiB)."**
-
-If yes, use `exapump sql` to run the setup statements. Run these from the deployment directory:
-
-**Step 5a:** Create the schema and tables, then import the data:
-
-```bash
-exapump sql --profile <chosen-profile> "CREATE SCHEMA IF NOT EXISTS SAMPLE_DATA"
-exapump sql --profile <chosen-profile> "CREATE OR REPLACE TABLE SAMPLE_DATA.PRODUCTS (PRODUCT_ID DECIMAL(18,0), PRODUCT_CATEGORY VARCHAR(100), PRODUCT_NAME VARCHAR(2000000), PRICE_USD DOUBLE, INVENTORY_COUNT DECIMAL(10,0), MARGIN DOUBLE, DISTRIBUTE BY PRODUCT_ID)"
-exapump sql --profile <chosen-profile> "IMPORT INTO SAMPLE_DATA.PRODUCTS FROM PARQUET AT 'https://exasol-easy-data-access.s3.eu-central-1.amazonaws.com/sample-data/' FILE 'online_products.parquet'"
-exapump sql --profile <chosen-profile> "CREATE OR REPLACE TABLE SAMPLE_DATA.PRODUCT_REVIEWS (REVIEW_ID DECIMAL(18,0), PRODUCT_ID DECIMAL(18,0), PRODUCT_NAME VARCHAR(2000000), PRODUCT_CATEGORY VARCHAR(100), RATING DECIMAL(2,0), REVIEW_TEXT VARCHAR(100000), REVIEWER_NAME VARCHAR(200), REVIEWER_PERSONA VARCHAR(100), REVIEWER_AGE DECIMAL(3,0), REVIEWER_LOCATION VARCHAR(200), REVIEW_DATE VARCHAR(200), DISTRIBUTE BY PRODUCT_ID)"
-exapump sql --profile <chosen-profile> "IMPORT INTO SAMPLE_DATA.PRODUCT_REVIEWS FROM PARQUET AT 'https://exasol-easy-data-access.s3.eu-central-1.amazonaws.com/sample-data/' FILE 'product_reviews.parquet'"
-```
-
-**Step 5b:** Verify row counts:
-
-```bash
-exapump sql --profile <chosen-profile> "SELECT COUNT(*) FROM SAMPLE_DATA.PRODUCTS"
-exapump sql --profile <chosen-profile> "SELECT COUNT(*) FROM SAMPLE_DATA.PRODUCT_REVIEWS"
-```
-
-Expected results: PRODUCTS = 1,000,000 rows; PRODUCT_REVIEWS = 1,822,007 rows.
-
-### Step 6: Explore the data
-
-Tell the user that they can now use `/exasol` or ask naturally to query and explore their database. Suggest a few things they can do:
-
-- **Run SQL queries:** Ask Claude to query the PRODUCTS or PRODUCT_REVIEWS tables — e.g. "show me the top 10 products by price" or "how many reviews per product category?"
-- **Upload their own data:** Use `exapump upload` to load CSV or Parquet files into new tables
-- **Export data:** Use `exapump export` to extract query results to local files
-- **Explore schemas:** Ask Claude to list all tables and schemas in the database
-
-The Exasol router activates the right database guidance automatically whenever the user asks for Exasol SQL, exapump, data loading, BucketFS, or UDF work. They can just describe what they want to do and Claude will guide them.
+- **Local deployment misbehaving:** run `exasol diag local` for a JSON snapshot of VM status, guest IP, bound ports, and database readiness (README, **Start and stop Exasol Personal**).
+- **Interrupted or failed cloud install:** rerun `exasol install <preset>` with the same presets to retry safely, or `exasol destroy` to clean up (README, **Deployments and Named Deployments**).
+- **Cached runtime artifacts:** `exasol cache list`, `exasol cache clean`, `exasol diag cache`.
+- **Anything else:** re-read the relevant upstream section, or point the user at the [Exasol Community](https://community.exasol.com) using the `exasol-personal` tag.

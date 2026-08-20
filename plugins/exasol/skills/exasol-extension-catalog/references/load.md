@@ -15,6 +15,7 @@ Version-specific notes are source-check reminders. Verify linked release notes o
 - **Use for**: federated access to external systems as virtual tables.
 - **Best when**: user wants to query external data without copying it into Exasol.
 - **Notable capabilities**: SQL access to external systems, optimizer pushdown for supported operations.
+- **Dedicated follow-up**: use `exasol-jdbc-virtual-schemas` for JDBC/database-source virtual schema setup, refresh, and troubleshooting after choosing that family; use `exasol-document-virtual-schemas` for document-file virtual schema setup, refresh, and troubleshooting after choosing an object/file storage adapter family; use `exasol-virtual-schema-adapter-development` only when a custom adapter implementation, source-specific dialect, adapter packaging, or adapter-side debugging is required.
 - **Links**:
   - https://github.com/exasol/virtual-schemas
   - https://github.com/exasol/exasol-virtual-schema
@@ -33,7 +34,7 @@ Use specific adapter repositories when the source is known:
 - DynamoDB: https://github.com/exasol/dynamodb-virtual-schema
 - Elasticsearch: https://github.com/exasol/elasticsearch-virtual-schema
 - Exasol: https://github.com/exasol/exasol-virtual-schema
-- Generic JDBC: https://github.com/exasol/generic-jdbc-virtual-schema
+- Generic JDBC: https://github.com/exasol/generic-virtual-schema
 - Google Cloud Storage document files: https://github.com/exasol/google-cloud-storage-document-files-virtual-schema
 - HANA: https://github.com/exasol/hana-virtual-schema
 - Hive: https://github.com/exasol/hive-virtual-schema
@@ -50,8 +51,8 @@ Use specific adapter repositories when the source is known:
 
 ## Cloud Storage Extension
 
-- **Use for**: reading files from object storage.
-- **Best when**: user wants to read Parquet, Avro, ORC, CSV, or cloud object storage files.
+- **Use for**: importing structured object-storage files through extension UDFs and exporting tables as Parquet through extension UDFs.
+- **Best when**: user wants the Cloud Storage Extension path for Parquet, Avro, ORC, supported Delta import, or Parquet export. Route CSV to native import/export instead.
 - **Links**:
   - https://github.com/exasol/cloud-storage-extension
 
@@ -106,7 +107,7 @@ Use specific adapter repositories when the source is known:
 ## Spark, Glue, ADF, and ETL tools
 
 - **Spark Exasol Connector**: https://github.com/exasol/spark-connector
-- **AWS Glue integration**: https://github.com/exasol/aws-glue-exasol-connector
+- **AWS Glue integration**: https://github.com/exasol/glue-connector/blob/main/doc/user_guide/user_guide.md
 - **Azure Data Factory Functions / Bulk Loader**: https://github.com/exasol/azure-data-factory-functions
 - **Ecosystem ETL list**: https://docs.exasol.com/db/latest/connect_exasol/ecosystem_overview.htm
 
@@ -116,12 +117,12 @@ Use specific adapter repositories when the source is known:
 - JDBC: https://docs.exasol.com/db/latest/connect_exasol/drivers/jdbc.htm
 - ODBC: https://docs.exasol.com/db/latest/connect_exasol/drivers/odbc.htm
 - Exasol Download Portal: https://downloads.exasol.com/
-- ADO.NET: https://docs.exasol.com/db/latest/connect_exasol/drivers/ado.net.htm
+- ADO.NET: https://docs.exasol.com/db/latest/connect_exasol/drivers/ado_net.htm
 - PyExasol: https://github.com/exasol/pyexasol
 - PyExasol 2.2.2: https://github.com/exasol/pyexasol/releases/tag/2.2.2
 - SQLAlchemy Exasol: https://github.com/exasol/sqlalchemy-exasol
 - Exasol TypeScript/JavaScript driver: https://github.com/exasol/exasol-driver-ts
 - Go SQL Driver: https://github.com/exasol/exasol-driver-go
-- R Integration: https://docs.exasol.com/db/latest/connect_exasol/drivers/r.htm
+- R Integration: https://github.com/exasol/r-exasol
 - WebSockets API: https://github.com/exasol/websocket-api
 - Ibis backend: https://ibis-project.org/backends/exasol

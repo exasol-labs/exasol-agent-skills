@@ -2,15 +2,21 @@ name: CI
 on:
   push:
     branches: [main]
-    tags: ['v*']
   pull_request:
     branches: [main]
+  workflow_call:
+
+permissions:
+  contents: read
 
 jobs:
   validate-plugin:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
       - name: Validate marketplace manifest
         run: |
           jq empty .claude-plugin/marketplace.json
@@ -20,36 +26,27 @@ jobs:
           jq empty plugins/exasol/.claude-plugin/plugin.json
           jq -e '.name and .version and .author.name' plugins/exasol/.claude-plugin/plugin.json
       - name: Check version consistency
-        run: |
-          mp=$(jq -r '.metadata.version' .claude-plugin/marketplace.json)
-          pl=$(jq -r '.version' plugins/exasol/.claude-plugin/plugin.json)
-          echo "Marketplace: $mp | Plugin: $pl"
-          [ "$mp" = "$pl" ] || { echo "::error::Version mismatch: marketplace=$mp plugin=$pl"; exit 1; }
+        run: sh .github/scripts/validate-package-version.sh
+      - name: Test release tag validation
+        run: sh test/test-release-tag.sh
       - name: Check version is bumped
         if: github.event_name == 'pull_request'
-        run: |
-          git fetch --tags origin
-          LATEST_TAG=$(git tag -l 'v*' | sort -V | tail -1)
-          LATEST_VER="${LATEST_TAG#v}"
-          NEW_VER=$(jq -r '.metadata.version' .claude-plugin/marketplace.json)
-          echo "Latest release: $LATEST_VER | PR version: $NEW_VER"
-          if [ -z "$LATEST_TAG" ]; then
-            echo "No existing tags, skipping bump check"
-            exit 0
-          fi
-          if [ "$(printf '%s\n%s' "$LATEST_VER" "$NEW_VER" | sort -V | tail -1)" = "$LATEST_VER" ]; then
-            echo "::error::Version $NEW_VER is not greater than latest release $LATEST_VER — bump the version in both manifests"
-            exit 1
-          fi
+        run: sh .github/scripts/validate-package-version.sh --newer-than-tags
 
   test-installer:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - name: Build test image
         run: docker build -f Dockerfile.test -t installer-test .
       - name: "Test: fresh install"
         run: docker run --rm -e SCENARIO=fresh installer-test sh test/test-installer.sh
+      - name: "Test: explicit exapump install"
+        run: docker run --rm -e SCENARIO=fresh-exapump installer-test sh test/test-installer.sh
+      - name: "Test: exapump release lookup failure"
+        run: docker run --rm -e SCENARIO=exapump-api-failure installer-test sh test/test-installer.sh
       - name: "Test: idempotent re-run"
         run: docker run --rm -e SCENARIO=idempotent installer-test sh test/test-installer.sh
       - name: "Test: update from older version"
@@ -58,19 +55,27 @@ jobs:
         run: docker run --rm -e SCENARIO=fresh-claude installer-test sh test/test-installer.sh
       - name: "Test: fresh install (Codex only)"
         run: docker run --rm -e SCENARIO=fresh-codex installer-test sh test/test-installer.sh
+      - name: "Test: reject empty Codex installation"
+        run: docker run --rm -e SCENARIO=codex-verification-failure installer-test sh test/test-installer.sh
+      - name: "Test: curl-piped interactive Codex selection"
+        run: docker run --rm -e SCENARIO=piped-interactive-codex installer-test sh test/test-installer.sh
 
-  release:
-    if: startsWith(github.ref, 'refs/tags/v')
-    needs: [validate-plugin, test-installer]
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
+  check-links:
+    name: Check Links
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
-      - name: Extract version from tag
-        id: version
-        run: echo "version=${GITHUB_REF#refs/tags/}" >> "$GITHUB_OUTPUT"
-      - name: Create GitHub release
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: gh release create "${{ steps.version.outputs.version }}" --generate-notes
+      - name: Check out Repository
+        id: check-out-repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Set up Node.js Environment
+        id: set-up-node-js-environment
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+      - name: Check Links
+        id: check-links
+        run: |
+          git ls-files '*.md' | xargs npx --yes markdown-link-check@3.14.2 -c .github/markdown_check_config.json

@@ -1,5 +1,65 @@
 # Changelog
 
+## v0.24.2
+
+- Publish releases only from explicit matching version tags.
+- Run CI before publishing and serialize release runs.
+
+## v0.24.1
+
+- Harden installer downloads and exapump updates.
+- Preserve interactive Codex skill selection in piped runs.
+- Verify Codex installation and expand Docker coverage.
+- Document interactive and non-interactive installation.
+
+## v0.24.0
+
+- Rewrite exasol-setup-personal to cover all Exasol Personal deployment flavors: local (macOS), AWS, Azure, Exoscale, and STACKIT
+- Recommend the local deployment on macOS 15+ with at least 8 GB RAM; fall back to cloud providers elsewhere
+- Replace hardcoded install steps with high-level direction that defers to the upstream `exasol/exasol-personal` README and per-provider account setup guides
+- Use the launcher's built-in `exasol connect` client for all SQL during setup, and drop the exapump installation and profile steps from the setup flow
+- Document the per-provider `exasol install` flags (Azure `--location`, STACKIT `--project-id`, Exoscale `--zone`) and collect all install-time options before provisioning
+- Fail loudly instead of improvising when upstream documentation cannot be fetched
+
+## v0.23.0
+
+- Add exasol-virtual-schema-adapter-development skill for custom virtual schema adapter build and debugging workflows
+
+## v0.22.0
+
+- Add exasol-document-virtual-schemas skill for document-file virtual schema workflows (S3, GCS, Azure object storage)
+
+## v0.21.0
+
+- Add exasol-jdbc-virtual-schemas skill for JDBC/database-source virtual schema workflows
+
+## v0.20.0
+
+- Add exasol-cloud-storage-extension skill for Cloud Storage Extension import/export workflows
+
+## v0.19.0
+
+- Add exasol-export skill for native Exasol export workflows
+- Remove the obsolete combined import/export database reference after splitting import and export into dedicated skills
+- Remove remaining import/export workflow details from exasol-database references
+
+## v0.18.0
+
+- Add exasol-distributed-ml skill for distributed ML, GPU acceleration, model lifecycle, and performance workflows
+
+## v0.17.0
+
+- Add exasol-import skill for native Exasol import workflows
+
+## v0.16.1
+
+- Extend exasol-text-ai with notebook-aligned result querying, analytics patterns, and corrected extraction examples
+
+## v0.16.0
+
+- Add exasol-text-ai skill for notebook-connector Text AI Extension workflows
+- Route notebook-connector Text AI tasks through the unified Exasol router
+
 ## v0.15.0
 
 - Add exasol-transformers skill for notebook-connector Transformers Extension workflows
