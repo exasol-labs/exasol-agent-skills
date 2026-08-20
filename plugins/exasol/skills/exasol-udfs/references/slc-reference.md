@@ -12,6 +12,22 @@
 pip install exasol-script-languages-container-tool
 ```
 
+## Which Package Format Applies?
+
+```
+SLC / exaslct version?
+├─ SLC 11.0.0+ (exaslct 4.0.2+) → "Package Customization (SLC 11.0.0+)" below
+└─ Earlier than SLC 11.0.0      → "Legacy Package Customization (SLC < 11.0.0)" below
+```
+
+SLC `11.0.0` (code name *Exaslpm*) replaced package installation in all
+flavors with the [exaslpm](https://github.com/exasol/script-languages-package-management)
+tool, driven by a per-flavor `packages.yml` file, built with `exaslct` `4.0.2+`.
+If you don't know the SLC version, check the flavor's `packages.yml` — its
+presence (with a top-level `build_steps:` list) means SLC 11.0.0+; its absence
+(customization via `flavor_customization/packages/*` files instead) means an
+earlier version.
+
 ## exaslct Commands
 
 | Command | Description |
@@ -73,7 +89,125 @@ Need GPU/CUDA?
 - **3.10**: Broadest compatibility (all Exasol versions 7.1+)
 - **3.12**: Newer packages, better performance; requires Exasol 8+ for some flavors
 
-## Customization
+## Package Customization (SLC 11.0.0+)
+
+Applies to flavors built from SLC `11.0.0` or later, where packages are
+described in `flavors/<flavor>/packages.yml` and installed by
+[exaslpm](https://github.com/exasol/script-languages-package-management). For
+earlier SLC versions, use [Legacy Package Customization](#legacy-package-customization-slc--1100)
+below instead.
+
+### `packages.yml` Structure
+
+`packages.yml` holds a `build_steps` list; each step has a `name` and
+`phases`. The step to edit for adding packages is `flavor_customization`
+(usually last in the file) — other steps (`udfclient_deps`, `language_deps`,
+`flavor_base_deps`, ...) install the container's own runtime dependencies and
+should not be changed.
+
+| Source | Phase name | Package entry fields | Notes |
+|--------|-----------|----------------------|-------|
+| apt | `install_apt_packages` | `name`, `version` (wildcards like `1.2.3-4ubuntu*` allowed) | |
+| pip | `install_pip_packages` | `name`, `version` (e.g. `==1.3.2`), `extras: []` | conda flavors also need a preceding `setup_pip` tools phase |
+| conda | `install_conda_packages` | `name`, `version` (e.g. `=1.3.2`) | needs `channels:` (e.g. `conda-forge`, plus `nvidia` for CUDA) and `binary: Mamba`/`Micromamba` |
+| r | `install_r_packages` | `name`, `version` | |
+
+### Standard Python Flavor (pip)
+
+```yaml
+- name: flavor_customization
+  phases:
+  - name: install_apt_packages
+    apt:
+      packages: []
+#        - name: p7zip-full
+#          version: ==16.02+dfsg-6
+  - name: install_pip_packages
+    pip:
+      packages: []
+#        - name: tensorflow-probability
+#          version: ==0.9.0
+  validation_cfg:
+    version_mandatory: false
+```
+
+### Conda Python Flavor
+
+```yaml
+- name: flavor_customization
+  phases:
+  - name: setup_pip
+    tools:
+      pip:
+        version: '25.2'
+        needs_break_system_packages: true
+  - name: install_conda_packages
+    conda:
+      channels:
+      - conda-forge
+      packages: []
+#        - name: cuda-compat
+#          version: =12.9.1
+      binary: Mamba
+  - name: install_pip_packages
+    pip:
+      packages: []
+#        - name: tensorflow-probability
+#          version: =0.9.0
+  validation_cfg:
+    version_mandatory: false
+```
+
+### CUDA-Conda Python Flavor
+
+Same `flavor_customization` shape as the conda flavor above. The CUDA-specific
+setup (an `nvidia` conda channel, `cuda-toolkit`, and the `CONDA_OVERRIDE_CUDA`
+variable) lives in the flavor's `language_deps` step, not in
+`flavor_customization` — leave that step alone and add packages the same way
+as the conda flavor.
+
+### R Flavor (CRAN)
+
+```yaml
+- name: flavor_customization
+  phases:
+  - name: install_apt_packages
+    apt:
+      packages: []
+#        - name: p7zip-full
+#          version: ==16.02+dfsg-6
+  - name: install_r_packages
+    r:
+      packages: []
+#        - name: stringr|
+#          version: 1.4.0
+  validation_cfg:
+    version_mandatory: false
+```
+
+### Non-Package Customization
+
+For customization that isn't a package (custom scripts, config files, extra
+`RUN`/`COPY` commands), edit `flavor_customization/Dockerfile` — the same
+rules apply as in the [legacy Custom Dockerfile Commands](#custom-dockerfile-commands)
+section below.
+
+### References
+
+- [SLC guidance (this file, current section)](#package-customization-slc-1100)
+- [SLC 11.0.0 release notes: Exaslpm](https://github.com/exasol/script-languages-release/releases/tag/11.0.0)
+- [Standard Python packages.yml example](https://github.com/exasol/script-languages/blob/4e0cfa35189e75bf9f51eb1f1291bceed29e93e3/flavors/template-Exasol-all-python-3.10/packages.yml)
+- [Conda Python packages.yml example](https://github.com/exasol/script-languages/blob/4e0cfa35189e75bf9f51eb1f1291bceed29e93e3/flavors/template-Exasol-all-python-3.12-conda/packages.yml)
+- [CUDA-conda Python packages.yml example](https://github.com/exasol/script-languages/blob/4e0cfa35189e75bf9f51eb1f1291bceed29e93e3/flavors/template-Exasol-8-python-3.12-cuda-conda/packages.yml)
+- [R packages.yml example](https://github.com/exasol/script-languages-release/blob/master/flavors/template-Exasol-all-r-4/packages.yml)
+
+## Legacy Package Customization (SLC < 11.0.0)
+
+Applies to flavors built from SLC versions before `11.0.0`, where packages
+are customized via flat files under `flavor_customization/packages/` and a
+`flavor_customization/Dockerfile`, instead of a `packages.yml`. For SLC
+`11.0.0`+, use [Package Customization](#package-customization-slc-1100)
+above instead.
 
 ### Directory Structure
 
@@ -248,6 +382,12 @@ exaslct export --flavor-path=flavors/<flavor> --export-path ./output \
 **macOS limitations:** All arguments (flavor paths, output directories) must be within the current directory due to Docker volume mount restrictions.
 
 ### Package Installation Failures
+
+**exaslpm fails with a version mismatch (SLC 11.0.0+):** Check
+`validation_cfg.version_mandatory` for the failing phase in `packages.yml` —
+when `true`, the pinned `version` must match exactly (wildcards like `2.1.*`
+are only permitted where the example already uses them). Loosen the pin or
+correct it to the version actually available in the channel.
 
 **pip package fails:** Common causes are missing system dependencies (add to `apt_get_packages`), Python version incompatibility, or needing a newer pip (add `pip` to `python3_pip_packages`).
 

@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.25.0
+
+- Update exasol-udfs SLC guidance to route package customization by SLC version: `packages.yml`/exaslpm for SLC 11.0.0+, legacy `flavor_customization/packages/*` files for earlier versions.
+- Document the standard, conda, CUDA-conda, and R flavor `packages.yml` layouts for the current package format.
+
 ## v0.24.2
 
 - Publish releases only from explicit matching version tags.
