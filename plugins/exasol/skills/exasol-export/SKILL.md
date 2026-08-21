@@ -44,4 +44,4 @@ Trigger when the user mentions **EXPORT**, **EXPORT INTO**, **export table**, **
 
 - Use this skill for direct data movement out of Exasol.
 - Use **exasol-import** for native `IMPORT`, local upload workflows, Parquet import, reject handling, and staging-based loading into Exasol.
-- Use **exasol-extension-catalog** when the user asks for connector, extension, or integration-based data transfer instead of direct native `EXPORT` or `exapump export`.
+- Use **exasol-cloud-storage-extension** for explicit extension-based Parquet export. Use **exasol-extension-catalog** only when the user is still choosing among native export, extension, connector, or integration families.

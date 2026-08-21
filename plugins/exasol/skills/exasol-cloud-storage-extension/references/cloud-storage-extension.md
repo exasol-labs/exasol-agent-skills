@@ -11,7 +11,7 @@ Pick the narrowest supported transfer path:
 - Cloud Storage Extension import from object storage: use this skill for Parquet, Avro, ORC, or supported Delta workflows
 - Cloud Storage Extension export to object storage: use this skill for Parquet export workflows
 - CSV files: use native `IMPORT`, native `EXPORT`, or `exapump`; Cloud Storage Extension does not support CSV
-- Read-only federation instead of copying data: use **exasol-extension-catalog** to choose the right Virtual Schema path
+- Read-only federation over the same object or file storage source: use **exasol-document-virtual-schemas**; use **exasol-extension-catalog** only if the source or integration family is still undecided
 
 ## Security and Boundaries
 
@@ -198,7 +198,7 @@ use the extension-based file reader instead of native IMPORT
 
 - If the user says `IMPORT INTO`, `CREATE CONNECTION`, `upload CSV`, or `upload Parquet` without extension intent, switch back to **exasol-import**
 - If the user says `EXPORT INTO`, `export CSV`, `export local file`, or `exapump export` without extension intent, switch back to **exasol-export**
-- If the user says `virtual schema`, `adapter`, `federated query`, or `read external tables without loading`, switch to **exasol-extension-catalog** to choose the right Virtual Schema path
+- If the user wants a maintained document-file virtual schema, federated query, or read-only object-storage access, switch to **exasol-document-virtual-schemas**. If they need custom adapter code, switch to **exasol-virtual-schema-adapter-development**. Use **exasol-extension-catalog** only while choosing the integration family.
 - If the user asks which object-storage extension path fits the workflow, stay in this skill and choose the narrowest supported extension workflow
 
 ## Sources

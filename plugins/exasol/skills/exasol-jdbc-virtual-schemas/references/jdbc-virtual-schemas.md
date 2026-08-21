@@ -120,6 +120,7 @@ Check problems in this order:
 - If the user wants federated querying of a JDBC/database source, stay in this skill.
 - If the user wants to efficiently bulk-copy data into Exasol, use **exasol-import** or **exasol-cloud-storage-extension** based on the source/file path. Virtual schemas can also copy data via `INSERT ... SELECT` but are slower.
 - If the user wants to export data out of Exasol, use **exasol-export**.
+- If no maintained JDBC dialect fits and custom dialect code is required, use **exasol-virtual-schema-adapter-development**.
 - If the user asks which Exasol integration family to use and the source is unclear, use **exasol-extension-catalog** first.
 - If the user only needs to upload or inspect adapter JAR files in BucketFS, use **exasol-bucketfs**.
 

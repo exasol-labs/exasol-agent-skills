@@ -60,8 +60,12 @@ manage_exapump() {
 }
 
 ask() {
-  printf '\033[0;33m[prompt]\033[0m %s [Y/n] ' "$1"
   if has_terminal; then
+    if [ -t 1 ]; then
+      printf '\033[0;33m[prompt]\033[0m %s [Y/n] ' "$1"
+    else
+      printf '\033[0;33m[prompt]\033[0m %s [Y/n] ' "$1" >/dev/tty
+    fi
     if [ -t 0 ]; then
       read -r answer
     else
@@ -73,8 +77,25 @@ ask() {
     esac
   else
     # Callers that deliberately allow a non-interactive default receive yes.
+    printf '\033[0;33m[prompt]\033[0m %s [Y/n] ' "$1"
     printf 'Y (non-interactive)\n'
     return 0
+  fi
+}
+
+terminal_info() {
+  if [ -t 1 ]; then
+    info "$1"
+  else
+    info "$1" >/dev/tty
+  fi
+}
+
+run_on_terminal() {
+  if [ -t 0 ] && [ -t 1 ] && [ -t 2 ]; then
+    "$@"
+  else
+    "$@" </dev/tty >/dev/tty 2>&1
   fi
 }
 
@@ -194,14 +215,9 @@ if [ "$INSTALL_CODEX" -eq 1 ]; then
   esac
 
   if [ "$CODEX_INSTALL_MODE" = "prompt" ]; then
-    info "Select Exasol skills for OpenAI Codex. Include 'exasol' for shared routing."
-    if [ -t 0 ]; then
-      npx --yes "$CODEX_SKILLS_CLI" add "exasol-labs/exasol-agent-skills" \
-        --agent codex --global
-    else
-      npx --yes "$CODEX_SKILLS_CLI" add "exasol-labs/exasol-agent-skills" \
-        --agent codex --global </dev/tty
-    fi
+    terminal_info "Select Exasol skills for OpenAI Codex. Include 'exasol' for shared routing."
+    run_on_terminal npx --yes "$CODEX_SKILLS_CLI" add \
+      "exasol-labs/exasol-agent-skills" --agent codex --global
   else
     info "Non-interactive mode: installing all Exasol skills globally for OpenAI Codex..."
     npx --yes "$CODEX_SKILLS_CLI" add "exasol-labs/exasol-agent-skills" \

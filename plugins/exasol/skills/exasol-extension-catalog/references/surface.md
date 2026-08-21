@@ -21,6 +21,7 @@ Use these when the user asks about dashboards, reports, semantic exploration, se
 - Qlik Sense: https://www.qlik.com/
 - Looker: https://looker.com/
 - Apache Superset: https://superset.apache.org/
+- Grafana Datasource for Exasol: https://github.com/exasol-labs/grafana-datasource
 - MicroStrategy / Strategy One: https://www.microstrategy.com/
 - IBM Cognos: https://www.ibm.com/products/cognos-analytics
 - SAP BusinessObjects: https://www.sap.com/products/technology-platform/bi-platform.html
@@ -33,6 +34,14 @@ Use these when the user asks about dashboards, reports, semantic exploration, se
 - WebFOCUS: https://www.ibi.com/
 - Veezoo: https://www.veezoo.com/
 - Ecosystem overview: https://docs.exasol.com/db/latest/connect_exasol/ecosystem_overview.htm
+
+## dash-server
+
+- **Use for**: agent-operated Dash and Plotly hosting for live analytical apps backed by Exasol.
+- **Best when**: user wants an agent to create, validate, deploy, promote, diagnose, or roll back real Python dashboard applications instead of manually building a fixed BI canvas.
+- **Notable capabilities**: MCP-first control plane, GitOps-backed app/revision history, preview and live URLs, structured diagnostics, Exasol profile bootstrap, Exasol dashboard scaffolds, schema-aware scaffold generation, SQL file layout, and secret metadata kept outside Git.
+- **Links**:
+  - https://github.com/exasol-labs/dash-server
 
 ## Exasol REST API / ERA
 
@@ -63,6 +72,7 @@ Use these when the user asks for low-code application builders:
 
 - Exasol MCP Server: https://github.com/exasol/mcp-server
 - Governed SQL MCP Server: https://github.com/exasol-labs/exasol-labs-text2sql-mcp-server
+- dash-server: https://github.com/exasol-labs/dash-server
 - exasol-agent-skills: https://github.com/exasol-labs/exasol-agent-skills
 - Agent Control Plane blog: https://www.exasol.com/blog/exasol-agent-control-plane/
 
