@@ -5,7 +5,7 @@ description: "Exasol User Defined Functions (UDFs) and Script Language Container
 
 # Exasol UDFs & Script Language Containers
 
-Trigger when the user mentions **UDF**, **user defined function**, **CREATE SCRIPT**, **ExaIterator**, **SCALAR**, **SET EMITS**, **BucketFS**, **script language container**, **SLC**, **exaslct**, **custom packages**, **GPU UDF**, **ctx.emit**, **ctx.next**, **variadic script**, **dynamic parameters**, **EMITS(...)**, **default_output_columns**, **execute script**, **pquery**, **Lua execute**, **in-database orchestration**, or any UDF/SLC-related topic.
+Trigger when the user mentions **UDF**, **user defined function**, **CREATE SCRIPT**, **ExaIterator**, **SCALAR**, **SET EMITS**, **BucketFS**, **script language container**, **SLC**, **exaslct**, **exaslpm**, **packages.yml**, **custom packages**, **GPU UDF**, **ctx.emit**, **ctx.next**, **variadic script**, **dynamic parameters**, **EMITS(...)**, **default_output_columns**, **execute script**, **pquery**, **Lua execute**, **in-database orchestration**, or any UDF/SLC-related topic.
 
 ## When to Use UDFs
 
@@ -286,5 +286,5 @@ pip install exasol-script-languages-container-tool
 
 - **Python patterns** — context API, DataFrame pattern, type mapping, testing: [references/udf-python.md](references/udf-python.md)
 - **Java & Lua patterns** — ExaMetadata API, JARs, adapters, Lua libraries: [references/udf-java-lua.md](references/udf-java-lua.md)
-- **Building custom SLCs** — exaslct CLI, flavors, customization, deployment, troubleshooting: [references/slc-reference.md](references/slc-reference.md)
+- **Building custom SLCs** — exaslct CLI, flavors, deployment, troubleshooting, and package customization routed by SLC version (`packages.yml`/exaslpm for SLC 11.0.0+, legacy package files for earlier): [references/slc-reference.md](references/slc-reference.md)
 - **Lua execute scripts** — `pquery` API, in-database orchestration, iterative workflows: [references/lua-execute-scripts.md](references/lua-execute-scripts.md)
