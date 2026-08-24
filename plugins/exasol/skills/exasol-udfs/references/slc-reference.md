@@ -292,7 +292,11 @@ cd script-languages-release
 
 ### 2. Customize Packages
 
-Edit the appropriate package files in `flavors/<flavor>/flavor_customization/packages/`.
+For SLC `11.0.0`+, edit `flavors/<flavor>/packages.yml` (see
+[Package Customization](#package-customization-slc-1100)). For earlier SLC
+versions, edit the package files under
+`flavors/<flavor>/flavor_customization/packages/` (see
+[Legacy Package Customization](#legacy-package-customization-slc--1100)).
 
 ### 3. Build and Export
 
