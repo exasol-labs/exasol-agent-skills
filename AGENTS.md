@@ -14,12 +14,114 @@ A skills marketplace for AI coding agents (Claude Code and OpenAI Codex) that gi
 - `plugins/exasol/skills/*/SKILL.md` — specialized skills with routing algorithms that load only the reference files relevant to the task (progressive disclosure). Skills: `exasol` (top-level router), `exasol-setup-personal` (folder `setup-personal`; guided local-or-cloud deployment that defers to the upstream `exasol/exasol-personal` docs), `exasol-database` (SQL/exapump), `exasol-import` (native IMPORT and exapump file movement into Exasol), `exasol-export` (native EXPORT and exapump file movement out of Exasol), `exasol-cloud-storage-extension` (Cloud Storage Extension import/export workflows), `exasol-jdbc-virtual-schemas` (JDBC/database-source virtual schema workflows), `exasol-document-virtual-schemas` (document-file virtual schema workflows for S3/GCS/Azure object storage), `exasol-virtual-schema-adapter-development` (custom virtual schema adapter build, packaging, and debugging workflows), `exasol-extension-catalog` (tool and architecture selection), `exasol-distributed-ml` (distributed ML and GPU workflows), `exasol-udfs` (UDFs/SLCs), `exasol-bucketfs` (BucketFS), `exasol-ai-setup` (notebook-connector setup), `exasol-itde` (local Docker Exasol lifecycle), `exasol-notebook-connections` (Python connection helpers), `exasol-text-ai` (Text AI Extension), `exasol-transformers` (Transformers Extension)
 - `plugins/exasol/commands/*.md` — thin Claude-only `/exasol` and compatibility `/bucketfs` entry points that delegate to the shared router
 - `plugins/exasol/skills/*/references/*.md` — detailed docs loaded on-demand by SKILL.md routing
+- `plugins/exasol/skills/_template/` — contributor skeleton, not a skill; it ships `SKILL.md.template` so that nothing discovers it as one
 
 **Installer (`install.sh`)** — curl-pipeable, idempotent, POSIX shell (no bash, no jq). Supports both agents:
 - Agent selection via `AGENT` env var (`claude`, `codex`, `both`) or interactive prompts; non-interactive defaults to both
 - Claude Code path: `claude plugin marketplace add/update` + `claude plugin install/update`
 - Codex path: pinned `skills` CLI; interactive and curl-piped terminal runs keep prompts and the skill picker on `/dev/tty` when standard streams are redirected, while non-interactive runs use `--skill '*' --global --yes`; both verify the shared `exasol` router afterwards
 - Shared: exapump version check via GitHub API; interactive install/update requires confirmation, and non-interactive install/update requires `INSTALL_EXAPUMP=yes`
+
+## Skill Conventions
+
+`python3 test/check-package.py` enforces the structural rules and names exactly
+what it wants when it fails; run it before pushing. This section covers only
+what it cannot check — the judgement calls that decide whether a skill is ever
+loaded, and whether it is worth loading.
+
+### Adding a skill
+
+Copy [`plugins/exasol/skills/_template/`](plugins/exasol/skills/_template/) to
+`plugins/exasol/skills/<skill-name>/` and rename `SKILL.md.template` to
+`SKILL.md`. (The template ships no `SKILL.md` of its own because any directory
+under `skills/` that has one becomes a skill every user of the plugin sees in
+their skill list.) Write the `description` first — it is the part that decides
+whether the skill is ever loaded.
+
+Then run the checks under [Testing](#testing) before pushing. They cover the
+structural requirements and name what is missing, including the entries your
+skill needs in the router and the extension catalog, so there is no checklist of
+them here to drift. Version bumps follow
+[Versioning and Releasing](#versioning-and-releasing).
+
+Two things no check can see, and therefore the two that go stale: the skill list
+in this file's [Architecture](#architecture) section, and the user-facing feature
+list in `README.md`. Update both.
+
+### Shape: a thin SKILL.md routing into references/
+
+A `SKILL.md` is a router, not a manual. It states its scope, decides which
+reference file answers the request, and loads that file. Long-form material —
+SQL and code samples, option tables, troubleshooting trees — belongs in
+`references/*.md`, which an agent reads only when a route matches. That is the
+whole point of progressive disclosure: content inlined in `SKILL.md` is paid for
+by every session that loads the skill, including the sessions that needed one
+paragraph of it.
+
+Skills here sit between roughly 20 and 100 lines of `SKILL.md`. Treat 100 lines
+as the ceiling, and a `SKILL.md` growing past it as a signal that content should
+move into `references/` rather than as a budget to spend. Reference files
+have no such limit; several exceed 400 lines, which is fine precisely because
+they load on demand.
+
+The top-level `exasol` router has no `references/` by design; it holds dispatch
+rules and nothing else.
+
+### The directory name and the front-matter `name` are one identifier
+
+They must be the same string because two different consumers each use one of
+them, and both are visible. Claude Code addresses a skill as
+`exasol:<directory-name>`, while everything inside the package — the router's
+`Activate:` markers, the catalog handoffs, the `Use **exasol-foo**` pointers that
+skills use to send work to each other — refers to it by its front-matter `name`.
+When the two diverge, the identifier the package tells an agent to activate is
+not the identifier that resolves.
+
+If the two ever collide — a directory name you want and a `name` you want — rename
+the directory. Teaching the validator an exception instead makes the mismatch
+permanent and hides it from the next contributor, who has no reason to expect it.
+
+### Trigger phrases belong in the front-matter `description`
+
+The `description` is the primary routing surface. Both agents surface a skill to
+the model by its `name` and `description` only — the body is read after the skill
+is chosen — so the description is what a routing decision has to work from: what
+the skill is for, in the words a user would use, followed by the concrete surface
+it covers. Write it the way the existing skills do — a purpose sentence, then
+`Covers …`.
+
+Two consequences:
+
+- Anything an agent cannot recover semantically must appear in the `description`
+  verbatim. Opaque literal identifiers are the case that matters — container and
+  language names, configuration keys, API class names, fully-qualified script
+  entry points, acronyms of product names (`PYTHON3_TXAIE`,
+  `CLOUD_STORAGE_EXTENSION.IMPORT_PATH`, and their kind). A user who types one of
+  those is naming a single skill, but no paraphrase reconstructs the string, so
+  if it is not in the description the match is lost. The test: could a user
+  plausibly type this string, and would anything in my description match it? If
+  no, it goes in the description.
+- The trigger phrases inside a skill's own `Routing Algorithm` select a
+  *reference file*, not the skill. Scope them to that job; they are not a second
+  copy of the description. A phrase that would decide which skill runs belongs in
+  the description, and a precedence conflict between two skills belongs in the
+  router.
+
+### Router versus catalog
+
+`skills/exasol` and `exasol-extension-catalog` read alike and do different jobs.
+The router is pure dispatch: it answers "which of our skills handles this
+request?", holds no Exasol knowledge — only precedence rules, dependency order,
+and shared safety rules — and its reasoning should never surface to the user; it
+exists so that Claude Code and Codex share one routing source, which is why the
+files under `commands/` delegate to it rather than copying it. The catalog is a
+destination: it answers "which Exasol product, extension, or integration should I
+use?", carries real curated content in six capability families, and hands off to
+a specialized skill once the choice is made. A new skill accordingly appears in
+both files — as a router route (which skill runs) and as a catalog handoff (where
+a user who was comparing products lands) — and those two entries say different
+things. If you find yourself writing the same sentence in both, one of them is in
+the wrong file.
 
 ## Testing
 

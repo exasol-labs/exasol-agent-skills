@@ -1,0 +1,38 @@
+---
+name: exasol-<skill-name>
+description: "<One sentence saying what to use this skill for, in the words a user would use.> Covers <the concrete surface: commands, SQL statements, APIs, and the literal identifiers a user might type>."
+---
+
+<!--
+Rename this file to `SKILL.md`, set the front-matter `name` to your directory
+name, and keep the front matter as the first lines of the file. Read "Skill
+Conventions" in `AGENTS.md` before writing the description — it decides whether
+this skill is ever loaded. Delete this comment.
+-->
+
+# Exasol <Skill Name> Skill
+
+<One or two sentences of scope, stated as a boundary: what this skill covers and
+what it deliberately does not.>
+
+Trigger when the user mentions **<phrase>**, **<phrase>**, or **<phrase>**
+together with <the context that makes this skill the right one>.
+
+## Routing Algorithm
+
+1. **<The first task this skill handles>**
+   - Trigger phrases: `<phrase>`, `<phrase>`, `<literal identifier>`
+   - Load: `references/example-reference.md`
+
+2. **<The second task>**
+   - Trigger phrases: `<phrase>`, `<phrase>`
+   - Load: `references/example-reference.md`
+
+## Notes
+
+- Use this skill only for <the boundary restated for the agent>.
+- Use **exasol-database** for general SQL, schema inspection, and table design.
+- Use **exasol-extension-catalog** when the user is still choosing which Exasol
+  tool, extension, or integration to use rather than operating one.
+- <Add one line per neighbouring skill whose boundary a user could plausibly
+  cross, and say which side of the boundary belongs where.>

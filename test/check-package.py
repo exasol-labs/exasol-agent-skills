@@ -100,7 +100,20 @@ for skill_file in sorted(SKILLS.glob("*/SKILL.md")):
             f"{skill_file.parent.relative_to(ROOT) / relative_path} is not routed by its SKILL.md"
         )
 
+# The contributor skeleton lives beside the skills it is copied from, but it must
+# not be one: any directory under skills/ holding a SKILL.md is discovered as a
+# real skill and shows up in every user's skill list. It therefore ships
+# SKILL.md.template instead, and is exempt from the SKILL.md requirement only.
+TEMPLATE_DIR = "_template"
 for skill_dir in sorted(path for path in SKILLS.iterdir() if path.is_dir()):
+    if skill_dir.name == TEMPLATE_DIR:
+        if not (skill_dir / "SKILL.md.template").is_file():
+            errors.append(f"{skill_dir.relative_to(ROOT)} has no SKILL.md.template")
+        if (skill_dir / "SKILL.md").is_file():
+            errors.append(
+                f"{skill_dir.relative_to(ROOT)} must not contain a loadable SKILL.md"
+            )
+        continue
     if any(path.is_file() for path in skill_dir.rglob("*")) and not (skill_dir / "SKILL.md").is_file():
         errors.append(f"{skill_dir.relative_to(ROOT)} contains files but no SKILL.md")
 

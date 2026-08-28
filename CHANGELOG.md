@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.25.1
+
+- Document the skill conventions CI cannot check in `AGENTS.md`.
+- Add the contributor skeleton `plugins/exasol/skills/_template/`.
+- Point the README Contributing section at `AGENTS.md` and the skeleton.
+
 ## v0.25.0
 
 - Update exasol-udfs SLC guidance to route package customization by SLC version: `packages.yml`/exaslpm for SLC 11.0.0+, legacy `flavor_customization/packages/*` files for earlier versions.

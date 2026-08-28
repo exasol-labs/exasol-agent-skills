@@ -97,10 +97,11 @@ The complete skill catalog is available under
 
 ## Contributing
 
-Add a focused `SKILL.md` under `plugins/exasol/skills/<skill-name>/`, put
-long-form material in `references/`, update the user-visible feature list when
-the catalog changes, bump both manifest versions, and add a changelog entry.
-Keep local Markdown links valid.
+Start from the skeleton in
+[`plugins/exasol/skills/_template/`](plugins/exasol/skills/_template/) and follow
+the checklist at the top of it. The conventions a new skill has to meet — and the
+reasons behind them — are documented in [AGENTS.md](AGENTS.md#skill-conventions),
+which your agent loads automatically in this repository.
 
 ## License
 
