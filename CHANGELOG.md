@@ -18,6 +18,17 @@
 - Document the skill conventions CI cannot check in `AGENTS.md`.
 - Add the contributor skeleton `plugins/exasol/skills/_template/`.
 - Point the README Contributing section at `AGENTS.md` and the skeleton.
+- Rename the `setup-personal` folder to `exasol-setup-personal` to match its skill name.
+- Codex `skills update` may offer to delete the renamed skill; decline it.
+- Trim the `exasol` router to an arbiter: delete its 17 routes, keep the precedence rules.
+- Move opaque identifiers such as `PYTHON3_TXAIE` and `bfsdefault` into skill descriptions.
+- Keep the Avro/ORC/Delta precedence rule for import versus Cloud Storage Extension.
+- Drop the router activation check from `test/check-package.py`; reject new trigger lists.
+- Split `exasol-bucketfs`, `exasol-setup-personal`, and `exasol-udfs` into references.
+- Rename the extension catalog's routing heading to Category Selection.
+- Remove hardcoded product and driver versions from the catalog references.
+- Move contributor rationale out of the shipped router and `/bucketfs` into `AGENTS.md`.
+- Ignore `.idea/`.
 
 ## v0.24.1
 
