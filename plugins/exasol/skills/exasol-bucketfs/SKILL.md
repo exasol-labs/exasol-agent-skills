@@ -5,198 +5,51 @@ description: "Exasol BucketFS file system management via the `exapump bucketfs` 
 
 # Exasol BucketFS Skill
 
-Trigger when the user mentions **BucketFS**, **exapump**, **bucket**, **bfsdefault**, **upload to BucketFS**, **download from BucketFS**, **delete from BucketFS**, **BucketFS path**, **BucketFS file**, or any BucketFS file management task.
+BucketFS is Exasol's synchronous distributed file system: whatever is written to
+a bucket is replicated to every cluster node and mounted read-only inside UDFs
+at `/buckets/<service>/<bucket>/<path>`. This skill covers moving files in and
+out of it and referencing them from scripts.
 
-## BucketFS Concepts
+## Routing Algorithm
 
-**BucketFS** is a synchronous distributed file system available on all nodes of an Exasol cluster. Files stored in BucketFS are automatically replicated to every cluster node.
+Choose the narrowest matching route. If several apply, load all matching
+references before answering.
 
-Key concepts:
-- **Service**: A named BucketFS instance. The default service is `bfsdefault`.
-- **Bucket**: A storage container within a service. The default bucket is `default`.
-- **Path inside BucketFS**: Files are referenced by the path within the bucket (e.g., `models/my_model.pkl`).
-- **Local path inside UDFs**: Files are accessible at `/buckets/<service>/<bucket>/<path>` (e.g., `/buckets/bfsdefault/default/models/my_model.pkl`).
+1. **Run a BucketFS operation** — list, upload, download, delete, or configure the connection
+   - Trigger phrases: `exapump bucketfs`, `ls`, `cp`, `rm`, `upload`, `download`, `delete`, `--bfs-host`, `--bfs-bucket`, `bfs_write_password`, `config.toml`, `exapump profile add`
+   - Load: `references/exapump-bucketfs-cli.md`
 
-Important characteristics:
-- Writes are atomic — a file is either fully written or not at all.
-- No transactions and no file locks; the latest write wins.
-- All nodes see identical content after synchronisation.
-- BucketFS is not included in database backups — manage backups separately.
-- Not suited for very large datasets due to replication overhead.
+2. **Stage a file for a UDF or SLC** — JARs, pickled models, containers, and the SQL that points at them
+   - Trigger phrases: `upload jar`, `%jar`, `upload model`, `load model in UDF`, `upload SLC`, `SCRIPT_LANGUAGES`, `activate container`
+   - Load: `references/bucketfs-udf-usage.md`
 
-## exapump CLI
+3. **Understand BucketFS itself** — services, buckets, path forms, replication, durability
+   - Trigger phrases: `what is BucketFS`, `bfsdefault`, `service`, `bucket structure`, `replication`, `backup`, `atomic write`, `size limit`
+   - Load: `references/bucketfs-concepts.md`
 
-The `exapump` command is the CLI tool for managing BucketFS. All BucketFS operations use the `exapump bucketfs` subcommand.
+An upload for a UDF usually needs routes 1 and 2 together: the command form
+comes from the CLI reference, the path spelling in the SQL from the usage
+reference.
 
-### Connection Configuration
+## Before Any Operation
 
-Connection settings are stored in `~/.exapump/config.toml` as named profiles. Example:
+Verify that `~/.exapump/config.toml` holds a usable profile before running a
+command. If it does not, name the host, port, bucket, and credential fields the
+user needs and have them enter secrets locally via `exapump profile add <name>`.
+Never ask the user to paste passwords into the conversation, and never echo or
+pass them on the command line.
 
-```toml
-[production]
-host = "exasol-prod.example.com"
-user = "admin"
-password = "<database-password>"
-default = true
-bfs_write_password = "<bucketfs-write-password>"
-bfs_read_password = "<bucketfs-read-password>"
-```
+## Safety Rules
 
-Key profile fields:
-
-| Field | Default | Purpose |
-|-------|---------|---------|
-| `bfs_host` | Falls back to `host` | BucketFS hostname |
-| `bfs_port` | `2581` | BucketFS port |
-| `bfs_bucket` | `default` | Bucket name |
-| `bfs_write_password` | Required | Write authentication |
-| `bfs_read_password` | Falls back to write password | Read authentication |
-| `bfs_tls` | Falls back to `tls` | Enable TLS |
-| `bfs_validate_certificate` | Falls back to `validate_certificate` | Certificate validation |
-
-Connection parameters can also be overridden per command via CLI flags (highest priority):
-
-| Flag | Purpose |
-|------|---------|
-| `--profile` | Select a named profile |
-| `--bfs-host` | Override hostname |
-| `--bfs-port` | Override port |
-| `--bfs-bucket` | Override bucket name |
-| `--bfs-write-password` | Override write password |
-| `--bfs-read-password` | Override read password |
-| `--bfs-tls` | Override TLS setting |
-| `--bfs-validate-certificate` | Override certificate validation |
-
-**Parameter resolution order:** CLI flags → profile values → smart defaults.
-
-### Configuration Protocol
-
-**Before any BucketFS operation**, verify the connection is configured:
-
-1. Check if `~/.exapump/config.toml` exists and contains a default profile.
-2. If configured, proceed with the operation.
-3. If not configured, explain which host, port, bucket, and credential fields
-   are required, then have the user enter secrets locally through
-   `exapump profile add <name>` or their secure configuration workflow. Do not
-   ask them to paste passwords into chat, guess values, or echo secret values.
-
----
-
-## Commands
-
-### `ls` — List Contents
-
-```bash
-exapump bucketfs ls [PATH] [OPTIONS]
-exapump bucketfs ls -r [PATH]            # Recursive listing
-exapump bucketfs ls --recursive [PATH]
-```
-
-**Examples:**
-```bash
-exapump bucketfs ls                      # List bucket root
-exapump bucketfs ls models/             # List a directory
-exapump bucketfs ls -r models/          # Recursively list all files under models/
-```
-
----
-
-### `cp` — Copy / Upload / Download
-
-Direction is automatically determined by the source type (local file vs. BucketFS path).
-
-Upload a local file to BucketFS:
-```bash
-exapump bucketfs cp <local-file> <bucket-path>
-exapump bucketfs cp <local-file> <bucket-dir>/    # Preserve filename
-```
-
-Download a file from BucketFS to local:
-```bash
-exapump bucketfs cp <bucket-path> <local-path>
-```
-
-**Examples:**
-```bash
-exapump bucketfs cp my_model.pkl models/my_model.pkl     # Upload with explicit name
-exapump bucketfs cp my_model.pkl models/                 # Upload, preserve filename
-exapump bucketfs cp library.jar jars/library.jar         # Upload JAR for UDF
-exapump bucketfs cp models/my_model.pkl .                # Download to current dir
-exapump bucketfs cp models/my_model.pkl ./local-copy.pkl # Download with rename
-```
-
----
-
-### `rm` — Remove a File
-
-```bash
-exapump bucketfs rm <path-in-bucket>
-```
-
-**Examples:**
-```bash
-exapump bucketfs rm models/old_model.pkl     # Delete a single file
-```
-
-Before running `rm`, show the exact bucket, path, and profile, then obtain
-explicit confirmation. Before a `cp` that would overwrite an existing
-BucketFS or local file, inspect the target and obtain confirmation. Never print
-profile passwords or pass them as command-line arguments when a profile can
-hold them securely.
-
----
-
-## Typical Use Cases
-
-### Upload a JAR for a Java UDF
-
-```bash
-exapump bucketfs cp my_library.jar jars/my_library.jar
-```
-
-Reference in UDF SQL:
-```sql
-CREATE OR REPLACE JAVA SCALAR SCRIPT my_schema.my_func(input VARCHAR(2000))
-RETURNS VARCHAR(2000) AS
-  %scriptclass com.example.MyClass;
-  %jar /buckets/bfsdefault/default/jars/my_library.jar;
-/
-```
-
-### Upload an ML Model for a Python UDF
-
-```bash
-exapump bucketfs cp model.pkl models/model.pkl
-```
-
-Load in Python UDF:
-```python
-import pickle
-with open('/buckets/bfsdefault/default/models/model.pkl', 'rb') as f:
-    model = pickle.load(f)
-```
-
-### Upload a Custom Script Language Container (SLC)
-
-```bash
-exapump bucketfs cp my_slc.tar.gz slc/my_slc.tar.gz
-```
-
-Then activate via SQL:
-```sql
-ALTER SESSION SET SCRIPT_LANGUAGES='PYTHON3=localzmq+protobuf:///bfsdefault/default/slc/my_slc?lang=python#buckets/bfsdefault/default/slc/my_slc/exaudf/exaudfclient_py3';
-```
-
-### Browse and Clean Up BucketFS
-
-```bash
-exapump bucketfs ls -r                        # See all files
-exapump bucketfs rm old_model.pkl             # Remove an outdated file
-```
-
----
+- Before `rm`, show the exact bucket, path, and profile, then obtain explicit
+  confirmation. BucketFS is not part of database backups, so a deletion is not
+  recoverable from a database restore.
+- Before a `cp` that would overwrite an existing BucketFS or local file, inspect
+  the target and obtain confirmation.
+- Never print profile passwords or pass them as command-line arguments when a
+  profile can hold them securely.
 
 ## Related Skills
 
-- **exasol-udfs**: For creating UDF scripts that reference files stored in BucketFS.
-- **exasol-database**: For SQL-level operations and connecting to Exasol.
+- **exasol-udfs**: creating UDF scripts that read BucketFS files, and building the Script Language Containers staged here.
+- **exasol-database**: SQL-level operations and database connectivity.
