@@ -1,6 +1,6 @@
 ---
 name: exasol-extension-catalog
-description: Catalog and selection guide for Exasol tools, extensions, connectors, integrations, and architecture patterns. Use when the primary intent is comparison, discovery, support-status research, or architecture selection; hand operational work to the selected dedicated skill.
+description: "Catalog and selection guide for Exasol tools, extensions, connectors, integrations, and architecture patterns. Use when the primary intent is comparison, discovery, support-status research, or architecture selection rather than executing a workflow; hand operational work to the selected dedicated skill. Covers deploy, load, explore, enrich, surface, and scale capability families, including named products with no dedicated skill of their own such as Lakehouse Turbo, the Exasol MCP Server, Governed SQL / Text-to-SQL MCP Server, Agent Control Plane, Extension Manager, Terraform and Ansible tooling, and BI, ETL, and warehouse integrations such as Databricks, SAP, Kafka, Power BI, and Tableau."
 ---
 
 # Exasol Extension Catalog Skill

@@ -1,6 +1,6 @@
 ---
 name: exasol-transformers
-description: "Deploy and use the Exasol Transformers Extension for NLP inference inside Exasol with notebook-connector. Covers initialize_te_extension, deploy_scripts, activation SQL, model-installation workflows, and the current TE SQL UDF surface."
+description: "Deploy and use the Exasol Transformers Extension (TE) for NLP inference inside Exasol with notebook-connector. Covers `initialize_te_extension`, `deploy_scripts`, `PYTHON3_TE` language-container activation SQL, Hugging Face model-installation workflows, and the current TE SQL UDF surface."
 ---
 
 # Exasol Transformers Extension Skill

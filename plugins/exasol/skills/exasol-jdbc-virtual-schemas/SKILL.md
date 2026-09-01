@@ -1,6 +1,6 @@
 ---
 name: exasol-jdbc-virtual-schemas
-description: "Use Exasol JDBC-based virtual schemas for federated read-only access to external databases. Covers database-source adapter selection, CREATE VIRTUAL SCHEMA, EXPLAIN VIRTUAL, metadata refresh, and query-side troubleshooting."
+description: "Use Exasol JDBC-based virtual schemas for federated read-only access to external databases such as PostgreSQL, Oracle, MySQL, SQL Server, and DB2. Covers database-source adapter selection, `CREATE VIRTUAL SCHEMA`, `ALTER VIRTUAL SCHEMA`, `EXPLAIN VIRTUAL`, metadata refresh, and query-side troubleshooting."
 ---
 
 # Exasol JDBC Virtual Schemas Skill

@@ -1,6 +1,6 @@
 ---
 name: exasol-import
-description: "Use Exasol IMPORT SQL plus exapump local file upload workflows for moving data into Exasol. Covers CSV, FBV, Parquet, connection objects, cloud credential patterns, reject handling, and staging-based import workflows."
+description: "Use Exasol `IMPORT` and `IMPORT INTO` SQL plus `exapump upload` local file workflows for moving data into Exasol. Covers CSV, FBV, and Parquet, `CREATE CONNECTION` connection objects for import, cloud credential patterns for S3, Azure Blob Storage, and Google Cloud Storage (GCS), reject handling, and staging-based import workflows."
 ---
 
 # Exasol Import Skill

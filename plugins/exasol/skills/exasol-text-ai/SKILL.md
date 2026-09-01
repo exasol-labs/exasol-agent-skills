@@ -1,6 +1,6 @@
 ---
 name: exasol-text-ai
-description: "Deploy and use the Exasol Text AI Extension with notebook-connector. Covers deploy_license, initialize_text_ai_extension, the Extraction API, default-model installation, result-table querying, and pipeline or branch-based text extraction workflows."
+description: "Deploy and use the Exasol Text AI Extension (TXAIE) with notebook-connector. Covers `deploy_license`, `initialize_text_ai_extension`, the `PYTHON3_TXAIE` language container, the Extraction API classes `StandardExtractor`, `NamedEntityExtractor`, `TopicClassifierExtractor`, `PipelineExtractor`, and `BranchExtractor`, named-entity, zero-shot classification, and feature extraction runs, default-model installation, and result-table querying such as `TXAIE_AUDIT_LOG`."
 ---
 
 # Exasol Text AI Extension Skill

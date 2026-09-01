@@ -1,6 +1,6 @@
 ---
 name: exasol-setup-personal
-description: Guided setup of Exasol Personal — a free Exasol database running locally on a Mac or deployed to your own AWS, Azure, Exoscale, or STACKIT account. Picks the right deployment flavor, then follows the official exasol/exasol-personal instructions.
+description: "Guided setup of Exasol Personal — a free Exasol database running locally on a Mac or deployed to your own AWS, Azure, Exoscale, or STACKIT account. Covers picking the right deployment flavor, the `exasol` launcher CLI (`exasol install <preset>`, `exasol connect`, `exasol info`, `exasol deployments list`, `exasol destroy`), the `local`, `aws`, `azure`, `exoscale`, and `stackit` presets, and following the official exasol/exasol-personal instructions."
 ---
 
 # Exasol Personal Setup Skill

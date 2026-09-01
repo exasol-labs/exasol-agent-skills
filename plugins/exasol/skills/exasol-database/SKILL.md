@@ -1,6 +1,6 @@
 ---
 name: exasol-database
-description: "Exasol database interaction via exapump CLI and Exasol SQL. Covers SQL queries, schema inspection, table design, query profiling, analytics, and Exasol-specific SQL behavior outside exasol-import and exasol-export."
+description: "Exasol database interaction via the exapump CLI and Exasol SQL. Covers SQL queries and DML/DDL such as `SELECT`, `INSERT`, `UPDATE`, `DELETE`, `MERGE`, `CREATE TABLE`, `ALTER TABLE`, and `DROP TABLE`, `CREATE CONNECTION` connection objects without import or export intent, schema inspection, table design, `exapump sql` and `exapump profile`, query profiling, analytics, and Exasol-specific SQL behavior outside exasol-import and exasol-export."
 ---
 
 # Exasol Database Skill

@@ -1,6 +1,6 @@
 ---
 name: exasol-export
-description: "Use Exasol EXPORT SQL plus exapump local file export workflows for moving data out of Exasol. Covers native CSV/FBV export, local CSV/Parquet exports with exapump, connection objects, reject limits, and export credential patterns."
+description: "Use Exasol `EXPORT` and `EXPORT INTO` SQL plus `exapump export` local file workflows for moving data out of Exasol. Covers native CSV/FBV export, local CSV/Parquet exports with exapump, `CREATE CONNECTION` connection objects for export, FTP, SFTP, HTTP, HTTPS, and cloud targets on S3, Azure Blob Storage, and Google Cloud Storage (GCS), reject limits, and export credential patterns."
 ---
 
 # Exasol Export Skill

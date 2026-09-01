@@ -1,6 +1,6 @@
 ---
 name: exasol-bucketfs
-description: "Exasol BucketFS file system management via exapump CLI. Covers listing, uploading, downloading, and deleting files and directories in BucketFS, BucketFS configuration, bucket structure, and use with UDFs."
+description: "Exasol BucketFS file system management via the `exapump bucketfs` CLI. Covers listing, uploading, downloading, and deleting files and directories in BucketFS, the `bfsdefault` service and other bucket services, bucket structure, `bfs_*` profile settings, the `/buckets/<service>/<bucket>/<path>` UDF path, and staging JARs, models, and Script Language Containers for UDFs."
 ---
 
 # Exasol BucketFS Skill

@@ -1,6 +1,6 @@
 ---
 name: exasol-udfs
-description: "Exasol User Defined Functions (UDFs) and Script Language Containers (SLCs). Covers CREATE SCRIPT, SCALAR and SET functions, ExaIterator API, Python/Java/Lua/R scripts, BucketFS file access, GPU-accelerated UDFs, and building/deploying custom Script Language Containers with exaslct."
+description: "Exasol User Defined Functions (UDFs) and Script Language Containers (SLCs). Covers `CREATE SCRIPT`, SCALAR and SET functions, variadic scripts with `EMITS(...)` and `default_output_columns`, the `ExaIterator` and `ExaMetadata` APIs, Python, Java, Lua, and R scripts, Lua execute scripts and `pquery`, BucketFS file access, GPU-accelerated UDFs, `ALTER SESSION SET SCRIPT_LANGUAGES` activation, and building custom Script Language Containers with `exaslct`, `exaslpm`, and `packages.yml`."
 ---
 
 # Exasol UDFs & Script Language Containers
