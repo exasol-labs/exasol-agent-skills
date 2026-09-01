@@ -66,7 +66,7 @@ npx --yes skills@1.5.22 add exasol-labs/exasol-agent-skills \
 - JDBC and document-file virtual schemas, plus custom adapter development.
 - Extension and integration selection for deployment, loading, enrichment, BI/API, governance, and scale.
 - UDFs, Script Language Containers, BucketFS, distributed ML, and GPU workflows.
-- Notebook-connector setup, ITDE lifecycle, Python connection helpers, Text AI, and Transformers.
+- Notebook-connector configuration, ITDE lifecycle, Python connection helpers, Text AI, and Transformers.
 - Exasol Personal setup for local macOS and AWS, Azure, Exoscale, or STACKIT deployments.
 
 The complete skill catalog is available under

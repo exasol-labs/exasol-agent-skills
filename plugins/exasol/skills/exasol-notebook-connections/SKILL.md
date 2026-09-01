@@ -20,14 +20,14 @@ Trigger when the user mentions **open_pyexasol_connection**, **open_sqlalchemy_c
    - Use scripts from: `scripts/`
 
 3. **Config Not Set Up Yet**
-   - Activate **exasol-ai-setup**
+   - Activate **exasol-notebook-connector-config**
 
 ## Validation
 
 Validate the configured connection helpers in this order:
 
 - run `scripts/check_backend.py` first to confirm the store resolves the expected backend
-- if helpers fail due to missing keys or placeholder values, activate **exasol-ai-setup** and run its `scripts/validate_config.py`
+- if helpers fail due to missing keys or placeholder values, activate **exasol-notebook-connector-config** and run its `scripts/validate_config.py`
 - then run `scripts/open_pyexasol.py`, `scripts/open_sqlalchemy.py`, `scripts/open_ibis.py`, or `scripts/open_bucketfs.py` for the helper family the user needs
 
 Success signals:

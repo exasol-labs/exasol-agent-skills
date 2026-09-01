@@ -1,11 +1,11 @@
 ---
-name: exasol-ai-setup
+name: exasol-notebook-connector-config
 description: "Set up notebook-connector configuration for Exasol AI workflows through the Secrets Python API. Covers secure config store (`scs`) creation, the `AILabConfig` and `StorageBackend` key sources, backend-specific config values such as `db_host_name`, `db_schema`, `storage_backend`, and `huggingface_token`, Python validation, and handoff to downstream notebook-connector skills."
 ---
 
-# Exasol AI Setup Skill
+# Exasol Notebook-Connector Config Skill
 
-Trigger when the user mentions **notebook-connector**, **secure config store**, **Secrets**, **configure notebook-connector**, **AI setup**, **set up credentials for TE**, **set up credentials for TXAIE**, **first-time notebook-connector setup**, or similar setup tasks.
+Trigger when the user mentions **notebook-connector**, **secure config store**, **Secrets**, **configure notebook-connector**, **set up credentials for TE**, **set up credentials for TXAIE**, **first-time notebook-connector setup**, or similar setup tasks.
 
 ## Purpose
 

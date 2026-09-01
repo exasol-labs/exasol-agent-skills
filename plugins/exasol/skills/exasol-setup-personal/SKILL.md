@@ -19,7 +19,7 @@ to the upstream `exasol/exasol-personal` documentation.
 
 2. **A deployment that already exists is failing** — diagnosis and cleanup
    - Trigger phrases: `exasol diag local`, `install failed`, `interrupted install`, `exasol destroy`, `exasol cache`, `launcher not found`, `deployment stuck`
-   - Load: `references/troubleshooting.md`
+   - Load: `references/troubleshooting.md` **and** `references/upstream-docs.md`
 
 The two setup references are a pair: `references/upstream-docs.md` says which
 upstream document to fetch and what to do when a fetch fails,

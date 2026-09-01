@@ -23,7 +23,7 @@ It does not populate these higher-level setup keys:
 - `storage_backend`
 - `db_schema`
 
-If you want to run the shared `exasol-ai-setup/scripts/validate_config.py`
+If you want to run the shared `exasol-notebook-connector-config/scripts/validate_config.py`
 flow after ITDE startup, save `storage_backend=onprem` yourself first. Save
 `db_schema` as well before handing off to schema-dependent workflows such as
 SQLAlchemy, Ibis, Transformers Extension, or Text AI Extension setup.

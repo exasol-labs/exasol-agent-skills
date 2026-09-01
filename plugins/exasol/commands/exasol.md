@@ -15,9 +15,10 @@ Unified Claude Code entry point for Exasol work.
 ## Behavior
 
 1. Activate the top-level **exasol** skill for the complete user request.
-2. Follow its routing algorithm, precedence rules, dependency order, user
-   interaction rules, and safety rules. The top-level skill is the single
-   source of truth; do not duplicate or reinterpret its trigger lists here.
+2. Choose the narrowest specialized skill whose front-matter description
+   matches the request, then apply the router's precedence rules, dependency
+   order, user interaction rules, and safety rules. The top-level skill is the
+   single source of truth; do not duplicate or reinterpret its rules here.
 3. Follow the selected specialized skill, including its prerequisites,
    validation, safety rules, and handoffs to related skills.
 4. Do not ask the user to select an internal skill. If the outcome is

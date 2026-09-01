@@ -15,7 +15,7 @@ and validation.
 
 Use this skill after notebook-connector configuration already exists in the
 secure config store. If the required DB or BucketFS values are still missing,
-activate **exasol-ai-setup** first. The schema name saved in `db_schema` must
+activate **exasol-notebook-connector-config** first. The schema name saved in `db_schema` must
 also exist as a real schema in Exasol before the Text AI setup or extraction
 flow can succeed.
 
@@ -34,7 +34,7 @@ Multiple routes can apply. Load the reference before responding.
 ## Prerequisites
 
 The secure config store must already contain complete DB and BucketFS values. If
-not, activate **exasol-ai-setup** first.
+not, activate **exasol-notebook-connector-config** first.
 
 `db_schema` is only a stored configuration value. Create that schema in Exasol
 before running the Text AI flow if it does not already exist.
@@ -53,12 +53,12 @@ Success signals:
 Expected failure mode:
 
 - if the configured schema does not exist yet, setup or extraction should fail until the schema is created in Exasol
-- if the source tables, DB config, BucketFS config, or extension assets are missing, extraction should fail until **exasol-ai-setup** and the required DB objects are in place
+- if the source tables, DB config, BucketFS config, or extension assets are missing, extraction should fail until **exasol-notebook-connector-config** and the required DB objects are in place
 - on the first run, initialization can take time because notebook-connector downloads the TXAIE language container and default models
 
 ## Guidance
 
-- Use **exasol-ai-setup** when secure config store, DB, or BucketFS values are still missing.
+- Use **exasol-notebook-connector-config** when secure config store, DB, or BucketFS values are still missing.
 - For local ITDE-style runs, make sure the stored DB and BucketFS host values are reachable from the notebook process.
 - Keep simple TXAIE-specific inspection here, including the SQL examples in this skill's reference and small Python snippets tied directly to TXAIE result objects such as `TXAIE_AUDIT_LOG`.
 - Use **exasol-notebook-connections** when the user wants broader notebook-connector connection-helper work beyond these TXAIE-specific inspection patterns.

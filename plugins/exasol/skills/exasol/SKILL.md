@@ -61,11 +61,22 @@ and `TXAIE` work goes to **exasol-text-ai**, and Transformers Extension work
 goes to **exasol-transformers**. Once the catalog has helped the user choose,
 hand off.
 
+**Container activation over container staging.** Activating or building a
+Script Language Container belongs to **exasol-udfs** — that covers the
+`SCRIPT_LANGUAGES` activation statements, flavors, and container builds. Getting
+the container, JAR, or model file into a bucket belongs to **exasol-bucketfs**. A
+request that uploads and then activates needs both: **exasol-bucketfs** to
+stage the file, then **exasol-udfs** to activate it.
+
 **Deployment intent is required for Exasol Personal.** Route to
 **exasol-setup-personal** only when the user wants to install, deploy, or set up
 Exasol itself. A bare cloud-provider or storage token such as `Azure Blob`,
 `S3`, or `AWS` is not deployment intent — those belong to the import, export,
-and document virtual schema skills.
+and document virtual schema skills. Deployment intent alone does not settle
+which skill: a Docker-based database on the current machine is
+**exasol-itde**, while a Mac VM or a deployment into the user's own AWS, Azure,
+Exoscale, or STACKIT account is **exasol-setup-personal**. When the user asks
+only for a "local" database, ask which of the two is meant.
 
 ## Dependency Order
 
@@ -75,7 +86,7 @@ When setup and usage both apply, resolve prerequisites first:
 2. Tool, extension, connector, or architecture selection
 3. Virtual schema adapter selection when external federation is required
 4. Custom virtual schema adapter implementation or packaging when a maintained adapter is not enough
-5. Notebook-connector AI setup when required
+5. Notebook-connector configuration when required
 6. Local Docker database lifecycle or helper-level connectivity validation
 7. Extension-specific TXAIE or Transformers workflow
 8. SQL, data movement, BucketFS, UDF, SLC, or integration task

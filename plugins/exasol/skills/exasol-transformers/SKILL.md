@@ -15,7 +15,7 @@ current TE SQL UDF surface.
 
 Use this skill after notebook-connector configuration already exists in the
 SCS (secure config store). If the required DB or BucketFS values are still missing,
-activate **exasol-ai-setup** first.
+activate **exasol-notebook-connector-config** first.
 
 ## Routing Algorithm
 
@@ -32,7 +32,7 @@ Multiple routes can apply. Load the reference before responding.
 ## Prerequisites
 
 The secure config store must already contain complete DB and BucketFS values. If
-not, activate **exasol-ai-setup** first.
+not, activate **exasol-notebook-connector-config** first.
 
 - DB values: `db_host_name`, `db_port`, `db_user`, `db_password`, `db_schema`
 - BucketFS values: `bfs_host_name`, `bfs_port`, `bfs_service`, `bfs_bucket`, `bfs_user`, `bfs_password`
@@ -51,10 +51,10 @@ Success signals:
 
 Expected failure mode:
 
-- if DB, BucketFS, or Hugging Face settings are incomplete, initialization or UDF execution should fail until **exasol-ai-setup** has been completed with real values
+- if DB, BucketFS, or Hugging Face settings are incomplete, initialization or UDF execution should fail until **exasol-notebook-connector-config** has been completed with real values
 
 ## Guidance
 
-- Use **exasol-ai-setup** when secure config store, DB, or BucketFS values are still missing.
+- Use **exasol-notebook-connector-config** when secure config store, DB, or BucketFS values are still missing.
 - Use **exasol-bucketfs** when the user needs to inspect or manipulate the uploaded SLC or model files directly.
 - Use **exasol-udfs** when the task is about language activation or custom UDF work beyond the packaged TE surface.

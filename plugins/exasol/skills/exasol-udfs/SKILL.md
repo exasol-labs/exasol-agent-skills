@@ -54,7 +54,7 @@ reads a model needs routes 1 and 2 — so load all matching references.
    - Load: `references/slc-reference.md`
 
 5. **Orchestrate SQL from inside the database** — not a UDF
-   - Trigger phrases: `execute script`, `Lua execute`, `pquery`, `query`, `in-database orchestration`, `iterative algorithm`, `multi-step SQL workflow`
+   - Trigger phrases: `execute script`, `Lua execute`, `pquery`, `in-database orchestration`, `iterative algorithm`, `multi-step SQL workflow`
    - Load: `references/lua-execute-scripts.md`
 
 Route 5 is a genuine fork, not a variant of the others: use a Lua execute script

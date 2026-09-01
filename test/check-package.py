@@ -82,9 +82,12 @@ for skill_file in sorted(SKILLS.glob("*/SKILL.md")):
         path.relative_to(skill_file.parent).as_posix()
         for path in (skill_file.parent / "references").glob("*.md")
     }
-    load_references = set(
-        re.findall(r"^.*Load:.*?(references/[a-zA-Z0-9._/-]+\.md)", skill_text, re.MULTILINE)
-    )
+    load_references = {
+        match
+        for line in skill_text.splitlines()
+        if "Load:" in line
+        for match in re.findall(r"references/[a-zA-Z0-9._/-]+\.md", line)
+    }
     for relative_path in sorted(load_references - packaged_references):
         errors.append(
             f"{skill_file.relative_to(ROOT)} loads missing reference {relative_path}"

@@ -18,7 +18,7 @@ Keep setup prerequisites in `Secrets` first, then use this reference for the
 extension-specific workflow and validation.
 
 If the required DB or BucketFS values are still missing in the secure config
-store, switch to **exasol-ai-setup** first and complete its setup-validation
+store, switch to **exasol-notebook-connector-config** first and complete its setup-validation
 flow before returning here.
 
 Before running the Text AI flow, make sure the schema named by `db_schema`
@@ -432,7 +432,7 @@ Success signals:
 
 Expected failure mode:
 
-- if the source tables, DB config, BucketFS config, or extension assets are missing, extraction should fail until **exasol-ai-setup** and the required DB objects are in place
+- if the source tables, DB config, BucketFS config, or extension assets are missing, extraction should fail until **exasol-notebook-connector-config** and the required DB objects are in place
 
 ## Safety Notes
 

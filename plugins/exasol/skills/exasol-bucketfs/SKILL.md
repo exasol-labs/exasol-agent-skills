@@ -20,7 +20,7 @@ references before answering.
    - Load: `references/exapump-bucketfs-cli.md`
 
 2. **Stage a file for a UDF or SLC** — JARs, pickled models, containers, and the SQL that points at them
-   - Trigger phrases: `upload jar`, `%jar`, `upload model`, `load model in UDF`, `upload SLC`, `SCRIPT_LANGUAGES`, `activate container`
+   - Trigger phrases: `upload jar`, `%jar`, `upload model`, `load model in UDF`, `upload SLC`, `activate container`
    - Load: `references/bucketfs-udf-usage.md`
 
 3. **Understand BucketFS itself** — services, buckets, path forms, replication, durability

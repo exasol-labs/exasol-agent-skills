@@ -6,8 +6,11 @@ otherwise ask a concise question in the conversation. Never assume answers or
 skip required confirmations. This instruction applies equally to Claude Code
 and OpenAI Codex.
 
-Fetch the upstream documents named in `references/upstream-docs.md` before
-running anything that installs, provisions, or destroys.
+Fetch the upstream documents named in `references/upstream-docs.md` from the
+`exasol/exasol-personal` GitHub repository before running anything that
+installs, provisions, or destroys. Every bare document name in this
+walkthrough — `README.md`, `HOWTO_SETUP_<PROVIDER>_ACCOUNT.md` — is a file in
+that repository, never a local file.
 
 ---
 

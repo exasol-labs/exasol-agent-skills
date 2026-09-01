@@ -14,8 +14,9 @@ description: Short entry point for repeated Exasol BucketFS file-management comm
 
 1. Treat the complete request as an Exasol BucketFS request and activate the
    shared top-level **exasol** skill.
-2. Follow that router into **exasol-bucketfs**, then follow that skill's
-   connection, command, validation, and safety guidance.
+2. Apply the router's precedence and safety rules, then follow
+   **exasol-bucketfs** and its connection, command, validation, and safety
+   guidance.
 3. Never ask the user to paste passwords, tokens, or connection secrets into
    the conversation. If credentials are missing, direct the user to enter them
    locally through the documented exapump profile workflow.

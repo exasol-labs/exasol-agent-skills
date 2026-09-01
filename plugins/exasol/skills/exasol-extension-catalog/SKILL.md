@@ -85,7 +85,7 @@ skill instead of repeating operational instructions here.
 - Use **exasol-virtual-schema-adapter-development** for custom virtual schema adapter implementation, packaging, and adapter-side debugging after choosing that a maintained adapter is not enough.
 - Use **exasol-bucketfs** for BucketFS file upload, download, list, and delete workflows.
 - Use **exasol-udfs** for UDF and Script Language Container implementation details.
-- Use **exasol-ai-setup** and **exasol-notebook-connections** for notebook-connector configuration and Python connection helpers.
+- Use **exasol-notebook-connector-config** and **exasol-notebook-connections** for notebook-connector configuration and Python connection helpers.
 - Use **exasol-itde** for notebook-connector's local Docker database lifecycle after choosing that development environment.
 - Use **exasol-text-ai** for Text AI Extension deployment, extraction, and validation.
 - Use **exasol-transformers** for Transformers Extension deployment and inference.
