@@ -1,44 +1,23 @@
 # Changelog
 
-## v0.25.1
-
-- Document the skill conventions CI cannot check in `AGENTS.md`.
-- Add the contributor skeleton `plugins/exasol/skills/_template/`.
-- Point the README Contributing section at `AGENTS.md` and the skeleton.
-
 ## v0.25.0
-
-- Update exasol-udfs SLC guidance to route package customization by SLC version: `packages.yml`/exaslpm for SLC 11.0.0+, legacy `flavor_customization/packages/*` files for earlier versions.
-- Document the standard, conda, CUDA-conda, and R flavor `packages.yml` layouts for the current package format.
-
-## v0.24.7
-
-- Refresh exasol-extension-catalog skill: update deploy, scale, and surface references.
-
-## v0.24.6
-
-- Add package consistency and credential-pattern checks.
-- Make BucketFS and setup guidance safe across both agents.
-
-## v0.24.5
-
-- Clarify extension catalog and specialized skill boundaries.
-- Route selected workflows directly to their focused skills.
-
-## v0.24.4
-
-- Condense the README and remove routing details.
-- Use the `exasol` skill as the shared agent router.
-- Make Claude commands delegate to the shared router.
-
-## v0.24.3
-
-- Keep interactive installer prompts visible on the terminal.
-
-## v0.24.2
 
 - Publish releases only from explicit matching version tags.
 - Run CI before publishing and serialize release runs.
+- Keep interactive installer prompts visible on the terminal.
+- Condense the README and remove routing details.
+- Use the `exasol` skill as the shared agent router.
+- Make Claude commands delegate to the shared router.
+- Clarify extension catalog and specialized skill boundaries.
+- Route selected workflows directly to their focused skills.
+- Add package consistency and credential-pattern checks.
+- Make BucketFS and setup guidance safe across both agents.
+- Refresh exasol-extension-catalog skill: update deploy, scale, and surface references.
+- Update exasol-udfs SLC guidance to route package customization by SLC version: `packages.yml`/exaslpm for SLC 11.0.0+, legacy `flavor_customization/packages/*` files for earlier versions.
+- Document the standard, conda, CUDA-conda, and R flavor `packages.yml` layouts for the current package format.
+- Document the skill conventions CI cannot check in `AGENTS.md`.
+- Add the contributor skeleton `plugins/exasol/skills/_template/`.
+- Point the README Contributing section at `AGENTS.md` and the skeleton.
 
 ## v0.24.1
 
