@@ -113,13 +113,13 @@ Use specific adapter repositories when the source is known:
 
 ## Drivers and load/extract connectors
 
-- **Recent update to verify**: JDBC 26.2.8, ODBC 26.2.7, EXAplus 26.2.8, and the ODBC Linux ARM64 driver were announced through the download portal; PyExasol 2.2.2 widened dependency ranges.
+- **Versions**: read current driver builds from the download portal and each project's releases index below; do not answer from memory. A Linux ARM64 ODBC build exists, and PyExasol has widened its dependency ranges in recent releases — check its changelog before pinning.
 - JDBC: https://docs.exasol.com/db/latest/connect_exasol/drivers/jdbc.htm
 - ODBC: https://docs.exasol.com/db/latest/connect_exasol/drivers/odbc.htm
 - Exasol Download Portal: https://downloads.exasol.com/
 - ADO.NET: https://docs.exasol.com/db/latest/connect_exasol/drivers/ado_net.htm
 - PyExasol: https://github.com/exasol/pyexasol
-- PyExasol 2.2.2: https://github.com/exasol/pyexasol/releases/tag/2.2.2
+- PyExasol releases: https://github.com/exasol/pyexasol/releases
 - SQLAlchemy Exasol: https://github.com/exasol/sqlalchemy-exasol
 - Exasol TypeScript/JavaScript driver: https://github.com/exasol/exasol-driver-ts
 - Go SQL Driver: https://github.com/exasol/exasol-driver-go

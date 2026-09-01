@@ -60,10 +60,10 @@ Version-specific notes are source-check reminders. Verify linked release notes o
 - **Best when**: user asks about signed artifacts, public keys, SBOM scanning, Docker image provenance, or runtime dependency visibility.
 - **Tools**:
   - Exasol public GPG keys: official source for artifact verification keys, key rotation, and expired keys.
-  - Script Languages Release 11.2.0: preserves package-manager metadata in generated SLC images so SBOM tools such as `syft` can detect Debian packages correctly.
+  - Script Languages Release: recent releases preserve package-manager metadata in generated SLC images so SBOM tools such as `syft` can detect Debian packages correctly. Check the releases index for the release that added it.
 - **Links**:
   - https://docs.exasol.com/db/latest/connect_exasol/public_keys.htm
-  - https://github.com/exasol/script-languages-release/releases/tag/11.2.0
+  - https://github.com/exasol/script-languages-release/releases
 
 ## Telemetry Java
 

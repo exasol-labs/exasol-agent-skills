@@ -38,12 +38,12 @@ Version-specific notes are source-check reminders. Verify linked release notes o
 
 - **AI Lab use for**: preconfigured Docker/Jupyter environment for AI/ML experiments on Exasol, with Docker images, AMIs, and VM images available from release pages.
 - **Notebook Connector use for**: connection configuration management, notebook tooling, CLI/Python APIs, and SLC deployment support.
-- **Recent update to verify**: AI Lab 6.0.0 uses Notebook Connector 3.0.0, removes remaining SageMaker notebooks, and hosts notebooks in Notebook Connector. Notebook Connector 3.0.0 enables SLC deployments to Exasol SaaS instances and includes notebooks/tests migrated from AI Lab.
+- **Direction of travel**: AI Lab now builds on Notebook Connector, which hosts the notebooks and the tests migrated from AI Lab; the SageMaker notebooks have been removed, and Notebook Connector supports SLC deployment to Exasol SaaS instances. Read each releases index below for the current release.
 - **Links**:
   - https://github.com/exasol/ai-lab
-  - https://github.com/exasol/ai-lab/releases/tag/6.0.0
+  - https://github.com/exasol/ai-lab/releases
   - https://github.com/exasol/notebook-connector
-  - https://github.com/exasol/notebook-connector/releases/tag/3.0.0
+  - https://github.com/exasol/notebook-connector/releases
   - https://exasol.github.io/notebook-connector/main/
   - https://docs.exasol.com/db/latest/ai/ai_get_started/set-up-ai-lab.htm
   - https://docs.exasol.com/db/latest/ai/ai_github-resources.htm

@@ -1,11 +1,8 @@
 ---
-description: Compatibility shortcut for Exasol BucketFS file-management tasks.
+description: Short entry point for repeated Exasol BucketFS file-management commands.
 ---
 
 # /bucketfs Command
-
-Compatibility shortcut for BucketFS-specific tasks. Prefer
-`/exasol bucketfs <task>` in user-facing examples.
 
 ## Usage
 
@@ -17,8 +14,8 @@ Compatibility shortcut for BucketFS-specific tasks. Prefer
 
 1. Treat the complete request as an Exasol BucketFS request and activate the
    shared top-level **exasol** skill.
-2. Follow the top-level router into **exasol-bucketfs**, then follow that
-   skill's connection, command, validation, and safety guidance.
+2. Follow that router into **exasol-bucketfs**, then follow that skill's
+   connection, command, validation, and safety guidance.
 3. Never ask the user to paste passwords, tokens, or connection secrets into
    the conversation. If credentials are missing, direct the user to enter them
    locally through the documented exapump profile workflow.

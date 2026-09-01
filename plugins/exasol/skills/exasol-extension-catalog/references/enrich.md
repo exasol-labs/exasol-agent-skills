@@ -14,10 +14,10 @@ Version-specific notes are source-check reminders. Verify linked release notes o
 
 - **Use for**: packaged AI/ML notebook workflows and prebuilt images for AI experimentation.
 - **Best when**: user wants examples for ML, transformers, notebooks, SLCs, or data science on Exasol.
-- **Recent update to verify**: AI Lab 6.0.0 uses Notebook Connector 3.0.0, removes remaining SageMaker notebooks, and links Docker images, AMIs, and VM images from the release page.
+- **Direction of travel**: AI Lab now builds on Notebook Connector, the SageMaker notebooks have been removed, and Docker images, AMIs, and VM images are published from the release page. Read the releases index below for the current release.
 - **Links**:
   - https://github.com/exasol/ai-lab
-  - https://github.com/exasol/ai-lab/releases/tag/6.0.0
+  - https://github.com/exasol/ai-lab/releases
   - https://docs.exasol.com/db/latest/ai/ai_get_started/set-up-ai-lab.htm
 
 ## Text AI Extension
@@ -31,7 +31,7 @@ Version-specific notes are source-check reminders. Verify linked release notes o
 
 - **Use for**: Hugging Face Transformers in Exasol workflows and built-in AI UDFs.
 - **Best when**: user wants pretrained transformer inference near the database, sentiment analysis, classification, entity extraction, or more configurable extended prediction UDFs.
-- **Recent update to verify**: version 4.0.0 introduced `AI_SENTIMENT`, `AI_CLASSIFY`, and `AI_EXTRACT_ENTITIES`. It also renamed existing prediction UDFs and changed model task-type handling; treat as a breaking upgrade and direct users to the migration/release docs.
+- **Breaking change in 4.0.0**: introduced `AI_SENTIMENT`, `AI_CLASSIFY`, and `AI_EXTRACT_ENTITIES`, renamed existing prediction UDFs, and changed model task-type handling. Treat an upgrade across it as breaking and point users at the migration and release docs.
 - **Links**:
   - https://github.com/exasol/transformers-extension
   - https://github.com/exasol/transformers-extension/releases/tag/4.0.0

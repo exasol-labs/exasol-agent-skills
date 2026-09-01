@@ -37,12 +37,18 @@ The catalog organizes Exasol capabilities into six categories:
 5. For destructive operations, deployment changes, credential management, RBAC, Terraform, or agent automation, include safety and rollback guidance.
 6. For agentic workflows, prefer governed patterns: MCP Server, Agent Control Plane, semantic layer, SQL guardrails, audit logs, and least-privilege credentials.
 
-## Routing Algorithm
+## Category Selection
 
-For catalog requests, choose the narrowest matching category and load only the
-matching reference files. If multiple categories apply, load all relevant
-references before answering. Once the user chooses a concrete workflow, hand
-off to its dedicated skill instead of repeating operational instructions here.
+The trigger phrases below choose a *reference file within this catalog*; they do
+not decide that this skill runs. That decision is made by intent: a request to
+compare options, discover what exists, check support status, or select an
+architecture belongs here, while a request to execute, configure, or
+troubleshoot a named product belongs to that product's dedicated skill.
+
+Choose the narrowest matching category and load only the matching reference
+files. If multiple categories apply, load all relevant references before
+answering. Once the user chooses a concrete workflow, hand off to its dedicated
+skill instead of repeating operational instructions here.
 
 1. **Run Exasol somewhere or operate deployment tooling**
    - Trigger phrases: `deploy`, `install`, `Exasol SaaS`, `Exasol Personal`, `Exasol Local`, `exasol-local-vm`, `STACKIT`, `Docker DB`, `Terraform`, `OpenTofu`, `Ansible`, `scheduler`, `public keys`, `artifact verification`, `Extension Manager`
@@ -67,15 +73,6 @@ off to its dedicated skill instead of repeating operational instructions here.
 6. **Improve scale, governance, performance, observability, repeatability, or reliability**
    - Trigger phrases: `scale`, `performance`, `governance`, `RBAC`, `observability`, `CloudWatch`, `telemetry`, `SBOM`, `testing`, `CI`, `pytest-slc`, `SLC testing`, `change management`, `data protection`, `warehouse automation`
    - Load: `references/scale.md`
-
-## Fast Routing Guide
-
-- User wants to run Exasol somewhere: use **DEPLOY**.
-- User wants to bring data into Exasol or query data elsewhere: use **LOAD**.
-- User wants to understand data or query it interactively: use **EXPLORE**.
-- User wants AI, ML, UDFs, text analytics, or agents: use **ENRICH**.
-- User wants to expose Exasol to apps, BI, APIs, users, or agents: use **SURFACE**.
-- User wants production scale, governance, performance, observability, repeatability, or reliability: use **SCALE**.
 
 ## Related Skills
 
