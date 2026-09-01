@@ -130,15 +130,19 @@ for path in package_guidance:
             f"{path.relative_to(ROOT)} depends on a host-specific user-input tool"
         )
 
+# There is deliberately no assertion that the router names every skill. Since
+# the router became an arbiter it carries only the precedence, dependency, and
+# safety rules that a front-matter description structurally cannot express, so
+# most skills are correctly absent from it and reachability now rests on
+# description quality, which nothing here can check. The reverse direction is
+# still enforced: the shared "references missing skill" scan above reads the
+# router too, so a precedence rule naming a skill that does not exist fails.
 router_text = ROUTER.read_text(encoding="utf-8")
-activations = re.findall(r"Activate:\s*\*\*(exasol-[a-z0-9-]+)\*\*", router_text)
-expected_activations = known_names - {"exasol"}
-for name in sorted(expected_activations - set(activations)):
-    errors.append(f"top-level router does not activate {name}")
-for name in sorted(set(activations) - expected_activations):
-    errors.append(f"top-level router activates unknown skill {name}")
-for name in sorted({name for name in activations if activations.count(name) > 1}):
-    errors.append(f"top-level router activates {name} more than once")
+router_skills = set(re.findall(r"\*\*(exasol-[a-z0-9-]+)\*\*", router_text))
+if "Trigger phrases:" in router_text or "Activate:" in router_text:
+    errors.append(
+        "top-level router reintroduces per-skill trigger lists; keep it an arbiter"
+    )
 
 catalog_text = (SKILLS / "exasol-extension-catalog" / "SKILL.md").read_text(
     encoding="utf-8"
@@ -192,7 +196,8 @@ if errors:
     sys.exit(1)
 
 print(
-    f"Checked {len(skill_names)} skills, {len(activations)} router activations, "
+    f"Checked {len(skill_names)} skills, {len(router_skills)} skills named by the "
+    "router's precedence rules, "
     f"{len(catalog_handoffs)} catalog handoffs, {len(COMMANDS)} Claude command "
     f"delegates, {len(REFERENCE_FILES)} reference files, routed references, "
     "cross-agent input guidance, README boundaries, workflow keys, "

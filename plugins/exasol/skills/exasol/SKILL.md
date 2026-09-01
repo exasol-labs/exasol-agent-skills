@@ -9,133 +9,76 @@ Use this skill whenever the user asks about Exasol. The user does not need to kn
 
 This `SKILL.md` is the shared routing source of truth for OpenAI Codex and
 Claude Code. Claude's `/exasol` and `/bucketfs` commands delegate to it and must
-not copy its routing table.
+not copy its rules.
 
-## Routing Algorithm
+## What This Skill Decides
 
-Choose the narrowest matching route. If multiple routes apply, load them in dependency order.
+Each specialized Exasol skill announces its own scope in its front-matter
+`description`, and both agents select skills from those descriptions. This
+router therefore carries no catalogue of skills and no trigger lists — it is an
+arbiter. It holds only what a description structurally cannot express: which
+skill wins when two descriptions both fit, what order to resolve prerequisites
+in, and the safety and interaction rules that apply to every route.
 
-When a request mentions `FROM SCRIPT CLOUD_STORAGE_EXTENSION`,
-`INTO SCRIPT CLOUD_STORAGE_EXTENSION`, `CLOUD_STORAGE_EXTENSION.IMPORT_PATH`,
-or `CLOUD_STORAGE_EXTENSION.EXPORT_PATH`, prefer
-**exasol-cloud-storage-extension** over native import or export routes.
+Choose the narrowest skill whose description matches the request. Apply the
+precedence rules below when more than one matches. If several genuinely apply,
+load them in dependency order.
 
-When a request mentions importing `Avro`, `ORC`, or `Delta` from object storage
-such as S3, Azure Blob Storage, Azure Data Lake, Google Cloud Storage, HDFS, or
-Alluxio, prefer **exasol-cloud-storage-extension** unless the user clearly asks
-for native `IMPORT`.
+## Precedence Rules
 
-When a request mentions `IMPORT`, `IMPORT INTO`, `exapump upload`, or
-other import-specific phrases, prefer **exasol-import** over the broader
-database route even if the wording also contains generic terms such as `SQL`
-or `query`.
+**Cloud Storage Extension over native import and export.** When a request
+mentions `FROM SCRIPT CLOUD_STORAGE_EXTENSION`, `INTO SCRIPT
+CLOUD_STORAGE_EXTENSION`, `CLOUD_STORAGE_EXTENSION.IMPORT_PATH`, or
+`CLOUD_STORAGE_EXTENSION.EXPORT_PATH`, prefer
+**exasol-cloud-storage-extension** over **exasol-import** or **exasol-export**.
 
-When a request mentions `EXPORT`, `EXPORT INTO`, or `exapump export`,
-prefer **exasol-export** over the broader database route.
+**Object-storage formats that only the extension reads.** When a request
+mentions importing `Avro`, `ORC`, or `Delta` from object storage such as S3,
+Azure Blob Storage, Azure Data Lake, Google Cloud Storage, HDFS, or Alluxio,
+prefer **exasol-cloud-storage-extension** unless the user clearly asks for
+native `IMPORT`. Native import handles CSV, FBV, and Parquet; it does not read
+those three formats, so a description match on "import from S3" alone routes
+the request wrongly.
 
-When a request mentions custom virtual schema adapter implementation,
-source-specific JDBC dialect code, custom document-file adapter code,
-`virtual-schema-common-jdbc`, adapter JAR packaging, custom adapter properties, type
-mapping, pushdown capabilities, metadata reader behavior, adapter-side
-debugging, or remote debugging for a virtual schema adapter, prefer
-**exasol-virtual-schema-adapter-development** over the normal JDBC/document
-virtual schema usage routes.
+**Import and export over general database work.** When a request mentions
+`IMPORT`, `IMPORT INTO`, or `exapump upload`, prefer **exasol-import** over
+**exasol-database** even if the wording also contains generic terms such as
+`SQL` or `query`. When it mentions `EXPORT`, `EXPORT INTO`, or `exapump export`,
+prefer **exasol-export** the same way. A bare `CREATE CONNECTION` with no
+import, export, or object-store file-movement intent belongs to
+**exasol-database**.
 
-When a request mentions `document virtual schema`, `document virtual schemas`,
-`document-file virtual schema`, `document files virtual schema`,
-`S3 document files`, `Google Cloud Storage document files`,
-`Azure Blob document files`,
-`Azure Data Lake Gen2 document files`, or
-`Azure Data Lake Storage Gen2 document files`,
-prefer **exasol-document-virtual-schemas** over the JDBC virtual schema route.
+**Adapter development over adapter use.** When a request mentions custom
+virtual schema adapter implementation, source-specific JDBC dialect code,
+custom document-file adapter code, `virtual-schema-common-jdbc`, adapter JAR
+packaging, custom adapter properties, type mapping, pushdown capabilities,
+metadata reader behavior, or adapter-side remote debugging, prefer
+**exasol-virtual-schema-adapter-development** over
+**exasol-jdbc-virtual-schemas** and **exasol-document-virtual-schemas**.
 
-When a request mentions `JDBC virtual schema` or a
-database-source virtual schema such as PostgreSQL, Oracle, MySQL, SQL Server,
-or DB2, prefer **exasol-jdbc-virtual-schemas** over the broader extension
-catalog route. Do not route a bare `Virtual Schema` mention here unless the
-source is clearly JDBC/database-based.
+**Document-file virtual schemas over JDBC virtual schemas.** A virtual schema
+over files in object storage — S3, Google Cloud Storage, Azure Blob Storage,
+Azure Data Lake Storage Gen2 — is **exasol-document-virtual-schemas**. A
+virtual schema over a database source such as PostgreSQL, Oracle, MySQL, SQL
+Server, or DB2 is **exasol-jdbc-virtual-schemas**. Do not route a bare
+`Virtual Schema` mention to the JDBC skill unless the source is clearly
+database-based; ask which source is meant instead.
 
-When a request mentions `CREATE CONNECTION` without clear import, export, or
-object-store file movement intent, prefer **exasol-database**.
+**Dedicated skills over the catalog.** Route to **exasol-extension-catalog**
+only when the primary intent is comparison, discovery, support-status research,
+or architecture selection — "which tool should I use", "what are the options
+for", "is this supported". A request that names a product, extension, or
+integration and asks to execute, configure, or troubleshoot it goes to that
+product's dedicated skill, not to the catalog. In particular, Text AI Extension
+and `TXAIE` work goes to **exasol-text-ai**, and Transformers Extension work
+goes to **exasol-transformers**. Once the catalog has helped the user choose,
+hand off.
 
-1. **Exasol database, query, and general exapump workflows**
-   - Trigger phrases: `query`, `SQL`, `Exasol SQL`, `SELECT`, `INSERT`, `UPDATE`, `DELETE`, `MERGE`, `CREATE TABLE`, `ALTER TABLE`, `DROP TABLE`, `CREATE CONNECTION`, `connection object`, `profile`, `exapump sql`, `exapump profile`
-   - Activate: **exasol-database**
-
-2. **Import workflows**
-   - Trigger phrases: `IMPORT`, `IMPORT INTO`, `upload CSV`, `upload Parquet`, `local file load`, `S3 import`, `Azure Blob import`, `GCS import`, `CREATE CONNECTION` with import or object-store loading intent, `Parquet import`, `exapump upload`
-   - Activate: **exasol-import**
-
-3. **Cloud Storage Extension workflows**
-   - Trigger phrases: `Cloud Storage Extension`, `FROM SCRIPT CLOUD_STORAGE_EXTENSION`, `INTO SCRIPT CLOUD_STORAGE_EXTENSION`, `CLOUD_STORAGE_EXTENSION.IMPORT_PATH`, `CLOUD_STORAGE_EXTENSION.EXPORT_PATH`, `Avro from object storage`, `ORC from object storage`, `Delta from object storage`, `ORC from S3`, `Avro from S3`, `Delta from S3`, `extension-based object-storage loading`, `extension-based Parquet reader`, `Avro through Cloud Storage Extension`, `ORC through Cloud Storage Extension`, `Delta through Cloud Storage Extension`, `extension-based Parquet export`, `extension-based file reader`
-   - Activate: **exasol-cloud-storage-extension**
-
-4. **Export workflows**
-   - Trigger phrases: `EXPORT`, `EXPORT INTO`, `export table`, `export local file`, `export CSV`, `export Parquet`, `export to S3`, `export to Azure Blob`, `export to GCS`, `export to FTP`, `export to SFTP`, `export to HTTP`, `export to HTTPS`, `CREATE CONNECTION` with export target setup intent, `exapump export`
-   - Activate: **exasol-export**
-
-5. **JDBC virtual schema workflows**
-   - Trigger phrases: `JDBC virtual schema`, `database-source virtual schema`, `query external database through a virtual schema`, `supported JDBC dialect`, `PostgreSQL virtual schema`, `Oracle virtual schema`, `SQL Server virtual schema`, `MySQL virtual schema`, `DB2 virtual schema`, `EXPLAIN VIRTUAL` with JDBC/database-source context, `ALTER VIRTUAL SCHEMA` with JDBC/database-source context
-   - Activate: **exasol-jdbc-virtual-schemas**
-
-6. **Document-file virtual schema workflows**
-   - Trigger phrases: `document files virtual schema`, `document-file virtual schema`, `S3 document files`, `Google Cloud Storage document files`, `Azure Blob document files`, `Azure Data Lake Gen2 document files`, `Azure Data Lake Storage Gen2 document files`, `document-file virtual schema adapter`, `query object storage via virtual schema`
-   - Activate: **exasol-document-virtual-schemas**
-
-7. **Virtual schema adapter development workflows**
-   - Trigger phrases: `custom adapter`, `build virtual schema adapter`, `source-specific JDBC dialect`, `custom document-file adapter code`, `virtual-schema-common-jdbc`, `SqlDialect`, `metadata reader`, `custom adapter properties`, `type mapping`, `pushdown capabilities`, `new SQL dialect adapter`, `remote debugging for virtual schema adapters`, `adapter JAR packaging`, `adapter-side debugging`
-   - Activate: **exasol-virtual-schema-adapter-development**
-
-8. **Notebook-connector AI setup**
-   - Trigger phrases: `Secrets`, `scs`, `secure config store`, `notebook-connector setup`, `db_host_name`, `db_schema`, `storage_backend`, `huggingface_token`
-   - Activate: **exasol-ai-setup**
-
-9. **Transformers Extension workflows**
-   - Trigger phrases: `Transformers Extension`, `TE extension`, `initialize_te_extension`, `deploy_scripts`, `TE UDF`, `PYTHON3_TE`, `Hugging Face models in Exasol`
-   - Activate: **exasol-transformers**
-
-10. **Exasol tools, extensions, connectors, integrations, and architecture patterns**
-   - Trigger phrases: `extension`, `connector`, `integration`, `catalog`, `tool`, `which Exasol tool`, `Virtual Schema adapter selection`, `maintained virtual schema adapter`, `MCP`, `Text-to-SQL`, `Lakehouse Turbo`, `Terraform`, `Ansible`, `Databricks`, `SAP`, `Power BI`, `Tableau`, `migration`, `governance`, `observability`, `semantic layer`, `Agent Control Plane`
-   - Activate: **exasol-extension-catalog**
-
-11. **BucketFS file management**
-   - Trigger phrases: `BucketFS`, `bfsdefault`, `bucket`, `upload jar`, `upload model`, `list files`, `download from bucket`, `delete bucket file`
-   - Activate: **exasol-bucketfs**
-
-12. **Notebook-connector connection helpers**
-   - Trigger phrases: `open_pyexasol_connection`, `open_sqlalchemy_connection`, `open_ibis_connection`, `open_bucketfs_bucket`, `open_bucketfs_location`, `get_backend`, `connection helper`, `notebook-connector`
-   - Activate: **exasol-notebook-connections**
-
-13. **Notebook Connector local Docker database workflows**
-   - Trigger phrases: `bring_itde_up`, `restart_itde`, `get_itde_status`, `take_itde_down`, `ITDE`
-   - Activate: **exasol-itde**
-
-14. **Text AI Extension workflows**
-   - Trigger phrases: `Text AI Extension`, `TXAIE`, `deploy_license`, `initialize_text_ai_extension`, `Extraction`, `NamedEntityExtractor`, `PipelineExtractor`, `BranchExtractor`, `StandardExtractor`, `TopicClassifierExtractor`, `zero-shot classification`, `feature extraction`, `PYTHON3_TXAIE`
-   - Activate: **exasol-text-ai**
-
-When a user mentions `Text AI Extension`, `TXAIE`, `deploy_license`,
-`initialize_text_ai_extension`, or extraction classes such as
-`NamedEntityExtractor`, prefer **exasol-text-ai** over the broader
-**exasol-extension-catalog** route.
-
-15. **UDFs and Script Language Containers**
-   - Trigger phrases: `UDF`, `CREATE SCRIPT`, `SCALAR`, `SET script`, `ExaIterator`, `Python UDF`, `Java UDF`, `Lua UDF`, `R UDF`, `SLC`, `Script Language Container`, `exaslct`
-   - Activate: **exasol-udfs**
-
-16. **Exasol Personal setup**
-   - Trigger phrases: `set up Exasol`, `Exasol Personal`, `deploy Exasol`, `install Exasol locally`, `Exasol on my Mac`, `install Exasol on AWS`, `install Exasol on Azure`, `deploy Exasol to Azure`, `Exoscale`, `STACKIT`, `new Exasol database`
-   - Do not activate on a bare cloud-provider or storage token such as `Azure Blob` or `S3` — those belong to the import, export, and document virtual schema routes. This route requires deployment intent (`install`, `deploy`, `set up`) aimed at Exasol itself.
-   - Activate: **exasol-setup-personal**
-
-17. **Distributed ML, machine learning, data mining, iterative HPC**
-   - Trigger phrases: `distributed ML`, `machine learning`, `train model`, `batch inference`,
-     `prediction`, `feature engineering`, `hyperparameter`, `PyTorch`, `TensorFlow`,
-     `scikit-learn`, `RAPIDS`, `GPU model`, `model deployment`, `distributed training`,
-     `ensemble`, `anomaly detection`, `forecasting`, `clustering at scale`, `k-means`,
-     `gradient descent`, `iterative algorithm`, `frequent itemset`, `association rules`,
-     `market basket`, `Apriori`, `FP-Growth`, `data mining`, `SON algorithm`
-   - Activate: **exasol-distributed-ml**
+**Deployment intent is required for Exasol Personal.** Route to
+**exasol-setup-personal** only when the user wants to install, deploy, or set up
+Exasol itself. A bare cloud-provider or storage token such as `Azure Blob`,
+`S3`, or `AWS` is not deployment intent — those belong to the import, export,
+and document virtual schema skills.
 
 ## Dependency Order
 
@@ -157,7 +100,7 @@ When setup and usage both apply, resolve prerequisites first:
 - Infer the route from the task.
 - If the task is ambiguous, ask one concrete question about the desired outcome, not about internal skill names.
 - Prefer `/exasol <task>` in examples.
-- Do not expose implementation labels such as `exasol-database` unless the user is contributing to this repo.
+- Do not expose implementation labels such as **exasol-database** unless the user is contributing to this repo.
 
 ## Safety Rules
 
@@ -168,9 +111,13 @@ When setup and usage both apply, resolve prerequisites first:
 - Follow any stricter safety or validation rules in the selected specialized
   skill.
 
-## Adding Routes
+## Adding a Skill
 
-When adding a new specialized Exasol skill, update this router. Claude command
-files must continue delegating to this shared router rather than copying its
-trigger list. Keep the new skill focused on its domain and put detailed docs in
-`references/`.
+A new skill does not need an entry here. It is reached through its own
+front-matter `description`, which is why that description is the first thing to
+get right — see the skill conventions in `AGENTS.md`. Edit this router only when
+the new skill's scope genuinely overlaps an existing one and a description
+cannot settle which should win, when it introduces a prerequisite that changes
+the dependency order, or when it needs a safety rule that applies beyond itself.
+Claude command files must continue delegating to this shared router rather than
+restating its rules.
