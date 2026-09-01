@@ -12,7 +12,7 @@ A skills marketplace for AI coding agents (Claude Code and OpenAI Codex) that gi
 - `plugins/exasol/.claude-plugin/plugin.json` — plugin metadata; version must match marketplace
 - `plugins/exasol/skills/exasol/SKILL.md` — top-level router skill; public user model is `/exasol <task>` or natural-language Exasol requests
 - `plugins/exasol/skills/*/SKILL.md` — specialized skills with routing algorithms that load only the reference files relevant to the task (progressive disclosure). Skills: `exasol` (top-level router), `exasol-setup-personal` (guided local-or-cloud deployment that defers to the upstream `exasol/exasol-personal` docs), `exasol-database` (SQL/exapump), `exasol-import` (native IMPORT and exapump file movement into Exasol), `exasol-export` (native EXPORT and exapump file movement out of Exasol), `exasol-cloud-storage-extension` (Cloud Storage Extension import/export workflows), `exasol-jdbc-virtual-schemas` (JDBC/database-source virtual schema workflows), `exasol-document-virtual-schemas` (document-file virtual schema workflows for S3/GCS/Azure object storage), `exasol-virtual-schema-adapter-development` (custom virtual schema adapter build, packaging, and debugging workflows), `exasol-extension-catalog` (tool and architecture selection), `exasol-distributed-ml` (distributed ML and GPU workflows), `exasol-udfs` (UDFs/SLCs), `exasol-bucketfs` (BucketFS), `exasol-ai-setup` (notebook-connector setup), `exasol-itde` (local Docker Exasol lifecycle), `exasol-notebook-connections` (Python connection helpers), `exasol-text-ai` (Text AI Extension), `exasol-transformers` (Transformers Extension)
-- `plugins/exasol/commands/*.md` — thin Claude-only `/exasol` and `/bucketfs` entry points that delegate to the shared router. `/bucketfs` exists because BucketFS is the one Exasol task users repeat in a shell-like rhythm — list, upload, delete — where a short command earns itself; it is a typing shortcut, not a separate capability, and import and export earn the same only if they ever acquire that rhythm. That reasoning lives here rather than in the command file, which ships and is loaded on every invocation: shipped files carry instructions an agent acts on, not the decisions behind them
+- `plugins/exasol/commands/*.md` — thin Claude-only `/exasol` and `/bucketfs` entry points that delegate to the shared router. `/bucketfs` exists because BucketFS is the one Exasol task users repeat in a shell-like rhythm — list, upload, delete — where a short command earns itself; it is a typing shortcut, not a separate capability, and import and export earn the same only if they ever acquire that rhythm. The reasoning lives here and not in the command file, which ships — see [Shape](#shape-a-thin-skillmd-routing-into-references)
 - `plugins/exasol/skills/*/references/*.md` — detailed docs loaded on-demand by SKILL.md routing
 - `plugins/exasol/skills/_template/` — contributor skeleton, not a skill; it ships `SKILL.md.template` so that nothing discovers it as one
 
@@ -66,10 +66,16 @@ move into `references/` rather than as a budget to spend. Reference files
 have no such limit; several exceed 400 lines, which is fine precisely because
 they load on demand.
 
-The top-level `exasol` router is the one exception to both limits: it has no
-`references/` and it sits somewhat above 100 lines, because every line in it is
-a precedence, dependency, or safety rule. There is nothing there to move out —
-trimming it would delete a rule, not relocate content.
+The top-level `exasol` router has no `references/` by design; it holds
+precedence, dependency, and safety rules and nothing else.
+
+Everything that ships is read by an agent at run time, so a shipped file carries
+only instructions an agent acts on — never the reasoning behind them. Why a
+skill is split the way it is, why a command exists, when a contributor should
+edit the router: that is all writing for a human maintainer, it belongs on this
+page, and in anything that ships — `SKILL.md`, a reference, a command — it is
+pure cost. The rule of thumb is to ask whether a
+paragraph would change what the agent does next. If not, move it here.
 
 ### The directory name and the front-matter `name` are one identifier
 

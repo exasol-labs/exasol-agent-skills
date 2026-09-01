@@ -7,22 +7,9 @@ description: Top-level router for Exasol work. Use for any Exasol database, exap
 
 Use this skill whenever the user asks about Exasol. The user does not need to know internal skill names. Treat `/exasol <task>` and natural-language Exasol requests as the public interface.
 
-This `SKILL.md` is the shared routing source of truth for OpenAI Codex and
-Claude Code. Claude's `/exasol` and `/bucketfs` commands delegate to it and must
-not copy its rules.
-
-## What This Skill Decides
-
-Each specialized Exasol skill announces its own scope in its front-matter
-`description`, and both agents select skills from those descriptions. This
-router therefore carries no catalogue of skills and no trigger lists — it is an
-arbiter. It holds only what a description structurally cannot express: which
-skill wins when two descriptions both fit, what order to resolve prerequisites
-in, and the safety and interaction rules that apply to every route.
-
-Choose the narrowest skill whose description matches the request. Apply the
-precedence rules below when more than one matches. If several genuinely apply,
-load them in dependency order.
+Choose the narrowest skill whose front-matter `description` matches the request.
+When several match, apply the precedence rules below; when several genuinely
+apply, load them in dependency order.
 
 ## Precedence Rules
 
@@ -110,14 +97,3 @@ When setup and usage both apply, resolve prerequisites first:
   commands, output, or generated files.
 - Follow any stricter safety or validation rules in the selected specialized
   skill.
-
-## Adding a Skill
-
-A new skill does not need an entry here. It is reached through its own
-front-matter `description`, which is why that description is the first thing to
-get right — see the skill conventions in `AGENTS.md`. Edit this router only when
-the new skill's scope genuinely overlaps an existing one and a description
-cannot settle which should win, when it introduces a prerequisite that changes
-the dependency order, or when it needs a safety rule that applies beyond itself.
-Claude command files must continue delegating to this shared router rather than
-restating its rules.
