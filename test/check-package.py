@@ -56,12 +56,11 @@ def load_json(path: Path) -> dict:
 
 
 skill_names: dict[str, Path] = {}
-directory_name_overrides = {"setup-personal": "exasol-setup-personal"}
 for skill_file in sorted(SKILLS.glob("*/SKILL.md")):
     metadata = frontmatter(skill_file)
     name = metadata.get("name", "")
     description = metadata.get("description", "")
-    expected = directory_name_overrides.get(skill_file.parent.name, skill_file.parent.name)
+    expected = skill_file.parent.name
     if not name:
         errors.append(f"{skill_file.relative_to(ROOT)} has no front-matter name")
     elif name != expected:
