@@ -27,6 +27,7 @@
 - Keep the Avro/ORC/Delta precedence rule for import versus Cloud Storage Extension.
 - Drop the router activation check from `test/check-package.py`; reject new trigger lists.
 - Enforce the `AGENTS.md` architecture skill list in `test/check-package.py`: it must name every skill and no others.
+- Skip the `datarobot.com` and `h2o.ai` home pages in the Markdown link check; they refuse GitHub runners without answering.
 - Split `exasol-bucketfs`, `exasol-setup-personal`, and `exasol-udfs` into references.
 - Document BucketFS sync timing, archive extraction, and delete-then-upload locks.
 - Share one exapump connection protocol across the four exapump skills.
