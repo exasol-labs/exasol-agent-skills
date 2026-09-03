@@ -12,6 +12,7 @@ ROUTER = SKILLS / "exasol" / "SKILL.md"
 COMMANDS = sorted((ROOT / "plugins" / "exasol" / "commands").glob("*.md"))
 REFERENCE_FILES = sorted(SKILLS.glob("*/references/*.md"))
 README = ROOT / "README.md"
+AGENTS = ROOT / "AGENTS.md"
 WORKFLOWS = sorted((ROOT / ".github" / "workflows").glob("*.yml"))
 errors: list[str] = []
 
@@ -102,10 +103,11 @@ for skill_file in sorted(SKILLS.glob("*/SKILL.md")):
             f"{skill_file.parent.relative_to(ROOT) / relative_path} is not routed by its SKILL.md"
         )
 
-# The contributor skeleton lives beside the skills it is copied from, but it must
-# not be one: any directory under skills/ holding a SKILL.md is discovered as a
-# real skill and shows up in every user's skill list. It therefore ships
-# SKILL.md.template instead, and is exempt from the SKILL.md requirement only.
+# The template directory sits next to the skills it is copied from, but it is
+# not a skill itself: any directory under skills/ that holds a SKILL.md turns
+# into a skill that every user of the plugin sees in their skill list. The
+# template therefore ships SKILL.md.template, and only the rule that a skill
+# directory must hold a SKILL.md is waived for it.
 TEMPLATE_DIR = "_template"
 for skill_dir in sorted(path for path in SKILLS.iterdir() if path.is_dir()):
     if skill_dir.name == TEMPLATE_DIR:
@@ -121,7 +123,11 @@ for skill_dir in sorted(path for path in SKILLS.iterdir() if path.is_dir()):
 
 known_names = set(skill_names)
 package_guidance = [*sorted(SKILLS.glob("*/SKILL.md")), *REFERENCE_FILES]
-for path in [*package_guidance, *COMMANDS]:
+# The README is only checked one way round. It does not have to mention every
+# skill, because it is written for users, who do not type skill names such as
+# "exasol-notebook-connector-config". But if it does write a skill name in
+# bold, that skill has to exist.
+for path in [*package_guidance, *COMMANDS, README]:
     text = path.read_text(encoding="utf-8")
     for name in sorted(set(re.findall(r"\*\*(exasol(?:-[a-z0-9-]+)?)\*\*", text))):
         if name not in known_names:
@@ -133,13 +139,14 @@ for path in package_guidance:
             f"{path.relative_to(ROOT)} depends on a host-specific user-input tool"
         )
 
-# There is deliberately no assertion that the router names every skill. Since
-# the router became an arbiter it carries only the precedence, dependency, and
-# safety rules that a front-matter description structurally cannot express, so
-# most skills are correctly absent from it and reachability now rests on
-# description quality, which nothing here can check. The reverse direction is
-# still enforced: the shared "references missing skill" scan above reads the
-# router too, so a precedence rule naming a skill that does not exist fails.
+# Nothing here requires the router to name every skill. The router now holds
+# only the rules about which skill wins a conflict, which skill has to run
+# first, and which safety rules apply to several skills at once, so most skills
+# are missing from it on purpose. Whether a skill gets chosen depends on how
+# well its own description is written, and this script cannot judge that. The
+# other direction is still checked: the "references missing skill" scan above
+# reads the router too, so a rule that names a skill which does not exist
+# fails.
 router_text = ROUTER.read_text(encoding="utf-8")
 router_skills = set(re.findall(r"\*\*(exasol-[a-z0-9-]+)\*\*", router_text))
 if "Trigger phrases:" in router_text or "Activate:" in router_text:
@@ -156,6 +163,41 @@ catalog_handoffs = set(
 expected_catalog_handoffs = known_names - {"exasol", "exasol-extension-catalog"}
 for name in sorted(expected_catalog_handoffs - catalog_handoffs):
     errors.append(f"extension catalog has no handoff to {name}")
+
+# AGENTS.md lists the skills the package contains, so that people reading the
+# repository can see what is in it, and nothing else checks that list. Only
+# that one line is read, because AGENTS.md also mentions names that look like
+# skills but are not: the made-up example `Use **exasol-foo**` and the install
+# command `exasol@exasol-skills`. Reading the whole file would report those as
+# errors right away, and a check that reports errors that are not errors ends
+# up being deleted.
+agents_skill_lines = [
+    line
+    for line in AGENTS.read_text(encoding="utf-8").splitlines()
+    if line.startswith("- `plugins/exasol/skills/*/SKILL.md`") and "Skills:" in line
+]
+if len(agents_skill_lines) != 1:
+    errors.append(
+        "AGENTS.md has no single Architecture skill-list line; expected one line "
+        'starting with "- `plugins/exasol/skills/*/SKILL.md`" and containing "Skills:"'
+    )
+else:
+    listed_skills = set(
+        re.findall(
+            r"`(exasol(?:-[a-z0-9-]+)?)`",
+            agents_skill_lines[0].split("Skills:", 1)[1],
+        )
+    )
+    for name in sorted(known_names - listed_skills):
+        errors.append(
+            f"AGENTS.md Architecture skill list does not name {name}; add it to "
+            "the Skills: line"
+        )
+    for name in sorted(listed_skills - known_names):
+        errors.append(
+            f"AGENTS.md Architecture skill list names unknown skill {name}; drop "
+            f"it from the Skills: line or add plugins/exasol/skills/{name}/SKILL.md"
+        )
 
 for command in COMMANDS:
     metadata = frontmatter(command)
@@ -203,6 +245,6 @@ print(
     "router's precedence rules, "
     f"{len(catalog_handoffs)} catalog handoffs, {len(COMMANDS)} Claude command "
     f"delegates, {len(REFERENCE_FILES)} reference files, routed references, "
-    "cross-agent input guidance, README boundaries, workflow keys, "
-    "and manifest versions."
+    "cross-agent input guidance, the AGENTS.md architecture skill list, README "
+    "boundaries, workflow keys, and manifest versions."
 )

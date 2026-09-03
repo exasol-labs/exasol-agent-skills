@@ -26,6 +26,7 @@
 - Move opaque identifiers such as `PYTHON3_TXAIE` and `bfsdefault` into skill descriptions.
 - Keep the Avro/ORC/Delta precedence rule for import versus Cloud Storage Extension.
 - Drop the router activation check from `test/check-package.py`; reject new trigger lists.
+- Enforce the `AGENTS.md` architecture skill list in `test/check-package.py`: it must name every skill and no others.
 - Split `exasol-bucketfs`, `exasol-setup-personal`, and `exasol-udfs` into references.
 - Document BucketFS sync timing, archive extraction, and delete-then-upload locks.
 - Share one exapump connection protocol across the four exapump skills.
