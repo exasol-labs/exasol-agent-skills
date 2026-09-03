@@ -106,5 +106,8 @@ When setup and usage both apply, resolve prerequisites first:
   confirmation.
 - Never expose credentials, tokens, customer data, or secret configuration in
   commands, output, or generated files.
+- Never read files that hold credentials, such as `~/.exapump/config.toml`. Use
+  the tool's own masking commands instead, such as
+  `exapump profile show <name>`.
 - Follow any stricter safety or validation rules in the selected specialized
   skill.

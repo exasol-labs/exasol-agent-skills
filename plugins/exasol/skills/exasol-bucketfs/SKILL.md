@@ -7,8 +7,10 @@ description: "Exasol BucketFS file system management via the `exapump bucketfs` 
 
 BucketFS is Exasol's synchronous distributed file system: whatever is written to
 a bucket is replicated to every cluster node and mounted read-only inside UDFs
-at `/buckets/<service>/<bucket>/<path>`. This skill covers moving files in and
-out of it and referencing them from scripts.
+at `/buckets/<service>/<bucket>/<path>`. Replication takes time, and recognised
+archives are extracted on top of it, so a fresh upload becomes usable only once
+synchronisation finishes. This skill covers moving files in and out of BucketFS
+and referencing them from scripts.
 
 ## Routing Algorithm
 
@@ -31,13 +33,16 @@ An upload for a UDF usually needs routes 1 and 2 together: the command form
 comes from the CLI reference, the path spelling in the SQL from the usage
 reference.
 
-## Before Any Operation
+## Step 0: Establish Connection
 
-Verify that `~/.exapump/config.toml` holds a usable profile before running a
-command. If it does not, name the host, port, bucket, and credential fields the
-user needs and have them enter secrets locally via `exapump profile add <name>`.
-Never ask the user to paste passwords into the conversation, and never echo or
-pass them on the command line.
+Ensure a working exapump profile — BucketFS uses the profile's `bfs_*`
+fields — before running any command:
+
+1. If the user names a profile, test it with `exapump bucketfs ls --profile <name>`; always place `--profile` after the subcommand. Otherwise test the default profile with `exapump bucketfs ls`.
+2. On success, proceed — and keep the same `--profile <name>` after the subcommand on every later command, such as `exapump bucketfs cp --profile <name> <local-file> <bucket-path>`.
+3. On failure, run `exapump profile list` to see which profiles exist.
+4. If profiles exist, present them and ask which to use, then inspect that one with `exapump profile show <name>` — it masks credentials — to confirm the required fields are set. **Never read, `cat`, or print `~/.exapump/config.toml`; it stores credentials in clear text.** If a credential value does appear in any command output, do not repeat it in the conversation.
+5. If no usable profile exists, have the user create one locally with `exapump profile add <name>` (omit `--password` and exapump prompts on a hidden line) or `exapump profile init`, then retry step 1. Never ask the user to paste a password into the conversation, and never pass one as a command-line argument.
 
 ## Safety Rules
 
@@ -47,7 +52,8 @@ pass them on the command line.
 - Before a `cp` that would overwrite an existing BucketFS or local file, inspect
   the target and obtain confirmation.
 - Never print profile passwords or pass them as command-line arguments when a
-  profile can hold them securely.
+  profile can hold them securely. Inspect a profile with
+  `exapump profile show <name>`, never by reading `~/.exapump/config.toml`.
 
 ## Related Skills
 

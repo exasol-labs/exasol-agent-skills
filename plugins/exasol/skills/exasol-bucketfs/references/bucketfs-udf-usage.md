@@ -51,6 +51,10 @@ Note the two path spellings inside one statement: the container URL uses
 `/bfsdefault/default/...` while the client path after `#` uses
 `buckets/bfsdefault/default/...`. Both must point at the same upload.
 
+Neither spelling carries the `.tar.gz` suffix: BucketFS extracts the archive and
+UDFs see the extracted directory `slc/my_slc`. Wait for extraction to finish
+before running a UDF against the new container.
+
 For building the container in the first place, and for system-wide activation,
 use **exasol-udfs**.
 
@@ -63,4 +67,6 @@ exapump bucketfs rm old_model.pkl             # Remove an outdated file
 
 Confirm the exact bucket and path before removing anything — BucketFS is not
 covered by database backups, so a deletion here is not recoverable from a
-database restore.
+database restore. To replace a file, upload the new version under a new name
+instead of deleting first: an upload shortly after a delete of the same path
+can fail.

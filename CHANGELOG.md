@@ -27,6 +27,9 @@
 - Keep the Avro/ORC/Delta precedence rule for import versus Cloud Storage Extension.
 - Drop the router activation check from `test/check-package.py`; reject new trigger lists.
 - Split `exasol-bucketfs`, `exasol-setup-personal`, and `exasol-udfs` into references.
+- Document BucketFS sync timing, archive extraction, and delete-then-upload locks.
+- Share one exapump connection protocol across the four exapump skills.
+- Inspect profiles with `exapump profile show`; never read `~/.exapump/config.toml`.
 - Rename the extension catalog's routing heading to Category Selection.
 - Remove hardcoded product and driver versions from the catalog references.
 - Move contributor rationale out of the shipped router and `/bucketfs` into `AGENTS.md`.

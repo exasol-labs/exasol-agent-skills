@@ -36,6 +36,10 @@ ask. Never run a walkthrough phase without the upstream document it names.
 - **Use `exasol connect`, not `exapump`, for SQL during setup.** The launcher's
   client reads deployment credentials automatically; this skill never installs
   or configures exapump.
+- **Never read files that may hold credentials**, including the launcher's
+  deployment directory and provider credential or environment files. Use the
+  launcher's own commands, such as `exasol info` and `exasol connect`, and never
+  print a credential value into the conversation.
 - **Warn before cloud installs.** They take 10–20 minutes, must not be
   interrupted, and incur cloud costs. An interrupted install can leave billable
   resources behind.

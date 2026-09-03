@@ -12,13 +12,11 @@ This skill covers only workflows that move data out of Exasol.
 Ensure a working `exapump` profile before giving terminal workflows that use
 `exapump export`:
 
-1. If the user mentions a specific profile name, test it with `exapump sql --profile <name> "SELECT 1"`; always place `--profile` after the subcommand.
-2. Otherwise, test the default profile with `exapump sql "SELECT 1"`.
-3. If the check fails, run `exapump profile list`.
-4. If profiles exist, ask which one to use and retry with `exapump sql --profile <name> "SELECT 1"`; keep `--profile` after the subcommand.
-5. If a non-default profile is selected, include the same `--profile <name>` after the subcommand on subsequent `exapump` commands, such as `exapump export --profile <name> --table <schema.table> --output <file> --format <format>`.
-6. If no profiles exist, tell the user to run `exapump profile add default` and retry.
-7. Never read or reference the exapump configuration file.
+1. If the user names a profile, test it with `exapump sql --profile <name> "SELECT 1"`; always place `--profile` after the subcommand. Otherwise test the default profile with `exapump sql "SELECT 1"`.
+2. On success, proceed — and keep the same `--profile <name>` after the subcommand on every later command, such as `exapump export --profile <name> --table <schema.table> --output <file> --format <format>`.
+3. On failure, run `exapump profile list` to see which profiles exist.
+4. If profiles exist, present them and ask which to use, then inspect that one with `exapump profile show <name>` — it masks credentials — to confirm the required fields are set. **Never read, `cat`, or print `~/.exapump/config.toml`; it stores credentials in clear text.** If a credential value does appear in any command output, do not repeat it in the conversation.
+5. If no usable profile exists, have the user create one locally with `exapump profile add <name>` (omit `--password` and exapump prompts on a hidden line) or `exapump profile init`, then retry step 1. Never ask the user to paste a password into the conversation, and never pass one as a command-line argument.
 
 Trigger when the user mentions **EXPORT**, **EXPORT INTO**, **export table**, **export local file**, **exapump export**, **export CSV**, **export Parquet**, **export to S3**, **export to Azure Blob**, **export to GCS**, **export to FTP**, **export to SFTP**, **export to HTTP**, **export to HTTPS**, **REJECT LIMIT** with export intent, or **CREATE CONNECTION** together with export target setup intent.
 
