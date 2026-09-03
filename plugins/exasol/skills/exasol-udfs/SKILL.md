@@ -1,24 +1,19 @@
 ---
 name: exasol-udfs
-description: "Exasol User Defined Functions (UDFs) and Script Language Containers (SLCs). Covers CREATE SCRIPT, SCALAR and SET functions, ExaIterator API, Python/Java/Lua/R scripts, BucketFS file access, GPU-accelerated UDFs, and building/deploying custom Script Language Containers with exaslct."
+description: "Exasol User Defined Functions (UDFs) and Script Language Containers (SLCs). Covers `CREATE SCRIPT`, SCALAR and SET functions, variadic scripts with `EMITS(...)` and `default_output_columns`, the `ExaIterator` and `ExaMetadata` APIs, Python, Java, Lua, and R scripts, Lua execute scripts and `pquery`, BucketFS file access, GPU-accelerated UDFs, `ALTER SESSION SET SCRIPT_LANGUAGES` activation, and building custom Script Language Containers with `exaslct`, `exaslpm`, and `packages.yml`."
 ---
 
 # Exasol UDFs & Script Language Containers
 
-Trigger when the user mentions **UDF**, **user defined function**, **CREATE SCRIPT**, **ExaIterator**, **SCALAR**, **SET EMITS**, **BucketFS**, **script language container**, **SLC**, **exaslct**, **exaslpm**, **packages.yml**, **custom packages**, **GPU UDF**, **ctx.emit**, **ctx.next**, **variadic script**, **dynamic parameters**, **EMITS(...)**, **default_output_columns**, **execute script**, **pquery**, **Lua execute**, **in-database orchestration**, or any UDF/SLC-related topic.
+UDFs extend SQL with custom logic that runs inside the Exasol cluster: per-row
+transforms, custom aggregation, ML inference against a model in BucketFS,
+external API calls, and DataFrame batch processing. They execute in a Script
+Language Container — a Docker-based runtime whose contents you can replace when
+the default packages are not enough.
 
-## When to Use UDFs
+## Two Decisions Before Any Route
 
-Use UDFs to extend SQL with custom logic that runs inside the Exasol cluster:
-- Per-row transforms (cleaning, parsing, hashing)
-- Custom aggregation across grouped rows
-- ML model inference (load model from BucketFS, score rows)
-- Calling external APIs from within SQL
-- Batch processing with DataFrames
-
-Use **Lua execute scripts** (not UDFs) when you need to orchestrate multi-step SQL workflows or iterative algorithms from within the database — see [references/lua-execute-scripts.md](references/lua-execute-scripts.md).
-
-## SCALAR vs SET Decision Guide
+**SCALAR or SET?**
 
 | | SCALAR | SET |
 |---|--------|-----|
@@ -28,7 +23,7 @@ Use **Lua execute scripts** (not UDFs) when you need to orchestrate multi-step S
 | **SQL usage** | `SELECT udf(col) FROM t` | `SELECT udf(col) FROM t GROUP BY key` |
 | **Use case** | Per-row transforms | Aggregation, ML batch predict, multi-row emit |
 
-## Language Selection
+**Which language?**
 
 | Language | Startup | Best For | Expandable via SLC? |
 |----------|---------|----------|---------------------|
@@ -37,254 +32,44 @@ Use **Lua execute scripts** (not UDFs) when you need to orchestrate multi-step S
 | **Lua 5.4** | <10ms | Low-latency transforms, row-level security | No (natively compiled into Exasol) |
 | **R** (4.4) | ~200ms | Statistical modeling, R model deployment | Yes |
 
-## CREATE SCRIPT Syntax
+## Routing Algorithm
 
-### Python SCALAR
+Choose the narrowest matching route. Several often apply — a Python UDF that
+reads a model needs routes 1 and 2 — so load all matching references.
 
-```sql
-CREATE OR REPLACE PYTHON3 SCALAR SCRIPT my_schema.clean_text(input VARCHAR(10000))
-RETURNS VARCHAR(10000) AS
-import re
-def run(ctx):
-    if ctx.input is None:
-        return None
-    return re.sub(r'[^\w\s]', '', ctx.input).strip().lower()
-/
+1. **Write the `CREATE SCRIPT` statement** — syntax for any language, variadic scripts
+   - Trigger phrases: `CREATE SCRIPT`, `SCALAR`, `SET EMITS`, `RETURNS`, `variadic script`, `dynamic parameters`, `EMITS(...)`, `default_output_columns`, `%scriptclass`, `%jar`, `R UDF`, `Lua UDF`
+   - Load: `references/create-script-syntax.md`
 
-SELECT clean_text(description) FROM products;
-```
+2. **Python UDF internals** — context API, type mapping, DataFrames, BucketFS reads, testing
+   - Trigger phrases: `Python UDF`, `ctx.emit`, `ctx.next`, `get_dataframe`, `pandas`, `pickle`, `load model`, `udf-mock-python`, `dynamic import`, `memory limit`
+   - Load: `references/udf-python.md`
 
-### Python SET
+3. **Java or Lua UDF internals** — `ExaIterator`, `ExaMetadata`, JARs, JVM options, adapters, Lua libraries
+   - Trigger phrases: `Java UDF`, `ExaIterator`, `ExaMetadata`, `getString`, `%jar`, `JVM options`, `script imports`, `ADAPTER script`, `remote debugging`, `Lua context`
+   - Load: `references/udf-java-lua.md`
 
-```sql
-CREATE OR REPLACE PYTHON3 SET SCRIPT my_schema.top_n(
-    item VARCHAR(200), score DOUBLE, n INT
-)
-EMITS (item VARCHAR(200), score DOUBLE) AS
-def run(ctx):
-    rows = []
-    limit = ctx.n
-    while True:
-        rows.append((ctx.item, ctx.score))
-        if not ctx.next():
-            break
-    rows.sort(key=lambda x: x[1], reverse=True)
-    for item, score in rows[:limit]:
-        ctx.emit(item, score)
-/
+4. **Build or deploy a Script Language Container** — flavors, packages, activation, troubleshooting
+   - Trigger phrases: `SLC`, `Script Language Container`, `exaslct`, `exaslpm`, `packages.yml`, `custom packages`, `flavor`, `conda`, `CUDA`, `GPU UDF`, `SCRIPT_LANGUAGES`, `ALTER SESSION`, `ALTER SYSTEM`, `security-scan`
+   - Load: `references/slc-reference.md`
 
-SELECT top_n(product, revenue, 5) FROM sales GROUP BY category;
-```
+5. **Orchestrate SQL from inside the database** — not a UDF
+   - Trigger phrases: `execute script`, `Lua execute`, `pquery`, `in-database orchestration`, `iterative algorithm`, `multi-step SQL workflow`
+   - Load: `references/lua-execute-scripts.md`
 
-### Java SCALAR
+Route 5 is a genuine fork, not a variant of the others: use a Lua execute script
+rather than a UDF when the task is to orchestrate multi-step or iterative SQL
+workflows from within the database.
 
-```sql
-CREATE OR REPLACE JAVA SCALAR SCRIPT my_schema.hash_value(input VARCHAR(2000))
-RETURNS VARCHAR(64) AS
-import java.security.MessageDigest;
+## Performance Notes
 
-class HASH_VALUE {
-    static String run(ExaMetadata exa, ExaIterator ctx) throws Exception {
-        String input = ctx.getString("input");
-        if (input == null) return null;
-        MessageDigest md = MessageDigest.getInstance("SHA-256");
-        byte[] hash = md.digest(input.getBytes("UTF-8"));
-        StringBuilder hex = new StringBuilder();
-        for (byte b : hash) hex.append(String.format("%02x", b));
-        return hex.toString();
-    }
-}
-/
-```
+- **Load once, use many**: load models and other resources at module level, outside the row loop.
+- **Use SET for batching**: collect rows into a list or DataFrame and process in bulk.
+- **Lua for low latency**: avoids JVM and Python startup overhead entirely.
+- **Parallelism is automatic**: UDFs run on all cluster nodes simultaneously.
+- **GPU work needs a CUDA SLC**: the UDF API is unchanged, but the container and host driver are not — see `references/slc-reference.md`.
 
-### Java with External JARs
+## Related Skills
 
-```sql
-CREATE OR REPLACE JAVA SCALAR SCRIPT my_schema.custom(input VARCHAR(2000))
-RETURNS VARCHAR(2000) AS
-  %scriptclass com.mycompany.MyProcessor;
-  %jar /buckets/bfsdefault/default/jars/my-lib.jar;
-/
-```
-
-### Lua SCALAR
-
-```sql
-CREATE OR REPLACE LUA SCALAR SCRIPT my_schema.my_avg(a DOUBLE, b DOUBLE)
-RETURNS DOUBLE AS
-function run(ctx)
-    if ctx.a == nil or ctx.b == nil then return null end
-    return (ctx.a + ctx.b) / 2
-end
-/
-```
-
-### R SET (ML Prediction)
-
-```sql
-CREATE OR REPLACE R SET SCRIPT my_schema.predict(
-    feature1 DOUBLE, feature2 DOUBLE
-)
-EMITS (prediction DOUBLE) AS
-run <- function(ctx) {
-    model <- readRDS("/buckets/bfsdefault/default/models/model.rds")
-    repeat {
-        if (!ctx$next_row(1000)) break
-        df <- data.frame(f1 = ctx$feature1, f2 = ctx$feature2)
-        ctx$emit(predict(model, newdata = df))
-    }
-}
-/
-```
-
-## Variadic Scripts (Dynamic Parameters)
-
-Use `...` to accept any number of input columns, output columns, or both.
-
-### Dynamic Input
-
-```sql
-CREATE OR REPLACE PYTHON3 SCALAR SCRIPT schema.to_json(...) RETURNS VARCHAR(2000000) AS
-import simplejson
-def run(ctx):
-    obj = {}
-    for i in range(0, exa.meta.input_column_count, 2):
-        obj[ctx[i]] = ctx[i+1]   # caller passes: name, value, name, value, ...
-    return simplejson.dumps(obj)
-/
-
-SELECT to_json('fruit', fruit, 'price', price) FROM products;
-```
-
-- Access by index: `ctx[i]` — **0-based in Python/Java, 1-based in Lua/R**
-- Parameter names inside a variadic script are always `0`, `1`, `2`, ... — never the original column names
-- `exa.meta.input_column_count` — total number of input columns
-- `exa.meta.input_columns[i].name / .sql_type` — per-column metadata
-
-### Dynamic Output (`EMITS(...)`)
-
-Declare `EMITS(...)` in `CREATE SCRIPT`. At call time, columns must be provided one of two ways:
-
-| Method | Where specified | Use when |
-|--------|----------------|----------|
-| **EMITS in SELECT** | Caller's SQL query | Output structure depends on data values |
-| **`default_output_columns()`** | Script body | Output structure derivable from input column count/types alone |
-
-```sql
--- EMITS in SELECT (required when output depends on data content)
-SELECT split_csv(line) EMITS (a VARCHAR(100), b VARCHAR(100), c VARCHAR(100)) FROM t;
-```
-
-```python
-# default_output_columns() — called before run(), no ctx/data access available
-def default_output_columns():
-    parts = []
-    for i in range(exa.meta.input_column_count):
-        parts.append("c" + exa.meta.input_columns[i].name + " " + exa.meta.input_columns[i].sql_type)
-    return ",".join(parts)
-```
-
-If neither is provided, the query fails with:
-> *The script has dynamic return arguments. Either specify the return arguments in the query via EMITS or implement the method default_output_columns in the UDF.*
-
-
-## ExaIterator API Quick Reference
-
-### Python
-
-| Method/Property | SCALAR | SET | Description |
-|----------------|--------|-----|-------------|
-| `ctx.<column>` | yes | yes | Access input column value |
-| `return value` | yes | no | Return single value (RETURNS) |
-| `ctx.emit(v1, v2, ...)` | no | yes | Emit output row (EMITS) |
-| `ctx.emit(dataframe)` | no | yes | Emit DataFrame as rows |
-| `ctx.next()` | no | yes | Advance to next row; returns `False` at end |
-| `ctx.size()` | no | yes | Number of rows in current group |
-| `ctx.reset()` | no | yes | Reset iterator to first row |
-| `ctx.get_dataframe(num_rows, start_col)` | no | yes | Get rows as pandas DataFrame |
-
-**Important:** There is no `emit_dataframe()` method — use `ctx.emit(dataframe)` to emit a DataFrame.
-
-### Java
-
-| Method | Description |
-|--------|-------------|
-| `ctx.getString("col")` | Get string value |
-| `ctx.getInteger("col")` | Get integer value |
-| `ctx.getDouble("col")` | Get double value |
-| `ctx.getBigDecimal("col")` | Get decimal value |
-| `ctx.getDate("col")` | Get date value |
-| `ctx.getTimestamp("col")` | Get timestamp value |
-| `ctx.next()` | Advance to next row (SET only) |
-| `ctx.emit(v1, v2, ...)` | Emit output row (SET only) |
-| `ctx.size()` | Row count in group (SET only) |
-| `ctx.reset()` | Reset to first row (SET only) |
-
-## BucketFS File Access
-
-All languages can read files from BucketFS at `/buckets/<service>/<bucket>/<path>`:
-
-```python
-# Python — load a pickled ML model
-import pickle
-with open('/buckets/bfsdefault/default/models/model.pkl', 'rb') as f:
-    model = pickle.load(f)
-```
-
-```java
-// Java — reference JARs via %jar directive
-%jar /buckets/bfsdefault/default/jars/my-library.jar;
-```
-
-**Performance tip:** Load models/resources once (outside the row loop or in a module-level variable), not per-row.
-
-## GPU Acceleration (Exasol 2025.2+)
-
-Exasol supports GPU-accelerated UDFs via CUDA-enabled Script Language Containers:
-
-- Use `template-Exasol-8-python-3.{10,12}-cuda-conda` flavors
-- Requires NVIDIA driver on the Exasol host
-- Install GPU libraries (PyTorch, TensorFlow, RAPIDS) via conda in the SLC
-- Standard UDF API — no code changes needed beyond importing GPU libraries
-
-## Script Language Containers (SLC) Overview
-
-UDFs run inside Script Language Containers — Docker-based runtime environments. The default SLC includes standard libraries. When you need additional packages (e.g., scikit-learn, PyTorch, custom JARs), build a custom SLC.
-
-### When You Need a Custom SLC
-
-- Installing pip/conda packages not in the default container
-- Adding system libraries (apt packages)
-- Using a different Python version (3.10 vs 3.12)
-- Enabling GPU/CUDA support
-- Adding R packages from CRAN
-
-### Quick Activation
-
-```sql
--- Activate for current session
-ALTER SESSION SET SCRIPT_LANGUAGES='PYTHON3=localzmq+protobuf:///<bfs-name>/<bucket>/<path>/<container>?lang=python#buckets/<bfs-name>/<bucket>/<path>/<container>/exaudf/exaudfclient_py3';
-
--- Activate system-wide (requires admin)
-ALTER SYSTEM SET SCRIPT_LANGUAGES='...';
-```
-
-### Install the Build Tool
-
-```bash
-pip install exasol-script-languages-container-tool
-```
-
-## Performance Tips
-
-- **Load once, use many**: Load models/resources outside the row loop
-- **Use SET for batching**: Collect rows into a list/DataFrame, process in bulk
-- **Lua for low latency**: Avoids JVM/Python startup overhead
-- **Parallelism is automatic**: UDFs run on all cluster nodes simultaneously
-
-## Detailed References
-
-- **Python patterns** — context API, DataFrame pattern, type mapping, testing: [references/udf-python.md](references/udf-python.md)
-- **Java & Lua patterns** — ExaMetadata API, JARs, adapters, Lua libraries: [references/udf-java-lua.md](references/udf-java-lua.md)
-- **Building custom SLCs** — exaslct CLI, flavors, deployment, troubleshooting, and package customization routed by SLC version (`packages.yml`/exaslpm for SLC 11.0.0+, legacy package files for earlier): [references/slc-reference.md](references/slc-reference.md)
-- **Lua execute scripts** — `pquery` API, in-database orchestration, iterative workflows: [references/lua-execute-scripts.md](references/lua-execute-scripts.md)
+- **exasol-bucketfs**: uploading the JARs, models, and containers that UDFs read.
+- **exasol-distributed-ml**: end-to-end distributed training and inference pipelines built on these UDFs.

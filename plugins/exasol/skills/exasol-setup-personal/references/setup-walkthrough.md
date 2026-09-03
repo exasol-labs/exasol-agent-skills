@@ -1,47 +1,4 @@
----
-name: exasol-setup-personal
-description: Guided setup of Exasol Personal — a free Exasol database running locally on a Mac or deployed to your own AWS, Azure, Exoscale, or STACKIT account. Picks the right deployment flavor, then follows the official exasol/exasol-personal instructions.
----
-
-# Exasol Personal Setup Skill
-
-Trigger when the user mentions **Exasol Personal**, **setup Exasol**, **deploy Exasol**, **install Exasol**, **personal database**, **Exasol locally**, **Exasol on AWS/Azure/Exoscale/STACKIT**, or asks to **get started with Exasol**.
-
-## How This Skill Works
-
-This skill provides **high-level direction only**: it helps the user pick the right deployment flavor and keeps the overall setup on track. It deliberately does **not** duplicate installation commands, account-setup steps, or credential details.
-
-**The official repository is the single source of truth:**
-
-```
-https://github.com/exasol/exasol-personal
-```
-
-Once the flavor is chosen, fetch the relevant upstream documents and follow them exactly. Never reproduce commands from memory — Exasol Personal changes frequently, and stale commands break setups.
-
-Upstream documents to fetch (raw URLs, `main` branch):
-
-| Document | Fetch when |
-|---|---|
-| `README.md` | Always — the master instructions |
-| `HOWTO_SETUP_AWS_ACCOUNT.md` | AWS cloud deployment |
-| `HOWTO_SETUP_AZURE_ACCOUNT.md` | Azure cloud deployment |
-| `HOWTO_SETUP_EXOSCALE_ACCOUNT.md` | Exoscale cloud deployment |
-| `HOWTO_SETUP_STACKIT_ACCOUNT.md` | STACKIT cloud deployment |
-| `doc/presets.md` | Custom or external presets |
-
-Raw URL pattern:
-```
-https://raw.githubusercontent.com/exasol/exasol-personal/main/<document>
-```
-
-**If a fetch fails** — the host is unreachable, the network is restricted, or the document has moved — do not improvise the missing steps from memory, and do not fall back to the outdated commands you may recall. Tell the user which document could not be retrieved and why, then offer to either retry, or have them open the document themselves and paste the relevant section:
-
-```
-https://github.com/exasol/exasol-personal/blob/main/<document>
-```
-
-Only the launcher-state commands this skill names directly (`exasol version`, `exasol info`, `exasol connect`, `exasol deployments list`, `exasol diag local`) are safe to run without the upstream docs; anything that installs, provisions, or destroys is not.
+# Exasol Personal Setup Walkthrough
 
 Ask the user explicitly at every question, confirmation, and decision point.
 Use the host agent's structured user-input mechanism when one is available;
@@ -49,25 +6,11 @@ otherwise ask a concise question in the conversation. Never assume answers or
 skip required confirmations. This instruction applies equally to Claude Code
 and OpenAI Codex.
 
-## Running SQL During Setup
-
-**Use the launcher's built-in SQL client, `exasol connect`, for every SQL statement and script this skill executes — never `exapump`.**
-
-`exasol connect` is part of the launcher the user just installed, reads its credentials from the deployment directory automatically, and works identically for local and cloud deployments. Requiring an exapump profile mid-setup adds a second tool and a second set of credentials before the database is even verified.
-
-```bash
-exasol connect                          # interactive shell
-exasol connect -c "SELECT 1"            # inline statement(s), ';'-separated
-exasol connect -f script.sql            # run a script file
-exasol connect -d <name> -c "SELECT 1"  # target a named deployment
-exasol connect --csv -c "SELECT * FROM PRODUCTS" > products.csv
-```
-
-Non-interactive runs (`-c` / `-f`) stop at the first failing statement and exit non-zero, so use them when you need to detect errors. Add `--json` for machine-readable output.
-
-This skill never installs or configures `exapump`. After setup, use
-**exasol-import** for local uploads, **exasol-export** for local exports, and
-**exasol-database** for general SQL or exapump profile work.
+Fetch the upstream documents named in `references/upstream-docs.md` from the
+`exasol/exasol-personal` GitHub repository before running anything that
+installs, provisions, or destroys. Every bare document name in this
+walkthrough — `README.md`, `HOWTO_SETUP_<PROVIDER>_ACCOUNT.md` — is a file in
+that repository, never a local file.
 
 ---
 
@@ -203,18 +146,3 @@ Tell the user they can now use `/exasol` or just describe what they want in natu
 - **Load their own data** — CSV or Parquet files into new tables
 - **Explore the schema** — list schemas, tables, and columns
 - **Run UDFs** — on local deployments, install a script language container first
-
-The shared Exasol router activates **exasol-database** for SQL and general
-exapump work, **exasol-import** or **exasol-export** for data movement,
-**exasol-bucketfs** for BucketFS, and **exasol-udfs** for UDF/SLC work.
-
----
-
-## Troubleshooting
-
-Do not improvise fixes. Fetch the upstream documentation first:
-
-- **Local deployment misbehaving:** run `exasol diag local` for a JSON snapshot of VM status, guest IP, bound ports, and database readiness (README, **Start and stop Exasol Personal**).
-- **Interrupted or failed cloud install:** rerun `exasol install <preset>` with the same presets to retry safely, or `exasol destroy` to clean up (README, **Deployments and Named Deployments**).
-- **Cached runtime artifacts:** `exasol cache list`, `exasol cache clean`, `exasol diag cache`.
-- **Anything else:** re-read the relevant upstream section, or point the user at the [Exasol Community](https://community.exasol.com) using the `exasol-personal` tag.

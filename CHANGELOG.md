@@ -2,6 +2,7 @@
 
 ## v0.25.0
 
+- Rename the `exasol-ai-setup` skill to `exasol-notebook-connector-config`; it configures notebook-connector, not the AI Lab product.
 - Publish releases only from explicit matching version tags.
 - Run CI before publishing and serialize release runs.
 - Keep interactive installer prompts visible on the terminal.
@@ -17,7 +18,28 @@
 - Document the standard, conda, CUDA-conda, and R flavor `packages.yml` layouts for the current package format.
 - Document the skill conventions CI cannot check in `AGENTS.md`.
 - Add the contributor skeleton `plugins/exasol/skills/_template/`.
+- State that the Exasol Personal setup documents are fetched from the `exasol/exasol-personal` GitHub repository, not read locally.
 - Point the README Contributing section at `AGENTS.md` and the skeleton.
+- Rename the `setup-personal` folder to `exasol-setup-personal` to match its skill name.
+- Codex `skills update` may offer to delete the renamed skill; decline it.
+- Trim the `exasol` router to an arbiter: delete its 17 routes, keep the precedence rules.
+- Move opaque identifiers such as `PYTHON3_TXAIE` and `bfsdefault` into skill descriptions.
+- Keep the Avro/ORC/Delta precedence rule for import versus Cloud Storage Extension.
+- Drop the router activation check from `test/check-package.py`; reject new trigger lists.
+- Split `exasol-bucketfs`, `exasol-setup-personal`, and `exasol-udfs` into references.
+- Document BucketFS sync timing, archive extraction, and delete-then-upload locks.
+- Share one exapump connection protocol across the four exapump skills.
+- Inspect profiles with `exapump profile show`; never read `~/.exapump/config.toml`.
+- Rename the extension catalog's routing heading to Category Selection.
+- Remove hardcoded product and driver versions from the catalog references.
+- Move contributor rationale out of the shipped router and `/bucketfs` into `AGENTS.md`.
+- Split router precedence for SLC activation versus BucketFS staging, and for
+  a local Docker database versus an Exasol Personal deployment.
+- Drop the `query` trigger that shadowed every UDF request in `exasol-udfs`.
+- Load the upstream-doc rules alongside Exasol Personal troubleshooting.
+- Stop the Claude commands from citing router routes that no longer exist.
+- Validate every reference on a multi-reference `Load:` line.
+- Ignore `.idea/`.
 
 ## v0.24.1
 

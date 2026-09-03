@@ -1,6 +1,6 @@
 ---
 name: exasol-virtual-schema-adapter-development
-description: "Build, install, validate, and debug custom Exasol virtual schema adapters. Covers source-specific JDBC dialect implementation with virtual-schema-common-jdbc, custom document-file adapter code boundaries, JAR packaging, BucketFS deployment, adapter script setup, EXPLAIN VIRTUAL validation, and adapter-side remote debugging workflows."
+description: "Build, install, validate, and debug custom Exasol virtual schema adapters. Covers source-specific JDBC dialect implementation with `virtual-schema-common-jdbc` including `SqlDialect`, metadata reader behavior, type mapping, and pushdown capabilities, custom document-file adapter code boundaries, custom adapter properties, JAR packaging, BucketFS deployment, adapter script setup, `EXPLAIN VIRTUAL` validation, and adapter-side remote debugging workflows."
 ---
 
 # Exasol Virtual Schema Adapter Development Skill

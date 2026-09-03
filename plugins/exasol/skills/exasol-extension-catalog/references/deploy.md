@@ -38,9 +38,9 @@ Version-specific notes are source-check reminders. Verify linked release notes o
 
 - **Use for**: choosing or verifying Exasol database artifacts for AWS own-account, on-prem, Docker, and download-portal deployments.
 - **Best when**: user asks for current/LTS release packages, Docker image tags, release notes, artifact verification, public keys, or supply-chain checks.
-- **Recent update to verify**: Exasol 2025.1.12 LTS was announced with critical bug fixes; JDBC 26.2.8, ODBC 26.2.7, EXAplus 26.2.8, and an ODBC Linux ARM64 driver were also announced. Verify release notes and download portal state before giving version-specific advice.
+- **Versions**: read the current LTS and latest database releases, and the current JDBC, ODBC, EXAplus, and ADO.NET driver builds, from the release-notes index and the download portal below. Do not answer from memory. A Linux ARM64 ODBC build exists.
 - **Links**:
-  - https://docs.exasol.com/db/latest/release_notes_db/2025.1.12.htm
+  - https://docs.exasol.com/db/latest/release_notes.htm
   - https://downloads.exasol.com/
   - https://hub.docker.com/r/exasol/docker-db
   - https://docs.exasol.com/db/latest/connect_exasol/public_keys.htm
@@ -73,11 +73,11 @@ Version-specific notes are source-check reminders. Verify linked release notes o
 
 - **Use for**: UDF runtime packaging.
 - **Best when**: user needs custom Python/R/Java/Lua libraries, runtime dependencies, or AI/ML libraries inside Exasol UDFs.
-- **Recent update to verify**: Script Languages Release 11.2.0 adds ARM support for Conda template flavors, improves package-manager metadata preservation for SBOM tools, loosens APT dependency pins, and simplifies Docker image tags.
+- **Capabilities to look for in the current release**: ARM support for Conda template flavors, package-manager metadata preservation so SBOM tools can read the generated images, APT dependency pinning, and Docker image tag layout. Read the releases index below for which release carries which.
 - **Links**:
   - https://github.com/exasol/script-languages
   - https://github.com/exasol/script-languages-release
-  - https://github.com/exasol/script-languages-release/releases/tag/11.2.0
+  - https://github.com/exasol/script-languages-release/releases
   - https://docs.exasol.com/db/latest/database_concepts/udf_scripts.htm
 
 ## Exasol public GPG keys
@@ -94,7 +94,7 @@ Version-specific notes are source-check reminders. Verify linked release notes o
 - **Notable modules**: `exasol_query`, `exasol_user`.
 - **Links**:
   - https://github.com/exasol/ansible-collection
-  - https://github.com/exasol/ansible-collection/releases/tag/0.1.0
+  - https://github.com/exasol/ansible-collection/releases
 
 ## Ansible Runner Wrapper
 

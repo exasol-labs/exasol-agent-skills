@@ -359,6 +359,12 @@ Skip building entirely — download from [GitHub releases](https://github.com/ex
 - CUDA driver older than v575: also install `cuda-compat` 12.9.1
 - Minimum Exasol version: 2025.1+
 - Use `-cuda-conda` template flavors
+- Install the GPU libraries themselves (PyTorch, TensorFlow, RAPIDS) as conda
+  packages in the flavor's `packages.yml`, the same way as any other conda
+  package — see "CUDA-Conda Python Flavor" above
+- The UDF API is unchanged: a GPU UDF is an ordinary `CREATE SCRIPT` that
+  imports a GPU library. No code changes are needed beyond the imports; the
+  container and the host driver are what differ
 
 ## Troubleshooting
 

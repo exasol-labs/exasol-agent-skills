@@ -1,6 +1,6 @@
 ---
 name: exasol-extension-catalog
-description: Catalog and selection guide for Exasol tools, extensions, connectors, integrations, and architecture patterns. Use when the primary intent is comparison, discovery, support-status research, or architecture selection; hand operational work to the selected dedicated skill.
+description: "Catalog and selection guide for Exasol tools, extensions, connectors, integrations, and architecture patterns. Use when the primary intent is comparison, discovery, support-status research, or architecture selection rather than executing a workflow; hand operational work to the selected dedicated skill. Covers deploy, load, explore, enrich, surface, and scale capability families, including named products with no dedicated skill of their own such as Lakehouse Turbo, the Exasol MCP Server, Governed SQL / Text-to-SQL MCP Server, Agent Control Plane, Extension Manager, Terraform and Ansible tooling, and BI, ETL, and warehouse integrations such as Databricks, SAP, Kafka, Power BI, and Tableau."
 ---
 
 # Exasol Extension Catalog Skill
@@ -37,12 +37,18 @@ The catalog organizes Exasol capabilities into six categories:
 5. For destructive operations, deployment changes, credential management, RBAC, Terraform, or agent automation, include safety and rollback guidance.
 6. For agentic workflows, prefer governed patterns: MCP Server, Agent Control Plane, semantic layer, SQL guardrails, audit logs, and least-privilege credentials.
 
-## Routing Algorithm
+## Category Selection
 
-For catalog requests, choose the narrowest matching category and load only the
-matching reference files. If multiple categories apply, load all relevant
-references before answering. Once the user chooses a concrete workflow, hand
-off to its dedicated skill instead of repeating operational instructions here.
+The trigger phrases below choose a *reference file within this catalog*; they do
+not decide that this skill runs. That decision is made by intent: a request to
+compare options, discover what exists, check support status, or select an
+architecture belongs here, while a request to execute, configure, or
+troubleshoot a named product belongs to that product's dedicated skill.
+
+Choose the narrowest matching category and load only the matching reference
+files. If multiple categories apply, load all relevant references before
+answering. Once the user chooses a concrete workflow, hand off to its dedicated
+skill instead of repeating operational instructions here.
 
 1. **Run Exasol somewhere or operate deployment tooling**
    - Trigger phrases: `deploy`, `install`, `Exasol SaaS`, `Exasol Personal`, `Exasol Local`, `exasol-local-vm`, `STACKIT`, `Docker DB`, `Terraform`, `OpenTofu`, `Ansible`, `scheduler`, `public keys`, `artifact verification`, `Extension Manager`
@@ -68,15 +74,6 @@ off to its dedicated skill instead of repeating operational instructions here.
    - Trigger phrases: `scale`, `performance`, `governance`, `RBAC`, `observability`, `CloudWatch`, `telemetry`, `SBOM`, `testing`, `CI`, `pytest-slc`, `SLC testing`, `change management`, `data protection`, `warehouse automation`
    - Load: `references/scale.md`
 
-## Fast Routing Guide
-
-- User wants to run Exasol somewhere: use **DEPLOY**.
-- User wants to bring data into Exasol or query data elsewhere: use **LOAD**.
-- User wants to understand data or query it interactively: use **EXPLORE**.
-- User wants AI, ML, UDFs, text analytics, or agents: use **ENRICH**.
-- User wants to expose Exasol to apps, BI, APIs, users, or agents: use **SURFACE**.
-- User wants production scale, governance, performance, observability, repeatability, or reliability: use **SCALE**.
-
 ## Related Skills
 
 - Use **exasol-database** for direct SQL, exapump, table design, and query profiling after choosing the relevant tool family.
@@ -88,7 +85,7 @@ off to its dedicated skill instead of repeating operational instructions here.
 - Use **exasol-virtual-schema-adapter-development** for custom virtual schema adapter implementation, packaging, and adapter-side debugging after choosing that a maintained adapter is not enough.
 - Use **exasol-bucketfs** for BucketFS file upload, download, list, and delete workflows.
 - Use **exasol-udfs** for UDF and Script Language Container implementation details.
-- Use **exasol-ai-setup** and **exasol-notebook-connections** for notebook-connector configuration and Python connection helpers.
+- Use **exasol-notebook-connector-config** and **exasol-notebook-connections** for notebook-connector configuration and Python connection helpers.
 - Use **exasol-itde** for notebook-connector's local Docker database lifecycle after choosing that development environment.
 - Use **exasol-text-ai** for Text AI Extension deployment, extraction, and validation.
 - Use **exasol-transformers** for Transformers Extension deployment and inference.

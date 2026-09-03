@@ -1,6 +1,6 @@
 ---
 name: exasol-distributed-ml
-description: "Distributed machine learning, data mining, and iterative HPC with Exasol. Covers end-to-end ML pipelines (DISTRIBUTE BY + SET scripts + BucketFS), per-entity federated training with partial_fit and ctx.reset(), batch inference, map-reduce ensemble training, distributed ensemble and SON algorithm for frequent itemset mining, Lua execute script orchestration for iterative algorithms (k-means, SGD, Apriori), parallel hyperparameter search, per-entity forecasting, anomaly detection, model lifecycle in BucketFS (pickle/joblib/ONNX versioning), GPU acceleration via CUDA SLCs (PyTorch/TensorFlow/RAPIDS), and ML-specific performance tuning (skew, OOM, multi-pass chunking)."
+description: "Distributed machine learning, data mining, and iterative HPC with Exasol. Covers end-to-end ML pipelines (DISTRIBUTE BY + SET scripts + BucketFS), per-entity federated training with partial_fit and ctx.reset(), batch inference, map-reduce ensemble training, distributed ensemble and SON algorithm for frequent itemset mining (Apriori, FP-Growth, association rules, market-basket analysis), Lua execute script orchestration for iterative algorithms (k-means, SGD, gradient descent), scikit-learn model training, parallel hyperparameter search, per-entity forecasting, anomaly detection, model lifecycle in BucketFS (pickle/joblib/ONNX versioning), GPU acceleration via CUDA SLCs (PyTorch/TensorFlow/RAPIDS), and ML-specific performance tuning (skew, OOM, multi-pass chunking)."
 ---
 
 # Exasol Distributed ML and HPC

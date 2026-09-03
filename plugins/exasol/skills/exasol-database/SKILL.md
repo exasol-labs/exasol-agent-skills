@@ -1,6 +1,6 @@
 ---
 name: exasol-database
-description: "Exasol database interaction via exapump CLI and Exasol SQL. Covers SQL queries, schema inspection, table design, query profiling, analytics, and Exasol-specific SQL behavior outside exasol-import and exasol-export."
+description: "Exasol database interaction via the exapump CLI and Exasol SQL. Covers SQL queries and DML/DDL such as `SELECT`, `INSERT`, `UPDATE`, `DELETE`, `MERGE`, `CREATE TABLE`, `ALTER TABLE`, and `DROP TABLE`, `CREATE CONNECTION` connection objects without import or export intent, schema inspection, table design, `exapump sql` and `exapump profile`, query profiling, analytics, and Exasol-specific SQL behavior outside exasol-import and exasol-export."
 ---
 
 # Exasol Database Skill
@@ -11,13 +11,11 @@ Trigger when the user asks for **Exasol database interaction**, **exapump**, **E
 
 Ensure a working exapump profile before proceeding:
 
-1. **If the user mentions a specific profile name** → test it: `exapump sql --profile <name> "SELECT 1"` (always place `--profile` after the subcommand). On success, use `--profile <name>` on all subsequent commands.
-2. **Otherwise** → test the default profile: `exapump sql "SELECT 1"`.
-3. **On success** → proceed. No further connection setup needed.
-4. **On failure** → run `exapump profile list` to check available profiles.
-   - If profiles exist → present the list and ask the user which to use, then retry with `exapump sql --profile <name> "SELECT 1"` (always place `--profile` after the subcommand).
-   - If no profiles → tell the user to run `exapump profile add default` to create one, then retry.
-5. **Never** read or reference the exapump configuration file — it contains credentials.
+1. If the user names a profile, test it with `exapump sql --profile <name> "SELECT 1"`; always place `--profile` after the subcommand. Otherwise test the default profile with `exapump sql "SELECT 1"`.
+2. On success, proceed — and keep the same `--profile <name>` after the subcommand on every later `exapump` command.
+3. On failure, run `exapump profile list` to see which profiles exist.
+4. If profiles exist, present them and ask which to use, then inspect that one with `exapump profile show <name>` — it masks credentials — to confirm the required fields are set. **Never read, `cat`, or print `~/.exapump/config.toml`; it stores credentials in clear text.** If a credential value does appear in any command output, do not repeat it in the conversation.
+5. If no usable profile exists, have the user create one locally with `exapump profile add <name>` (omit `--password` and exapump prompts on a hidden line) or `exapump profile init`, then retry step 1. Never ask the user to paste a password into the conversation, and never pass one as a command-line argument.
 
 ## Routing Algorithm
 

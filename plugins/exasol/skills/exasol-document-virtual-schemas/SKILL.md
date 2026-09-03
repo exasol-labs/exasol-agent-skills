@@ -1,6 +1,6 @@
 ---
 name: exasol-document-virtual-schemas
-description: "Use Exasol document-file virtual schemas for federated read-only access to object and file storage. Covers document-file adapter family selection, CREATE VIRTUAL SCHEMA usage, refresh workflows, and query-side troubleshooting."
+description: "Use Exasol document-file virtual schemas for federated read-only access to object and file storage — S3, Google Cloud Storage, Azure Blob Storage, and Azure Data Lake Storage Gen2 document files. Covers document-file adapter family selection, the EDML `MAPPING` definition, `CREATE VIRTUAL SCHEMA` usage, refresh workflows, and query-side troubleshooting."
 ---
 
 # Exasol Document Virtual Schemas Skill

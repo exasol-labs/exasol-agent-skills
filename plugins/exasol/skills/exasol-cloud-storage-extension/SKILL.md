@@ -1,6 +1,6 @@
 ---
 name: exasol-cloud-storage-extension
-description: "Use Exasol Cloud Storage Extension workflows for moving structured object-storage files through extension UDFs. Covers setup prerequisites, fixed UDF entrypoints, supported import/export formats, connection-object credential patterns, and routing away from native IMPORT or EXPORT when the extension path is the right fit."
+description: "Use Exasol Cloud Storage Extension workflows for moving structured object-storage files through extension UDFs. Covers setup prerequisites, the fixed `CLOUD_STORAGE_EXTENSION.IMPORT_PATH` and `CLOUD_STORAGE_EXTENSION.EXPORT_PATH` entrypoints used with `FROM SCRIPT` and `INTO SCRIPT`, Parquet, Avro, ORC, and Delta files on S3, Google Cloud Storage, Azure Blob Storage, Azure Data Lake, HDFS, and Alluxio, connection-object credential patterns, and routing away from native IMPORT or EXPORT when the extension path is the right fit."
 ---
 
 # Exasol Cloud Storage Extension Skill
