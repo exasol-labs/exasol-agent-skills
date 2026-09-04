@@ -9,6 +9,12 @@
     },
     {
       "pattern": "^http://w:<PASSWORD>@<HOST>:2580/default/jars/$"
+    },
+    {
+      "pattern": "^https://www\\.datarobot\\.com/$"
+    },
+    {
+      "pattern": "^https://h2o\\.ai/$"
     }
   ]
 }

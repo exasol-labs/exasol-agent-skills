@@ -38,17 +38,43 @@ under `skills/` that has one becomes a skill every user of the plugin sees in
 their skill list.) Write the `description` first — it is the part that decides
 whether the skill is ever loaded.
 
-Then run the checks under [Testing](#testing) before pushing. They cover the
-structural requirements and name what is missing, including the extension
-catalog handoff your skill needs, so there is no checklist of them here to
-drift. The router entry is *not* on that list — see
-[Router versus catalog](#router-versus-catalog) for the narrow cases that need
-one. Version bumps follow
-[Versioning and Releasing](#versioning-and-releasing).
+Then run the checks under [Testing](#testing) before pushing. They name every
+structural requirement your skill has not met yet, including the two touchpoints
+it has to add: the extension catalog handoff, and the skill list in this file's
+[Architecture](#architecture) section. This page does not repeat those
+requirements as a checklist, because a second copy would fall out of step with
+the checks the first time they change. The Architecture list is checked in both
+directions: a skill the list does not name fails, and a name the list carries
+with no directory behind it fails too. What the checks deliberately do *not* ask
+for is under
+[What adding a skill does not require](#what-adding-a-skill-does-not-require).
+Version bumps follow [Versioning and Releasing](#versioning-and-releasing).
 
-Two things no check can see, and therefore the two that go stale: the skill list
-in this file's [Architecture](#architecture) section, and the user-facing feature
-list in `README.md`. Update both.
+One thing no check can see, and therefore the one that goes stale: the
+user-facing feature list in `README.md`. It is thematic prose that names no
+skill, so update it when the new skill adds a capability a user would go looking
+for, and leave it alone when it does not.
+
+### What adding a skill does not require
+
+Three touchpoints that look mandatory are deliberately not, so that a
+contributor does not go hunting for them:
+
+- **A route in the top-level router.** Not merely optional but inverted:
+  `check-package.py` fails if `Activate:` or `Trigger phrases:` reappears in
+  `skills/exasol/SKILL.md`, so adding a per-skill route is now a CI failure
+  rather than a CI requirement. See
+  [Router versus catalog](#router-versus-catalog) for the narrow cases that do
+  need a router edit.
+- **A usage example in `commands/exasol.md`.** The command is a thin delegate
+  that must not duplicate routing surface, so its examples are illustrative and
+  cover only some of the skills. One example per skill would bloat the file
+  whose stated purpose is the opposite.
+- **A mention in the `README.md` feature list.** The `## Features` section names
+  no skill on purpose: it is user-facing copy plus a link to
+  `plugins/exasol/skills/`, and nobody types
+  `exasol-notebook-connector-config`. The only enforcement is one-directional —
+  if the README ever bolds a skill name, that name must exist.
 
 ### Shape: a thin SKILL.md routing into references/
 
@@ -214,8 +240,8 @@ sh test/check-security.sh
 `.github/workflows/ci.yml` runs on push to `main` and PRs:
 1. **validate-plugin** — JSON validity + version consistency between both manifests and the changelog + version bump check on PRs (must be greater than existing tags)
 2. **test-installer** — all 9 Docker scenarios
-3. **package-safety** — validates skill metadata, routing references, command delegation, workflow and manifest keys, and credential-like content
-4. **check-links** — validates Markdown links in a `Check Links` job shaped like Exasol `notebook-connector`'s documentation check; this Markdown-only repo runs `npx markdown-link-check@3.14.2` with `.github/markdown_check_config.json` instead of Notebook Connector's Poetry/Nox docs stack
+3. **package-safety** — validates skill metadata, routing references, command delegation, the `AGENTS.md` architecture skill list, workflow and manifest keys, and credential-like content
+4. **check-links** — validates Markdown links in a `Check Links` job shaped like Exasol `notebook-connector`'s documentation check; this Markdown-only repo runs `npx markdown-link-check@3.14.2` with `.github/markdown_check_config.json` instead of Notebook Connector's Poetry/Nox docs stack. `ignorePatterns` also carries a couple of live URLs that block CI's IP; verify by hand before adding another
 
 `.github/workflows/release.yml` runs after a maintainer pushes a `v*` tag:
 - It runs the reusable CI workflow and publishes only after all CI jobs pass
