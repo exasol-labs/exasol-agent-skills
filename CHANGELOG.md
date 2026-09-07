@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.26.0
+
+- Add the `exasol-scheduler` skill: managing SCHED_TASKS/SCHED_HISTORY, six-field CRON schedules with timezones, task chains and finalizers, and diagnosing runs that failed or never happened.
+- Bundle the scheduler's stable SQL surface and defer configuration, security, and deployment details to the upstream `exasol-labs/exasol-scheduler` docs, including its normative `docs/agent-skill.md`.
+- Add the extension-catalog handoff and architecture listing for the new skill.
+
 ## v0.25.0
 
 - Rename the `exasol-ai-setup` skill to `exasol-notebook-connector-config`; it configures notebook-connector, not the AI Lab product.
