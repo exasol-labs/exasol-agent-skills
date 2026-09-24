@@ -3,6 +3,7 @@
 ## v0.25.0
 
 - Update the Transformers Extension skill to use the current AI Function names and high-level usage guidance.
+- Document Answer and Translate setup, validation, security, and large-model operational guidance in the Transformers Extension skill.
 - Rename the `exasol-ai-setup` skill to `exasol-notebook-connector-config`; it configures notebook-connector, not the AI Lab product.
 - Publish releases only from explicit matching version tags.
 - Run CI before publishing and serialize release runs.
