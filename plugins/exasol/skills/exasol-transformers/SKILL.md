@@ -24,7 +24,7 @@ activate **exasol-notebook-connector-config** first.
    - Load: `references/transformers-extension.md`
 
 2. **AI Function usage and validation**
-   - Trigger phrases: `AI_ANSWER`, `AI_TRANSLATE`, `AI_ANSWER_EXTENDED`, `AI_TRANSLATE_EXTENDED`, `get_activation_sql`, `transformers sql function`
+   - Trigger phrases: `AI_SENTIMENT`, `AI_CLASSIFY`, `AI_EXTRACT_ENTITIES`, `AI_ANSWER`, `AI_TRANSLATE`, `AI_CUSTOM_CLASSIFY_EXTENDED`, `AI_ENTAILMENT_EXTENDED`, `AI_FILL_MASK_EXTENDED`, `AI_COMPLETE_EXTENDED`, `AI_EXTRACT_EXTENDED`, `AI_CLASSIFY_EXTENDED`, `AI_ANSWER_EXTENDED`, `AI_TRANSLATE_EXTENDED`, `get_activation_sql`, `transformers sql function`
    - Load: `references/transformers-extension.md`
 
 Multiple routes can apply. Load the reference before responding.
@@ -113,7 +113,7 @@ query latency, and shared-cluster availability. Before a large run:
 - set practical input/output token limits and batch sizes;
 - set workload limits and timeouts where supported, and define how failures are handled;
 - use GPU only when the database runtime provides a compatible CUDA device;
-- isolate or schedule resource-heavy workloads appropriately; and
+- isolate or schedule resource-heavy workloads appropriately;
 - keep generated outputs and local caches protected and free of unnecessary
   secrets or personal data.
 
