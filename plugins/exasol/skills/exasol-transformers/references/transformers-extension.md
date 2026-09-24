@@ -1,48 +1,72 @@
-# Notebook Connector Transformers Extension
+# Exasol Transformers Extension AI Functions
 
-Use this reference for the Python setup flow and SQL UDF surface of the
-Transformers Extension.
-
-It covers:
+Use this reference for the notebook-connector setup and SQL usage of the
+Exasol Transformers Extension. It covers:
 
 - `initialize_te_extension(...)`
-- `deploy_scripts(...)`
-- `get_activation_sql(...)`
 - model installation with `install_model(...)`
-- the current SQL UDF examples documented in notebook-connector
+- language activation with `get_activation_sql(...)`
+- the current `AI_*` Function names and behavior
+- validation and large-model operational guidance
 
-Keep setup prerequisites in `Secrets` first, then use this reference for the
-extension-specific workflow and validation.
+This reference does not change the extension package or deployment design.
+Keep database and BucketFS credentials in `Secrets`; do not place credentials,
+tokens, or private data in examples.
 
-Current notebook-connector behavior to preserve in this skill:
+## Prerequisites
 
-- `initialize_te_extension(...)` always ensures the BucketFS `CONNECTION`
-  object exists as part of its setup flow
-- model installation in the bundled Transformers notebooks uses
-  `exasol.nb_connector.model_installation.install_model(...)`
+The secure configuration store must contain the database and BucketFS values
+required by notebook-connector:
 
-## Main Entry Points
+```text
+db_host_name, db_port, db_user, db_password, db_schema
+bfs_host_name, bfs_port, bfs_service, bfs_bucket, bfs_user, bfs_password
+```
 
-### Full Setup
+Add `huggingface_token` only when the selected model is private or gated. The
+database user must have the minimum permissions needed for the target schema,
+language, scripts, and BucketFS connection. Do not use shared accounts. Use
+approved TLS endpoints and certificate validation for database, BucketFS, and
+model-provider traffic.
 
-Use this first when the user wants notebook-connector to deploy the TE language
-container, ensure the required BucketFS connection exists, optionally create
-the Hugging Face token connection object, and install the TE scripts.
+Before installation, check the model license, provider terms, revision,
+supported task, data residency, and whether the input data is authorized for
+model processing. Verify the model source and downloaded artifacts using the
+provider's supported integrity mechanism, and pin the model revision and
+extension/package versions where supported. Record those versions with the
+workload so the operational choice is reproducible and reviewable. Use
+synthetic text in validation examples.
+
+Tokens belong in the supported secret store, not in source code, SQL, command
+history, or notebook output. Use supported expiry, rotation, and cleanup
+behavior; do not recommend long-lived credentials by default. Protect local
+model caches, generated outputs, and configuration files because they may
+contain sensitive data.
+
+Keep the boundaries clear: notebook-connector is local tooling, the Exasol
+database executes the UDF, BucketFS stores the language container and model
+artifacts, and the model provider supplies the source artifacts. Each boundary
+has its own identity, permissions, network path, and audit responsibility.
+
+## Initialize the extension
 
 ```python
-from exasol.nb_connector.transformers_extension_wrapper import initialize_te_extension
+from exasol.nb_connector.transformers_extension_wrapper import (
+    initialize_te_extension,
+)
 
 initialize_te_extension(my_secrets)
 ```
 
-`initialize_te_extension()` can:
+Initialization can:
 
-1. upload the pre-built TE Script Language Container to BucketFS
-2. create the BucketFS `CONNECTION` object used by the UDFs
-3. create the Hugging Face token `CONNECTION` object when `huggingface_token` is set
-4. deploy the TE UDF scripts into the configured schema
+1. upload the pre-built Transformers Script Language Container to BucketFS;
+2. ensure the BucketFS `CONNECTION` exists;
+3. create the Hugging Face token `CONNECTION` when a token is configured; and
+4. deploy the extension scripts into the configured schema.
 
-Useful flags when re-running setup:
+When rerunning setup after the language container is already present, use
+flags appropriate to the state of the database:
 
 ```python
 initialize_te_extension(
@@ -54,13 +78,11 @@ initialize_te_extension(
 )
 ```
 
-Note: notebook-connector currently ensures the BucketFS `CONNECTION` object
-inside `initialize_te_extension()`. Do not assume this setup path skips BucketFS
-connection creation.
+`initialize_te_extension()` currently ensures the BucketFS connection as part
+of its setup flow. Do not document this workflow as if it skipped connection
+creation.
 
-### Deploy Scripts Only
-
-Use this when the SLC is already in BucketFS and the user only needs the SQL/UDF layer refreshed.
+To deploy only the scripts when the language container is already available:
 
 ```python
 from exasol.nb_connector.transformers_extension_wrapper import (
@@ -71,252 +93,181 @@ from exasol.nb_connector.transformers_extension_wrapper import (
 deploy_scripts(my_secrets, language_alias=LANGUAGE_ALIAS)
 ```
 
-### Activation SQL
+## Activate the language
 
-Before running TE UDFs from SQL, activate the language container in the
-session:
+Before invoking a Function in a session, obtain and execute the activation SQL:
 
 ```python
 from exasol.nb_connector.language_container_activation import get_activation_sql
 
-print(get_activation_sql(my_secrets))
+activation_sql = get_activation_sql(my_secrets)
+assert activation_sql
+print(activation_sql)
 ```
 
-## Model Handling
+The SQL must be executed in the database session before script deployment or
+Function invocation, as required by the notebook-connector workflow.
 
-Models must be available in BucketFS before the TE UDFs can use them.
+## Install the default Answer and Translate models
 
-For model installation, initialize the extension first and then install models
-with `exasol.nb_connector.model_installation.install_model(...)`. This is the
-model-installation path used in the bundled Transformers notebooks.
+The simple Functions use predefined models, but the model artifacts still
+need to be available in BucketFS. Install them before invoking the Functions:
 
 ```python
+from transformers import AutoModelForCausalLM, AutoModelForSeq2SeqLM
 from exasol.nb_connector.model_installation import TransformerModel, install_model
-from transformers import AutoModelForSequenceClassification
 
 install_model(
     my_secrets,
     TransformerModel(
-        "facebook/bart-large-mnli",
-        "sequence_classification",
-        AutoModelForSequenceClassification,
+        "HuggingFaceTB/SmolLM2-135M-Instruct",
+        "text-generation",
+        AutoModelForCausalLM,
+    ),
+)
+
+install_model(
+    my_secrets,
+    TransformerModel(
+        "google-t5/t5-base",
+        "translation",
+        AutoModelForSeq2SeqLM,
     ),
 )
 ```
 
-Use the values that match the TE UDF you plan to call:
+The task type is significant. `AI_ANSWER` uses a text-generation model and
+`AI_TRANSLATE` uses a translation model. Do not install a question-answering
+model for `AI_ANSWER`; the question-answering pipeline was removed from
+Transformers 5 and the current Answer implementation uses text generation.
 
-| TE UDF | `task_type` for `install_model(...)` | model factory |
-|--------|--------------------------------------|----------------|
-| `TE_TEXT_GENERATION_UDF` | `text_generation` | `AutoModelForCausalLM` |
-| `TE_FILLING_MASK_UDF` | `filling_mask` | `AutoModelForMaskedLM` |
-| `TE_SEQUENCE_CLASSIFICATION_SINGLE_TEXT_UDF` | `sequence_classification` | `AutoModelForSequenceClassification` |
-| `TE_SEQUENCE_CLASSIFICATION_TEXT_PAIR_UDF` | `sequence_classification` | `AutoModelForSequenceClassification` |
-| `TE_ZERO_SHOT_TEXT_CLASSIFICATION_UDF` | `zero_shot_classification` | `AutoModelForSequenceClassification` |
-| `TE_QUESTION_ANSWERING_UDF` | `question_answering` | `AutoModelForQuestionAnswering` |
-| `TE_TOKEN_CLASSIFICATION_UDF` | `token_classification` | `AutoModelForTokenClassification` |
-| `TE_TRANSLATION_UDF` | `translation` | `AutoModelForSeq2SeqLM` |
+For private or gated models, configure the Hugging Face token in `Secrets`
+before initialization. Do not print or embed the token.
 
-If the user needs private or gated Hugging Face models, store
-`huggingface_token` in the SCS before initialization so notebook-connector can
-create the corresponding DB `CONNECTION` object.
+## Current AI Function surface
 
-## Current SQL UDF Surface
+Use these names in new documentation and SQL:
 
-These examples reflect the current notebook-connector docs branch.
+| Function | Task | Model behavior |
+|---|---|---|
+| `AI_SENTIMENT` | text classification | Uses a predefined sentiment model |
+| `AI_CLASSIFY` | zero-shot classification | Uses a predefined zero-shot model |
+| `AI_EXTRACT_ENTITIES` | token classification | Uses a predefined entity model |
+| `AI_ANSWER` | text generation | Uses `HuggingFaceTB/SmolLM2-135M-Instruct` |
+| `AI_TRANSLATE` | translation | Uses `google-t5/t5-base` |
+| `AI_CUSTOM_CLASSIFY_EXTENDED` | text classification | User supplies model and runtime parameters |
+| `AI_ENTAILMENT_EXTENDED` | text-pair classification | User supplies model and runtime parameters |
+| `AI_FILL_MASK_EXTENDED` | fill-mask | User supplies model and runtime parameters |
+| `AI_COMPLETE_EXTENDED` | text generation | User supplies model and runtime parameters |
+| `AI_EXTRACT_EXTENDED` | token classification | User supplies model and runtime parameters |
+| `AI_CLASSIFY_EXTENDED` | zero-shot classification | User supplies model and runtime parameters |
+| `AI_ANSWER_EXTENDED` | text generation | User supplies model and runtime parameters |
+| `AI_TRANSLATE_EXTENDED` | translation | User supplies model and runtime parameters |
 
-### Text Generation
+The former `TE_*` names are legacy names. They may still appear in historical
+material, but should not be used as the primary examples for current users.
+
+## Answer example
+
+After initialization, model installation, and language activation:
 
 ```sql
-SELECT MY_SCHEMA.TE_TEXT_GENERATION_UDF(
+SELECT MY_SCHEMA.AI_ANSWER(
+    'Which database is described in the context?',
+    'Exasol is a high-performance analytical database.'
+);
+```
+
+The result includes `answer` and `error_message` columns. Check the error column
+before accepting the answer. Answer is generative: the result can be
+influenced by the model's training and is not guaranteed to be an extractive
+copy of the context. Do not use it as an authority without application-level
+validation.
+
+For model and parameter control, use the extended Function:
+
+```sql
+SELECT MY_SCHEMA.AI_ANSWER_EXTENDED(
     NULL,
-    'TE_BFS_SYS',
+    'TE_BFS_<db-user>',
     'models',
-    'gpt2',
-    'Exasol can',
-    32,
-    TRUE
+    'HuggingFaceTB/SmolLM2-135M-Instruct',
+    'Which database is described in the context?',
+    'Exasol is a high-performance analytical database.'
 );
 ```
 
-### Fill-Mask Prediction
+Replace `MY_SCHEMA`, the connection name, and the model directory with the
+values created by the configured environment. Do not copy credentials into SQL.
+
+## Translate example
+
+After initialization, model installation, and language activation:
 
 ```sql
-WITH MODEL_OUTPUT AS (
-    SELECT MY_SCHEMA.TE_FILLING_MASK_UDF(
-        NULL,
-        'TE_BFS_SYS',
-        'models',
-        'bert-base-uncased',
-        'Exasol is a [MASK] database.',
-        5
-    )
-)
-SELECT filled_text, score, rank, error_message
-FROM MODEL_OUTPUT
-ORDER BY score DESC;
-```
-
-### Sequence Classification
-
-```sql
-WITH MODEL_OUTPUT AS (
-    SELECT MY_SCHEMA.TE_SEQUENCE_CLASSIFICATION_SINGLE_TEXT_UDF(
-        NULL,
-        'TE_BFS_SYS',
-        'models',
-        'arpanghoshal/EkmanClassifier',
-        'Oh my God!',
-        'HIGHEST'
-    )
-)
-SELECT label, score, rank, error_message
-FROM MODEL_OUTPUT;
-```
-
-Use the text-pair UDF when the model compares two texts:
-
-```sql
-WITH MODEL_OUTPUT AS (
-    SELECT MY_SCHEMA.TE_SEQUENCE_CLASSIFICATION_TEXT_PAIR_UDF(
-        NULL,
-        'TE_BFS_SYS',
-        'models',
-        'arpanghoshal/EkmanClassifier',
-        'Oh my God!',
-        'I lost my purse.',
-        'ALL'
-    )
-)
-SELECT label, score, rank, error_message
-FROM MODEL_OUTPUT
-ORDER BY score DESC;
-```
-
-### Zero-Shot Classification
-
-```sql
-WITH MODEL_OUTPUT AS (
-    SELECT MY_SCHEMA.TE_ZERO_SHOT_TEXT_CLASSIFICATION_UDF(
-        NULL,
-        'TE_BFS_SYS',
-        'models',
-        'facebook/bart-large-mnli',
-        'Notebook Connector simplifies Exasol AI workflows.',
-        'documentation,databases,networking',
-        'ALL'
-    )
-)
-SELECT label, score, error_message
-FROM MODEL_OUTPUT
-ORDER BY score DESC;
-```
-
-### Question Answering
-
-```sql
-WITH MODEL_OUTPUT AS (
-    SELECT MY_SCHEMA.TE_QUESTION_ANSWERING_UDF(
-        NULL,
-        'TE_BFS_SYS',
-        'models',
-        'distilbert-base-cased-distilled-squad',
-        'What does Notebook Connector simplify?',
-        'Notebook Connector simplifies Exasol AI workflows.',
-        5
-    )
-)
-SELECT answer, score, error_message
-FROM MODEL_OUTPUT
-ORDER BY score DESC;
-```
-
-### Token Classification
-
-```sql
-WITH MODEL_OUTPUT AS (
-    SELECT MY_SCHEMA.TE_TOKEN_CLASSIFICATION_UDF(
-        NULL,
-        'TE_BFS_SYS',
-        'models',
-        'dslim/bert-base-NER',
-        'Exasol is headquartered in Nuremberg.',
-        NULL
-    )
-)
-SELECT start_pos, end_pos, word, entity, error_message
-FROM MODEL_OUTPUT
-ORDER BY start_pos, end_pos;
-```
-
-### Translation
-
-```sql
-WITH MODEL_OUTPUT AS (
-    SELECT MY_SCHEMA.TE_TRANSLATION_UDF(
-        NULL,
-        'TE_BFS_SYS',
-        'models',
-        't5-small',
-        'Hello world',
-        'en',
-        'de',
-        32
-    )
-)
-SELECT translation_text, error_message
-FROM MODEL_OUTPUT;
-```
-
-### Model Management
-
-```sql
-SELECT MY_SCHEMA.TE_LIST_MODELS_UDF('TE_BFS_SYS', 'models');
-SELECT MY_SCHEMA.TE_DELETE_MODEL_UDF(
-    'TE_BFS_SYS',
-    'models',
-    'arpanghoshal/EkmanClassifier',
-    'text-classification'
+SELECT MY_SCHEMA.AI_TRANSLATE(
+    'Hello world',
+    'English',
+    'German'
 );
 ```
 
-### Using Text Columns From a Table
+The result includes `translation_text` and `error_message` columns. The simple
+Function uses `google-t5/t5-base` and a maximum output length of 256 new
+tokens. Split long inputs or use the extended Function when that limit is not
+sufficient.
 
-Use a table column instead of a string literal when the texts already live in
-the database and the workflow should run in batch mode.
+For model and output-length control, use:
 
 ```sql
-WITH MODEL_OUTPUT AS (
-    SELECT MY_SCHEMA.TE_ZERO_SHOT_TEXT_CLASSIFICATION_UDF(
-        NULL,
-        'TE_BFS_SYS',
-        'models',
-        'facebook/bart-large-mnli',
-        MY_TEXT_COLUMN,
-        'positive,negative,neutral',
-        'HIGHEST'
-    )
-    FROM MY_TEXT_TABLE
-)
-SELECT label, score, error_message
-FROM MODEL_OUTPUT
-ORDER BY score DESC;
+SELECT MY_SCHEMA.AI_TRANSLATE_EXTENDED(
+    NULL,
+    'TE_BFS_<db-user>',
+    'models',
+    'google-t5/t5-base',
+    'Hello world',
+    'English',
+    'German',
+    256
+);
 ```
+
+Replace `MY_SCHEMA` and the other placeholders with environment values. The source and target language
+arguments must be supported by the selected model; multilingual models may
+require them explicitly.
 
 ## Validation
 
-Validate setup in layers:
+Validate in layers rather than starting with a large table:
 
-- after initialization, run `print(get_activation_sql(my_secrets))` and confirm the returned SQL contains the TE language definition
-- if the SLC is already present, re-run `deploy_scripts(...)` as a lightweight script-level validation
-- after the model artifacts are available in BucketFS and activation is done, run one minimal TE SQL UDF call such as `TE_LIST_MODELS_UDF`
+1. Confirm the required `Secrets` values exist without printing secrets.
+2. Run `initialize_te_extension(...)` or the required setup subset.
+3. Confirm `get_activation_sql(...)` returns non-empty SQL.
+4. Confirm the model artifacts are present in the configured BucketFS model directory.
+5. Run one Answer or Translate query with synthetic text.
+6. Check both prediction columns and the error column.
+7. Only then run a bounded sample of the real workload.
 
-Success signals:
+Typical failures include missing language activation, missing scripts, missing
+BucketFS models, incorrect task types, unsupported model/language combinations,
+and insufficient memory. A row-level error should be investigated through the
+returned error column rather than silently treated as a valid prediction.
 
-- activation SQL is present and non-empty
-- script deployment completes without language-activation errors
-- at least one TE UDF call returns rows instead of missing-language or missing-script errors
+## Large-model operational guidance
 
-Expected failure mode:
+Large models can exhaust shared resources. Before using one:
 
-- if DB, BucketFS, or Hugging Face settings are incomplete, initialization or UDF execution should fail until **exasol-notebook-connector-config** has been completed with real values
+- pin the extension version, model revision, and relevant package versions;
+- verify the model license and provider terms;
+- estimate BucketFS, local-cache, memory, CPU/GPU, and execution-time needs;
+- start with one small row and a bounded sample;
+- use practical input and output token limits and batch sizes;
+- avoid mixing many models in one query because models may be loaded separately;
+- use a compatible CUDA device only when GPU execution is available and authorized;
+- set workload limits or schedule expensive jobs away from critical workloads;
+- protect local caches and generated outputs; and
+- remove temporary credentials and sessions according to supported expiry and cleanup behavior.
+
+Large size is not a quality guarantee. Choose a model that matches the task,
+language, domain, license, privacy requirements, and available resources. Do
+not submit personal or confidential data unless the processing is authorized.
