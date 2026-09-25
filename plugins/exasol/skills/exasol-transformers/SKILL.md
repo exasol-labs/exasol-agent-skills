@@ -113,7 +113,6 @@ query latency, and shared-cluster availability. Before a large run:
 - set practical input/output token limits and batch sizes;
 - set workload limits and timeouts where supported, and define how failures are handled;
 - use GPU only when the database runtime provides a compatible CUDA device;
-- isolate or schedule resource-heavy workloads appropriately;
 - keep generated outputs and local caches protected and free of unnecessary
   secrets or personal data.
 
