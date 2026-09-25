@@ -167,11 +167,6 @@ Use these names in new documentation and SQL:
 The former `TE_*` names are legacy names. They may still appear in historical
 material, but should not be used as the primary examples for current users.
 
-All current AI Functions are listed above with their current names and task
-behavior. This ticket provides detailed executable examples only for
-`AI_ANSWER` and `AI_TRANSLATE`; additional Function examples are outside the
-current scope and can be added in follow-up work.
-
 ## Answer example
 
 After initialization, model installation, and language activation:
