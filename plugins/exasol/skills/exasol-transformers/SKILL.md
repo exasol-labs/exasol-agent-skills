@@ -9,13 +9,10 @@ Trigger when the user mentions **Transformers Extension**, **TE extension**, **i
 
 ## Purpose
 
-This skill routes notebook-connector Transformers Extension tasks to the
-reference material that covers setup, activation, model installation,
-validation, and the current `AI_*` SQL Function surface.
-
-Use this skill after notebook-connector configuration already exists in the
-SCS (secure config store). If the required DB or BucketFS values are still missing,
-activate **exasol-notebook-connector-config** first.
+Use this skill to deploy the Transformers Extension Script Language Container
+(SLC) and UDFs, install models, generate activation SQL, and run or validate the
+current `AI_*` SQL Functions. Load the reference for detailed instructions and
+examples.
 
 ## Routing Algorithm
 
@@ -31,18 +28,24 @@ Multiple routes can apply. Load the reference before responding.
 
 ## Prerequisites
 
-The secure config store must already contain complete DB and BucketFS values. If
-not, activate **exasol-notebook-connector-config** first.
+1. Check whether the secure config store (SCS) contains the required database
+   and BucketFS values. If values are missing, activate
+   **exasol-notebook-connector-config** first.
+2. Confirm that the SCS contains:
 
-- DB values: `db_host_name`, `db_port`, `db_user`, `db_password`, `db_schema`
-- BucketFS values: `bfs_host_name`, `bfs_port`, `bfs_service`, `bfs_bucket`, `bfs_user`, `bfs_password`
-- optional: `huggingface_token` for gated or private models
+   - DB values: `db_host_name`, `db_port`, `db_user`, `db_password`, `db_schema`
+   - BucketFS values: `bfs_host_name`, `bfs_port`, `bfs_service`, `bfs_bucket`, `bfs_user`, `bfs_password`
+   - optional: `huggingface_token` for gated or private models
 
-The database user must be authorized to create/use the language and scripts in
-the target schema, and to use the required BucketFS connection. Do not use a
-shared database account. Keep credentials and tokens in the supported secure
-configuration store; never put them in examples, source files, or shell
-history.
+3. Confirm that the database user can activate the `PYTHON3_TE` language alias
+   for the TE SLC, create and execute the TE UDFs (defined with `CREATE SCRIPT`),
+   and use the required BucketFS connection.
+
+## Security and Model Governance
+
+Do not use a shared database account. Keep credentials and tokens in the
+supported secure configuration store; never put them in examples, source
+files, or shell history.
 
 Before using a model, confirm its license, provider terms, revision, required
 resources, and whether the input data is allowed to be sent to that provider.
@@ -57,12 +60,12 @@ Success signals:
 
 - the returned activation SQL is present and non-empty
 - the TE setup or validation step from the reference completes without language-activation errors
-- at least one current `AI_*` Function call returns rows instead of
-  missing-language or missing-script errors
+- at least one current `AI_*` Function call returns a valid result set instead
+  of errors like "missing-language" or "missing-script"
 
 For the user-facing AI Functions, also verify that the installed model matches
 the function's task and that the result contains the expected output and
-  `error_message` columns. Start with one small row before running a table-wide
+`error_message` columns. Start with one small row before running a table-wide
 query.
 
 Expected failure mode:
@@ -96,11 +99,11 @@ names and should not be the primary user guidance.
 | `AI_ANSWER_EXTENDED` | Configurable text-generation answer function |
 | `AI_TRANSLATE_EXTENDED` | Configurable translation function |
 
-The extended functions require the device, BucketFS connection, model
-directory, and model name. Their model and task type must be compatible with
-the selected function.
+Each extended function takes the device, BucketFS connection name, model
+directory, and model name as SQL input parameters. The model and task type must
+be compatible with the selected function.
 
-## Large-model operations
+## Large-Model Operations
 
 Large models affect BucketFS storage, local caches, memory, startup time,
 query latency, and shared-cluster availability. Before a large run:
