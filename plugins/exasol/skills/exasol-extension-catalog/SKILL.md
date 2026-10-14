@@ -91,3 +91,4 @@ skill instead of repeating operational instructions here.
 - Use **exasol-transformers** for Transformers Extension deployment and inference.
 - Use **exasol-distributed-ml** for in-database model training, inference, GPU, and iterative ML workflows.
 - Use **exasol-setup-personal** for guided Exasol Personal deployment.
+- Use **exasol-scheduler** for defining, chaining, and auditing scheduled SQL jobs after choosing Exasol Scheduler.

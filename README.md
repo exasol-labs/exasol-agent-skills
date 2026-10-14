@@ -68,6 +68,7 @@ npx --yes skills@1.5.22 add exasol-labs/exasol-agent-skills \
 - UDFs, Script Language Containers, BucketFS, distributed ML, and GPU workflows.
 - Notebook-connector configuration, ITDE lifecycle, Python connection helpers, Text AI, and Transformers.
 - Exasol Personal setup for local macOS and AWS, Azure, Exoscale, or STACKIT deployments.
+- Table-driven SQL job scheduling with Exasol Scheduler: task definitions, chains, and execution history as plain SQL.
 
 The complete skill catalog is available under
 [`plugins/exasol/skills/`](plugins/exasol/skills/).
