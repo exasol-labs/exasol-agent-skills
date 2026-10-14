@@ -19,7 +19,7 @@ Install notebook-connector with the Transformers extra before importing the
 extension helpers:
 
 ```sh
-pip install "notebook-connector[transformers]"
+pip install "exasol-notebook-connector[transformers]"
 ```
 
 The secure configuration store must contain the database and BucketFS values
@@ -29,6 +29,9 @@ required by notebook-connector:
 db_host_name, db_port, db_user, db_password, db_schema
 bfs_host_name, bfs_port, bfs_service, bfs_bucket, bfs_user, bfs_password
 ```
+
+The schema named by `db_schema` must already exist. The extension setup deploys
+UDFs into that schema but does not create the schema.
 
 Add `huggingface_token` only when the selected model is private or gated. The
 database user must have the minimum permissions needed to activate the
@@ -131,6 +134,15 @@ location with the deployed management UDF:
 
 ```sql
 SELECT MY_SCHEMA.INSTALL_AI_DEFAULT_MODEL_UDF();
+```
+
+This UDF downloads models from Hugging Face inside the database, so the
+database needs outbound DNS and HTTPS access. If outbound access is restricted,
+run the supported external installer from a host that can reach Hugging Face
+and the database's BucketFS:
+
+```sh
+python -m exasol_transformers_extension.install_default_models <options>
 ```
 
 Replace `MY_SCHEMA` with the configured target schema. The installer includes
