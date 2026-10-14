@@ -4,7 +4,7 @@ Use this reference for the notebook-connector setup and SQL usage of the
 Exasol Transformers Extension. It covers:
 
 - `initialize_te_extension(...)`
-- model installation with `install_model(...)`
+- default-model installation with `INSTALL_AI_DEFAULT_MODEL_UDF`
 - language activation with `get_activation_sql(...)`
 - the current `AI_*` Function names and behavior
 - validation and large-model operational guidance
@@ -14,6 +14,13 @@ Keep database and BucketFS credentials in `Secrets`; do not place credentials,
 tokens, or private data in examples.
 
 ## Prerequisites
+
+Install notebook-connector with the Transformers extra before importing the
+extension helpers:
+
+```sh
+pip install "notebook-connector[transformers]"
+```
 
 The secure configuration store must contain the database and BucketFS values
 required by notebook-connector:
@@ -111,41 +118,26 @@ assert activation_sql
 print(activation_sql)
 ```
 
-The SQL must be executed in the database session before UDF deployment or
-Function invocation, as required by the notebook-connector workflow.
+`initialize_te_extension()` and `deploy_scripts()` execute this SQL on their
+deployment connection before creating the UDFs. Execute the returned SQL
+separately on every session that invokes a deployed Function or management UDF.
 
-## Install the Default Answer and Translate Models
+## Install the Default Models
 
-The simple Functions use predefined models, but the model artifacts still
-need to be available in BucketFS. Install them before invoking the Functions:
+The simple Functions use predefined models stored under the extension's
+`EXA_AI_MODEL_LOCATION` connection and `TE_default_models` directory. After
+activating the invocation session, install all default models into that exact
+location with the deployed management UDF:
 
-```python
-from transformers import AutoModelForCausalLM, AutoModelForSeq2SeqLM
-from exasol.nb_connector.model_installation import TransformerModel, install_model
-
-install_model(
-    my_secrets,
-    TransformerModel(
-        "HuggingFaceTB/SmolLM2-135M-Instruct",
-        "text-generation",
-        AutoModelForCausalLM,
-    ),
-)
-
-install_model(
-    my_secrets,
-    TransformerModel(
-        "google-t5/t5-base",
-        "translation",
-        AutoModelForSeq2SeqLM,
-    ),
-)
+```sql
+SELECT MY_SCHEMA.INSTALL_AI_DEFAULT_MODEL_UDF();
 ```
 
-The task type is significant. `AI_ANSWER` uses a text-generation model and
-`AI_TRANSLATE` uses a translation model. Do not install a question-answering
-model for `AI_ANSWER`; the question-answering pipeline was removed from
-Transformers 5 and the current Answer implementation uses text generation.
+Replace `MY_SCHEMA` with the configured target schema. The installer includes
+the text-generation model used by `AI_ANSWER` and the translation model used
+by `AI_TRANSLATE`. Do not use notebook-connector's generic `install_model()`
+defaults for these simple Functions because they target a different connection
+and model directory.
 
 For private or gated models, configure the Hugging Face token in `Secrets`
 before initialization. Do not print or embed the token.
@@ -218,10 +210,12 @@ Validate in layers rather than starting with a large table:
 1. Confirm the required `Secrets` values exist without printing secrets.
 2. Run `initialize_te_extension(...)` or the required setup subset.
 3. Confirm `get_activation_sql(...)` returns non-empty SQL.
-4. Confirm the model artifacts are present in the configured BucketFS model directory.
-5. Run one Answer or Translate query with synthetic text.
-6. Check both prediction columns and the error column.
-7. Only then run a bounded sample of the real workload.
+4. Execute the activation SQL on the invocation session.
+5. Install the default models and confirm their artifacts are present in
+   `TE_default_models`.
+6. Run one Answer or Translate query with synthetic text.
+7. Check both prediction columns and the error column.
+8. Only then run a bounded sample of the real workload.
 
 Typical failures include missing language activation, missing UDFs, missing
 BucketFS models, incorrect task types, unsupported model/language combinations,
