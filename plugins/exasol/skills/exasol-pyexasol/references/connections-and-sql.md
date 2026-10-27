@@ -57,11 +57,11 @@ Use named PyExasol placeholders:
 client-side formatter substitutions, not server bind variables. Guard empty
 lists before formatting; they raise `ValueError`.
 
-The direct API defaults to `fetch_mapper=None`. For Python-native values use
-`pyexasol.data_types.convert_websocket_to_python`. A mapper receives the value
-and its WebSocket `dataType` metadata. A custom mapper should delegate values
-it does not customize to `convert_websocket_to_python`. Do not use the deprecated
-`pyexasol.exasol_mapper` alias or `pyexasol.mapper` module in new code.
+The direct API defaults to `fetch_mapper=None`. For Python-native values, use
+`pyexasol.data_types.convert_websocket_to_python`. You can define a custom
+mapper as needed; it receives the value and its WebSocket `dataType` metadata,
+like the built-in mapper. Do not use the deprecated `pyexasol.exasol_mapper`
+alias or `pyexasol.mapper` module in new code.
 
 Use `create_prepared_statement()` with `?` placeholders for reusable prepared
 statements. Use `execute_sql_script()` for multiple statements; it does not

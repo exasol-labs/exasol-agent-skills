@@ -13,7 +13,8 @@ For exports, a tuple such as `("SCHEMA", "TABLE")` is a qualified table name.
 A string containing an ordinary space is treated as a query; otherwise it is
 treated as an unqualified table name. Write queries with ordinary spaces rather
 than only tabs or newlines, and pass placeholders through `query_params`.
-Imports accept a destination table, not a query.
+For imports, a tuple is a qualified destination table and a string is an
+unqualified destination table.
 
 `export_to_file()` and `import_from_file()` accept a path or a file-like object;
 caller-provided file objects must be opened in binary mode. Parquet helpers use
