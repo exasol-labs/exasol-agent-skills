@@ -35,6 +35,16 @@ prefer **exasol-export** the same way. A bare `CREATE CONNECTION` with no
 import, export, or object-store file-movement intent belongs to
 **exasol-database**.
 
+**PyExasol over native or exapump workflows when direct Python is explicit.**
+When a request names `pyexasol`, `ExaConnection`, `ExaStatement`,
+`export_to_*`, `import_from_*`, or `exasol.driver.websocket.dbapi2`, prefer
+**exasol-pyexasol** over **exasol-database**, **exasol-import**, and
+**exasol-export**. Keep `open_pyexasol_connection` and other
+notebook-connector wrappers in **exasol-notebook-connections** unless the task
+is about using the raw PyExasol connection returned by that helper. In that
+case, load **exasol-notebook-connections** to open the connection, then
+**exasol-pyexasol** for calls on the returned `ExaConnection`.
+
 **Adapter development over adapter use.** When a request mentions custom
 virtual schema adapter implementation, source-specific JDBC dialect code,
 custom document-file adapter code, `virtual-schema-common-jdbc`, adapter JAR

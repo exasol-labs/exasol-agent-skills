@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.26.0
+
+- Add a PyExasol skill for direct connections, SQL, DB-API 2.0, bulk transfer, metadata, debugging, and parallel I/O.
+
 ## v0.25.0
 
 - Update the Transformers Extension skill to use the current AI Function names and high-level usage guidance.

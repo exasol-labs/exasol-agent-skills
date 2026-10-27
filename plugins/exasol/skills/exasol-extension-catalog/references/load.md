@@ -126,3 +126,4 @@ Use specific adapter repositories when the source is known:
 - R Integration: https://github.com/exasol/r-exasol
 - WebSockets API: https://github.com/exasol/websocket-api
 - Ibis backend: https://ibis-project.org/backends/exasol
+- **Dedicated follow-up**: use **exasol-pyexasol** for direct PyExasol connection, query, metadata, bulk-transfer, DB-API, debugging, and parallel-I/O workflows.
