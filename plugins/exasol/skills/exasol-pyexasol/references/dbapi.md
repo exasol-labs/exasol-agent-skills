@@ -9,7 +9,7 @@ The adapter reports `apilevel="2.0"`, `threadsafety=1`, and
 `paramstyle="qmark"`. Use `?` parameters. It is intentionally not fully PEP
 249 compliant.
 
-Connect with `dbapi2.connect()`. Its user argument is `username`, not `user`.
+Connect with `dbapi2.connect()`. Its user argument is `username`.
 Autocommit, TLS, and certificate validation are enabled by default. The
 connection is not a context manager, so close it explicitly or use
 `contextlib.closing`. Cursors do support `with`.
@@ -23,7 +23,8 @@ Important limits:
 - `callproc()` and `nextset()` are unsupported.
 - `setinputsizes()` and `setoutputsize()` do nothing.
 
-The default mapper returns Python values such as `int`, `decimal.Decimal`,
-`datetime.date`, `datetime.datetime`, and `ExaTimeDelta`. It validates
-`NLS_DATE_FORMAT` and `NLS_TIMESTAMP_FORMAT`; a custom mapper must handle its
-own date and timestamp formats.
+The default fetch mapper is
+`pyexasol.data_types.convert_websocket_to_python`. It returns Python values such
+as `int`, `decimal.Decimal`, `datetime.date`, `datetime.datetime`, and
+`ExaTimeDelta`. It validates `NLS_DATE_FORMAT` and `NLS_TIMESTAMP_FORMAT`; a
+custom mapper must handle its own date and timestamp formats.

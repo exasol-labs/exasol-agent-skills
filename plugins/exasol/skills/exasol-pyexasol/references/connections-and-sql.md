@@ -6,10 +6,10 @@ Install `pyexasol` and only the extras the program needs: `pandas`, `polars`,
 `pyarrow`, `orjson`, `rapidjson`, or `ujson`. Set
 `EXASOL_TELEMETRY_DISABLE` when policy requires telemetry to be disabled.
 
-Check the target release before stating compatibility. At the 2026-10-27
-review, `master` requires Python 3.11 through 3.14, while its README says Exasol
-7.1 or newer and Getting Started says Exasol 8 or newer. Do not resolve that
-upstream conflict by guessing.
+Use Exasol 8 or newer. Check `requires-python` and the README system
+requirements of the targeted PyExasol release before stating Python
+compatibility. Prefer Python 3.11 or newer; Python 3.10 is end-of-life and is
+being dropped.
 
 ## Connect
 
@@ -43,7 +43,7 @@ plain-text credentials. Never display it; pass overrides as keyword arguments.
 `execute()` returns `ExaStatement`. Use its context manager or iteration for
 large results. Common methods are `fetchone()`, `fetchmany()`, `fetchall()`,
 `fetchcol()`, `fetchval()`, `columns()`, `column_names()`, and `rowcount()`.
-`fetchall()`, `fetchcol()`, and DataFrame exports can exhaust memory.
+`fetchall()` and `fetchcol()` can exhaust memory.
 
 Use named PyExasol placeholders:
 
@@ -54,11 +54,13 @@ Use named PyExasol placeholders:
 - `!r`: unchecked SQL text; accept only trusted fixed values
 
 `None` becomes `NULL`, and lists become comma-separated values. These are
-client-side formatter substitutions, not server bind variables.
+client-side formatter substitutions, not server bind variables. Guard empty
+lists before formatting; they raise `ValueError`.
 
 The direct API defaults to `fetch_mapper=None`. For Python-native values use
 `pyexasol.data_types.convert_websocket_to_python`. A mapper receives the value
-and its WebSocket `dataType` metadata. Do not use the deprecated
+and its WebSocket `dataType` metadata. A custom mapper should delegate values
+it does not customize to `convert_websocket_to_python`. Do not use the deprecated
 `pyexasol.exasol_mapper` alias or `pyexasol.mapper` module in new code.
 
 Use `create_prepared_statement()` with `?` placeholders for reusable prepared

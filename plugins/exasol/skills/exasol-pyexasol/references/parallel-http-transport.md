@@ -18,14 +18,19 @@ For parallel HTTP transfer:
    `transport.exa_address` to the parent.
 3. The parent calls `export_parallel()` or `import_parallel()` once with all
    addresses while the children call the matching callback methods.
-4. On success or failure, the parent joins every child; terminate remaining
-   children before raising an error.
+4. On success, the parent joins every child and checks its exit status. On
+   failure, terminate live children before joining them, then re-raise the
+   error.
 
-The implemented property is `.exa_address`; some upstream docstrings wrongly
-say `.address`. Child `compression` and `encryption` values must match the main
-connection. Restrict child HTTP listeners to networks reachable by the Exasol
-nodes; do not expose them broadly. PyExasol provides transport primitives, not
-worker-pool cleanup.
+Use `.exa_address`; `get_proxy()` is deprecated, and `.address` does not exist.
+Child `encryption` must match the main connection. When `export_params` or
+`import_params` contains an explicit `format`, set child `compression=False`;
+otherwise match the main connection's compression setting.
+
+Each worker needs outbound access to the Exasol node IP and port passed to
+`http_transport()` from `get_nodes()`. The transport creates a tunnel to that
+node; it does not open an inbound worker listener. PyExasol provides transport
+primitives, not worker-pool cleanup.
 
 `get_nodes()` repeats nodes when `pool_size` exceeds the active node count.
 Measure the workload; more processes do not guarantee better performance.

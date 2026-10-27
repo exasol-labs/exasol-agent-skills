@@ -41,8 +41,9 @@ When a request names `pyexasol`, `ExaConnection`, `ExaStatement`,
 **exasol-pyexasol** over **exasol-database**, **exasol-import**, and
 **exasol-export**. Keep `open_pyexasol_connection` and other
 notebook-connector wrappers in **exasol-notebook-connections** unless the task
-is about using the raw PyExasol connection returned by that helper; then both
-skills apply.
+is about using the raw PyExasol connection returned by that helper. In that
+case, load **exasol-notebook-connections** to open the connection, then
+**exasol-pyexasol** for calls on the returned `ExaConnection`.
 
 **Adapter development over adapter use.** When a request mentions custom
 virtual schema adapter implementation, source-specific JDBC dialect code,

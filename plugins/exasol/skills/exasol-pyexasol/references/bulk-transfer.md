@@ -9,20 +9,23 @@ Use HTTP transport helpers instead of row-by-row SQL for large data:
 - Parquet: `export_to_parquet()` / `import_from_parquet()`
 - custom streams: `export_to_callback()` / `import_from_callback()`
 
-A tuple such as `("SCHEMA", "TABLE")` is a qualified table name. A string with
-no internal spaces is treated as an unqualified table name; other strings are
-queries. Pass query placeholders through `query_params`.
+For exports, a tuple such as `("SCHEMA", "TABLE")` is a qualified table name.
+A string containing an ordinary space is treated as a query; otherwise it is
+treated as an unqualified table name. Write queries with ordinary spaces rather
+than only tabs or newlines, and pass placeholders through `query_params`.
+Imports accept a destination table, not a query.
 
-File helpers accept a path or a file-like object. Caller-provided file objects
-must be opened in binary mode.
+`export_to_file()` and `import_from_file()` accept a path or a file-like object;
+caller-provided file objects must be opened in binary mode. Parquet helpers use
+filesystem paths, while list, DataFrame, Polars, and iterable helpers exchange
+the corresponding Python objects.
 
 Current `export_params` are `columns`, `comment`, `encoding`, `format`, `null`,
 `csv_cols`, `column_separator`, `column_delimiter`, `row_separator`, `delimit`,
 and `with_column_names`. Current `import_params` replace the last two with
 `skip` and `trim`. The builders reject unknown or unsafe values.
 
-The implementation accepts `format="csv"`, `"gz"`, `"bz2"`, or `"zip"`.
-Upstream prose currently says `bzip2`; executable code must use `bz2`.
+Use `format="csv"`, `"gz"`, `"bz2"`, or `"zip"` (not `"bzip2"`).
 Pandas, Polars, and Parquet exports force `with_column_names=True`.
 
 `callback_params` go to the external library or custom callback. An export

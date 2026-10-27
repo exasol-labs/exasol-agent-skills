@@ -120,10 +120,10 @@ Use specific adapter repositories when the source is known:
 - ADO.NET: https://docs.exasol.com/db/latest/connect_exasol/drivers/ado_net.htm
 - PyExasol: https://github.com/exasol/pyexasol
 - PyExasol releases: https://github.com/exasol/pyexasol/releases
-- **Dedicated follow-up**: use **exasol-pyexasol** for direct PyExasol connection, query, metadata, bulk-transfer, DB-API, debugging, and parallel-I/O workflows.
 - SQLAlchemy Exasol: https://github.com/exasol/sqlalchemy-exasol
 - Exasol TypeScript/JavaScript driver: https://github.com/exasol/exasol-driver-ts
 - Go SQL Driver: https://github.com/exasol/exasol-driver-go
 - R Integration: https://github.com/exasol/r-exasol
 - WebSockets API: https://github.com/exasol/websocket-api
 - Ibis backend: https://ibis-project.org/backends/exasol
+- **Dedicated follow-up**: use **exasol-pyexasol** for direct PyExasol connection, query, metadata, bulk-transfer, DB-API, debugging, and parallel-I/O workflows.
