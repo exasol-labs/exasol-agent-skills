@@ -47,6 +47,7 @@
 - Stop the Claude commands from citing router routes that no longer exist.
 - Validate every reference on a multi-reference `Load:` line.
 - Ignore `.idea/`.
+- Document Answer and Translate setup, validation, security, and large-model operational guidance in the Transformers Extension skill.
 
 ## v0.24.1
 
